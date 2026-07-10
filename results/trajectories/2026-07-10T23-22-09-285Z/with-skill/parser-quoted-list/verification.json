@@ -1,0 +1,23 @@
+{
+  "functionalProof": {
+    "command": "npm test",
+    "exitCode": 0,
+    "timedOut": false,
+    "passed": true
+  },
+  "taskEvidence": {
+    "changedFiles": [
+      "src/parser.mjs",
+      "test/parser.test.mjs"
+    ],
+    "independentCheck": {
+      "command": "node --input-type=module -e import { parseList } from './src/parser.mjs'; const actual = JSON.stringify(parseList('\"red, blue\",green')); if (actual !== JSON.stringify(['red, blue', 'green'])) process.exit(1); console.log('INDEPENDENT_BEHAVIOR=PASS');",
+      "exitCode": 0,
+      "output": "INDEPENDENT_BEHAVIOR=PASS\n",
+      "passed": true
+    },
+    "sourceImplementationChanged": true,
+    "focusedTestAdded": true,
+    "passed": true
+  }
+}

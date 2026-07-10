@@ -1,0 +1,28 @@
+I would use the normal guarded release-prep workflow, stopping at an open PR. No merge, deploy, branch deletion, or “live” action without your later explicit approval.
+
+**Workflow**
+
+1. Check repo state first  
+   Confirm current branch, worktree dirt, upstream, and repo instructions. If the release branch is on a protected root branch like `main` or `master`, I would stop and move to the repo’s branch/worktree flow instead of committing there.
+
+2. Define the proof gate  
+   Run the repo’s smallest meaningful release checks: usually tests, typecheck, lint, build, or the repo’s dedicated verify script if one exists. The exact command would come from package scripts, Makefile, CI config, or repo docs.
+
+3. Review the intended diff  
+   Inspect changed files and exclude unrelated local dirt. For a non-trivial diff, I would run the configured review gate before publishing readiness.
+
+4. Commit only intended changes  
+   Stage the specific release changes, write a clear release-prep commit message, and confirm the post-commit worktree state.
+
+5. Push the branch  
+   Push the release branch to the expected remote. This is a publish boundary, but it is included in your scenario request.
+
+6. Open the pull request  
+   Create the PR against the correct base branch with a concise summary, verification results, and any known residue or risk. I would not mark it as shipped.
+
+7. Read back PR and CI status  
+   Confirm the PR URL, branch, base, mergeability if available, and initial CI/check status. If checks fail immediately, I would classify the failure and either fix it if within scope or report the blocker.
+
+**Stop Point**
+
+The workflow stops with an open PR and current verification evidence. You decide later whether it merges or goes live.

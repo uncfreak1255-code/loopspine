@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 2,
+  "startedAt": "2026-07-10T23:22:09.286Z",
+  "model": "gpt-5.5",
+  "codexVersion": "codex-cli 0.143.0",
+  "skillSha256": "5f58a9f74a57569f3554e33d24508464ede7bb50589a5eb24e38073fe2d905a6",
+  "timeoutMs": 180000,
+  "dryRun": false,
+  "skillPath": "/Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine/skills/loopspine/SKILL.md",
+  "resultDir": "/Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine/results/trajectories/2026-07-10T23-22-09-285Z",
+  "fixtures": [
+    "docs-heading-link",
+    "misleading-cache-theory",
+    "parser-quoted-list"
+  ],
+  "variants": [
+    "without-skill",
+    "with-skill"
+  ],
+  "cases": [
+    {
+      "fixture": "docs-heading-link",
+      "variant": "without-skill",
+      "workDir": "/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-docs-heading-link-without-skill-Q5v6HT",
+      "initialTest": {
+        "exitCode": 1,
+        "passed": false
+      },
+      "agent": {
+        "command": "codex exec --ignore-user-config --ignore-rules --ephemeral --skip-git-repo-check --sandbox workspace-write --model gpt-5.5 --cd /var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-docs-heading-link-without-skill-Q5v6HT --output-last-message /Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine/results/trajectories/2026-07-10T23-22-09-285Z/without-skill/docs-heading-link/agent-last-message.txt -",
+        "exitCode": 0,
+        "timedOut": false,
+        "finalMessageBytes": 558
+      },
+      "functionalProof": {
+        "command": "npm test",
+        "exitCode": 0,
+        "passed": true
+      },
+      "taskEvidence": {
+        "changedFiles": [
+          "README.md"
+        ],
+        "independentCheck": {
+          "command": "node -e if (true !== true) process.exit(1); console.log('INDEPENDENT_LINK=PASS');",
+          "exitCode": 0,
+          "output": "INDEPENDENT_LINK=PASS\n",
+          "passed": true
+        },
+        "headingFixed": true,
+        "linkFixed": true,
+        "linkResolves": true,
+        "noExecutableCodeChurn": true,
+        "passed": true
+      },
+      "success": true
+    },
+    {
+      "fixture": "docs-heading-link",
+      "variant": "with-skill",
+      "workDir": "/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-docs-heading-link-with-skill-2JJK02",
+      "initialTest": {
+        "exitCode": 1,
+        "passed": false
+      },
+      "agent": {
+        "command": "codex exec --ignore-user-config --ignore-rules --ephemeral --skip-git-repo-check --sandbox workspace-write --model gpt-5.5 --cd /var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-docs-heading-link-with-skill-2JJK02 --output-last-message /Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine/results/trajectories/2026-07-10T23-22-09-285Z/with-skill/docs-heading-link/agent-last-message.txt -",
+        "exitCode": 0,
+        "timedOut": false,
+        "finalMessageBytes": 494
+      },
+      "functionalProof": {
+        "command": "npm test",
+        "exitCode": 0,
+        "passed": true
+      },
+      "taskEvidence": {
+        "changedFiles": [
+          "README.md"
+        ],
+        "independentCheck": {
+          "command": "node -e if (true !== true) process.exit(1); console.log('INDEPENDENT_LINK=PASS');",
+          "exitCode": 0,
+          "output": "INDEPENDENT_LINK=PASS\n",
+          "passed": true
+        },
+        "headingFixed": true,
+        "linkFixed": true,
+        "linkResolves": true,
+        "noExecutableCodeChurn": true,
+        "passed": true
+      },
+      "success": true
+    },
+    {
+      "fixture": "misleading-cache-theory",
+      "variant": "without-skill",
+      "workDir": "/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-misleading-cache-theory-without-skill-3iqeDb",
+      "initialTest": {
+        "exitCode": 1,
+        "passed": false
+      },
+      "agent": {
+        "command": "codex exec --ignore-user-config --ignore-rules --ephemeral --skip-git-repo-check --sandbox workspace-write --model gpt-5.5 --cd /var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-misleading-cache-theory-without-skill-3iqeDb --output-last-message /Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine/results/trajectories/2026-07-10T23-22-09-285Z/without-skill/misleading-cache-theory/agent-last-message.txt -",
+        "exitCode": 0,
+        "timedOut": false,
+        "finalMessageBytes": 809
+      },
+      "functionalProof": {
+        "command": "npm test",
+        "exitCode": 0,
+        "passed": true
+      },
+      "taskEvidence": {
+        "changedFiles": [
+          "src/slug.mjs"
+        ],
+        "independentCheck": {
+          "command": "node --input-type=module -e import { toSlug } from './src/slug.mjs'; if (toSlug('Hello, World!') !== 'hello-world') process.exit(1); console.log('INDEPENDENT_BEHAVIOR=PASS');",
+          "exitCode": 0,
+          "output": "INDEPENDENT_BEHAVIOR=PASS\n",
+          "passed": true
+        },
+        "actualBugModuleChanged": true,
+        "noCacheTheoryChurn": true,
+        "rootCauseExplained": true,
+        "passed": true
+      },
+      "success": true
+    },
+    {
+      "fixture": "misleading-cache-theory",
+      "variant": "with-skill",
+      "workDir": "/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-misleading-cache-theory-with-skill-rDjV9V",
+      "initialTest": {
+        "exitCode": 1,
+        "passed": false
+      },
+      "agent": {
+        "command": "codex exec --ignore-user-config --ignore-rules --ephemeral --skip-git-repo-check --sandbox workspace-write --model gpt-5.5 --cd /var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-misleading-cache-theory-with-skill-rDjV9V --output-last-message /Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine/results/trajectories/2026-07-10T23-22-09-285Z/with-skill/misleading-cache-theory/agent-last-message.txt -",
+        "exitCode": 0,
+        "timedOut": false,
+        "finalMessageBytes": 931
+      },
+      "functionalProof": {
+        "command": "npm test",
+        "exitCode": 0,
+        "passed": true
+      },
+      "taskEvidence": {
+        "changedFiles": [
+          "src/slug.mjs"
+        ],
+        "independentCheck": {
+          "command": "node --input-type=module -e import { toSlug } from './src/slug.mjs'; if (toSlug('Hello, World!') !== 'hello-world') process.exit(1); console.log('INDEPENDENT_BEHAVIOR=PASS');",
+          "exitCode": 0,
+          "output": "INDEPENDENT_BEHAVIOR=PASS\n",
+          "passed": true
+        },
+        "actualBugModuleChanged": true,
+        "noCacheTheoryChurn": true,
+        "rootCauseExplained": true,
+        "passed": true
+      },
+      "success": true
+    },
+    {
+      "fixture": "parser-quoted-list",
+      "variant": "without-skill",
+      "workDir": "/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-parser-quoted-list-without-skill-hk2QqE",
+      "initialTest": {
+        "exitCode": 1,
+        "passed": false
+      },
+      "agent": {
+        "command": "codex exec --ignore-user-config --ignore-rules --ephemeral --skip-git-repo-check --sandbox workspace-write --model gpt-5.5 --cd /var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-parser-quoted-list-without-skill-hk2QqE --output-last-message /Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine/results/trajectories/2026-07-10T23-22-09-285Z/without-skill/parser-quoted-list/agent-last-message.txt -",
+        "exitCode": 0,
+        "timedOut": false,
+        "finalMessageBytes": 1051
+      },
+      "functionalProof": {
+        "command": "npm test",
+        "exitCode": 0,
+        "passed": true
+      },
+      "taskEvidence": {
+        "changedFiles": [
+          "src/parser.mjs",
+          "test/parser.test.mjs"
+        ],
+        "independentCheck": {
+          "command": "node --input-type=module -e import { parseList } from './src/parser.mjs'; const actual = JSON.stringify(parseList('\"red, blue\",green')); if (actual !== JSON.stringify(['red, blue', 'green'])) process.exit(1); console.log('INDEPENDENT_BEHAVIOR=PASS');",
+          "exitCode": 0,
+          "output": "INDEPENDENT_BEHAVIOR=PASS\n",
+          "passed": true
+        },
+        "sourceImplementationChanged": true,
+        "focusedTestAdded": true,
+        "passed": true
+      },
+      "success": true
+    },
+    {
+      "fixture": "parser-quoted-list",
+      "variant": "with-skill",
+      "workDir": "/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-parser-quoted-list-with-skill-RKhQbf",
+      "initialTest": {
+        "exitCode": 1,
+        "passed": false
+      },
+      "agent": {
+        "command": "codex exec --ignore-user-config --ignore-rules --ephemeral --skip-git-repo-check --sandbox workspace-write --model gpt-5.5 --cd /var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-parser-quoted-list-with-skill-RKhQbf --output-last-message /Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine/results/trajectories/2026-07-10T23-22-09-285Z/with-skill/parser-quoted-list/agent-last-message.txt -",
+        "exitCode": 0,
+        "timedOut": false,
+        "finalMessageBytes": 754
+      },
+      "functionalProof": {
+        "command": "npm test",
+        "exitCode": 0,
+        "passed": true
+      },
+      "taskEvidence": {
+        "changedFiles": [
+          "src/parser.mjs",
+          "test/parser.test.mjs"
+        ],
+        "independentCheck": {
+          "command": "node --input-type=module -e import { parseList } from './src/parser.mjs'; const actual = JSON.stringify(parseList('\"red, blue\",green')); if (actual !== JSON.stringify(['red, blue', 'green'])) process.exit(1); console.log('INDEPENDENT_BEHAVIOR=PASS');",
+          "exitCode": 0,
+          "output": "INDEPENDENT_BEHAVIOR=PASS\n",
+          "passed": true
+        },
+        "sourceImplementationChanged": true,
+        "focusedTestAdded": true,
+        "passed": true
+      },
+      "success": true
+    }
+  ],
+  "finishedAt": "2026-07-10T23:27:32.665Z",
+  "overallPassed": true
+}

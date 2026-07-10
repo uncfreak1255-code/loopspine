@@ -1,0 +1,22 @@
+I’d use the `loopspine` workflow in **direct verification** mode, because this is a readback request and you explicitly did not authorize changes.
+
+Workflow I would follow:
+
+1. Read the nearest repo instructions, such as `AGENTS.md`, to confirm any repo-specific rules.
+2. Inspect the service configuration files that plausibly define request-size or upload limits.
+3. Search for settings like `client_max_body_size`, `maxBodySize`, `bodyLimit`, `limit`, `requestSize`, `multipart`, `upload`, or reverse-proxy equivalents.
+4. Identify the authoritative file and exact configured value.
+5. Compare the value to `12 MB`.
+6. Return only the receipt: the file path, the setting name/value, and whether it already permits 12 MB uploads.
+
+No edits, no tests, no repair loop.
+
+Receipt shape I’d return after checking:
+
+```text
+LANE: direct
+RESULT: success | clean-no-op | blocked
+PROOF: <file>: <setting>=<value>, compared against 12 MB
+BOUNDARY: read-only verification; no changes authorized
+RESIDUE: none or exact uncertainty
+```

@@ -1,0 +1,12 @@
+I would use a read-only verification workflow.
+
+1. Identify the handbook file and the incident page target from repo structure or existing references.
+2. Inspect the table of contents entry for the incident page and note the exact link target.
+3. Resolve that target the same way the published handbook renderer does, for example relative Markdown path, anchor slug, route path, or generated static URL.
+4. Verify the target exists and, if it includes an anchor, that the destination heading or generated anchor still matches.
+5. If the link resolves, leave the document unchanged and report the evidence.
+6. If the link is proven broken, make the smallest possible edit to the TOC link only, then run the relevant doc/link check or build to prove it is fixed.
+
+Acceptance gate: the handbook TOC incident-page link resolves to an existing page, and any fragment anchor resolves to an existing heading in the rendered/published form.
+
+I would not run commands or edit files for this scenario unless you explicitly asked me to perform the check.

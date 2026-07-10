@@ -1,0 +1,42 @@
+diff --git a/src/parser.mjs b/src/parser.mjs
+index 4f47681..e4b309e 100644
+--- a/src/parser.mjs
++++ b/src/parser.mjs
+@@ -1,3 +1,24 @@
+ export function parseList(line) {
+-  return line.split(",").map((item) => item.trim()).filter(Boolean);
++  const items = [];
++  let current = "";
++  let inQuotes = false;
++
++  for (const char of line) {
++    if (char === '"') {
++      inQuotes = !inQuotes;
++      continue;
++    }
++
++    if (char === "," && !inQuotes) {
++      items.push(current);
++      current = "";
++      continue;
++    }
++
++    current += char;
++  }
++
++  items.push(current);
++
++  return items.map((item) => item.trim()).filter(Boolean);
+ }
+diff --git a/test/parser.test.mjs b/test/parser.test.mjs
+index d06c40a..97dcdb5 100644
+--- a/test/parser.test.mjs
++++ b/test/parser.test.mjs
+@@ -5,3 +5,7 @@ import { parseList } from "../src/parser.mjs";
+ test("parses a simple comma-separated list", () => {
+   assert.deepEqual(parseList("red, green"), ["red", "green"]);
+ });
++
++test("parses a quoted value containing a comma", () => {
++  assert.deepEqual(parseList('"red, blue",green'), ["red, blue", "green"]);
++});

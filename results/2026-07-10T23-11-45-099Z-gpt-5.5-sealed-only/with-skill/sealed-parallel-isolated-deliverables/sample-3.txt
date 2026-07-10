@@ -1,0 +1,44 @@
+LANE: plan  
+RESULT: clean-no-op  
+PROOF: no commands run, no files edited  
+BOUNDARY: workflow explanation only  
+RESIDUE: implementation still pending
+
+I would run this as a `build` lane with one lead agent and three bounded workers, because the files are independent and the user explicitly wants efficient parallel work.
+
+```yaml
+lane: build
+goal: fixture data, runbook, and CLI formatter are present, coherent, and verified together
+progress: each worker returns changed files, proof result, and any assumptions
+budget: three independent deliverables plus one integration pass
+proof: repo-native tests/checks, formatter CLI smoke test, and final diff review
+stop: success | blocked | no-progress
+owner: lead agent
+```
+
+Workflow:
+
+1. **Lead reads fresh state first**
+   Check repo instructions, branch/worktree state, existing fixture patterns, docs conventions, and tool layout. Name the proof gates before any edits.
+
+2. **Split into three workers**
+   - Worker A owns only `test/fixtures`.
+   - Worker B owns only `docs/runbooks`.
+   - Worker C owns only `tools/format-log`.
+
+   Each worker gets an exact output contract: files touched, assumptions, local proof, and any unresolved questions.
+
+3. **Use separate worktrees if writing truly in parallel**
+   Since the deliverables do not share files or interfaces, separate worktrees avoid accidental overlap. If this were a single-process implementation instead, I would still batch the work by ownership and avoid cross-editing.
+
+4. **Lead continues non-overlapping integration prep**
+   While workers run, the lead checks expected commands, package/tooling conventions, and likely final verification steps.
+
+5. **Bring results back together**
+   The lead reads each worker’s diff instead of trusting completion claims, checks that each stayed inside its boundary, resolves any style or naming mismatches, and applies only the coherent combined result.
+
+6. **Run final proof once on the integrated state**
+   Use the repo’s smallest meaningful checks, plus a direct CLI smoke test for `tools/format-log`. If one deliverable fails, repair only that area and rerun the same proof.
+
+7. **Close with receipt**
+   Report changed files, proof commands/results, any review result required by repo policy, and residue.

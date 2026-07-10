@@ -1,0 +1,42 @@
+Best loop: **bounded quality retry loop**
+
+Why it fits: the goal is not “retry forever until green.” It is “find out whether the browser test can pass, while detecting repeated identical timeout failure.”
+
+GStack lane: **QA**, because this is runtime/browser behavior verification.
+
+Proof gate: the browser test passes once, with the exact command and successful output captured.
+
+Budget / stop path:
+- Run the same browser test command.
+- After each failure, capture: attempt number, timeout message, failing test name/spec, relevant URL or action, and timestamp.
+- Compare timeout failures by normalized signature: same test, same step/action, same timeout duration or error text, same stack location if available.
+- Stop immediately on pass.
+- Stop after **three consecutive attempts** with the same timeout signature.
+- Do not keep retrying after the repeated timeout streak; treat it as a stable failure, not flake.
+
+What I would do first:
+1. Identify the browser test command from repo scripts or docs.
+2. Run attempt 1 and record result.
+3. If it times out, rerun up to two more times only while the timeout signature stays identical.
+4. If the third same timeout appears, leave this concise receipt:
+
+```text
+Browser test retry receipt
+
+Result: failed
+Stop reason: same timeout occurred 3 attempts in a row
+
+Command: <test command>
+Attempts: 3
+Timeout signature: <test/spec + action + timeout text>
+First seen: <timestamp>
+Last seen: <timestamp>
+
+Likely status: stable timeout, not a one-off flake
+Next move: inspect the failing browser step, app readiness, selector/wait condition, or network dependency before retrying again
+```
+
+Mode: selected  
+Fresh state read: not performed, per your instruction not to execute commands  
+Proof gate: browser test pass, or three identical timeout attempts  
+Outcome: workflow only; no commands run and no files edited.

@@ -1,0 +1,35 @@
+I’d run this as a scoped planning-and-implementation workflow with three isolated workstreams, but I would not start coding until the repo boundaries are verified.
+
+**Workflow**
+
+1. **Read the repo shape first**
+   - Identify backend routing/controller patterns for endpoints.
+   - Identify the billing settings UI ownership.
+   - Identify where demo/sample data is defined.
+   - Check whether repo instructions or tests define protected paths, demo fixtures, or export conventions.
+
+2. **Set explicit file boundaries**
+   - CSV export endpoint work only touches backend API/export files and its tests.
+   - Billing settings refresh only touches billing UI files, styles/components already used by that screen, and its tests/stories if present.
+   - Demo sample records only touch demo seed/fixture files and related test fixtures.
+   - If any task appears to require a shared helper, schema, constant, or config file, stop and reassess because the scenario says the changes should not share implementation files.
+
+3. **Split into three parallel implementation tracks**
+   - Track A: CSV export endpoint.
+     Acceptance gate: endpoint returns valid CSV with headers, correct content type, auth/permission behavior, and focused API tests.
+   - Track B: Billing settings screen refresh.
+     Acceptance gate: screen renders correctly, existing billing actions still work, responsive states are checked, and UI tests/build pass.
+   - Track C: Demo sample records.
+     Acceptance gate: demo environment loads the new records deterministically without affecting production/default data.
+
+4. **Integrate carefully**
+   - Review the combined diff specifically for accidental overlap.
+   - Confirm no shared implementation file was changed by more than one track.
+   - Run the smallest full proof set that covers all three surfaces: backend tests for export, frontend build/test for billing, and seed/demo validation for sample records.
+
+5. **Review before closeout**
+   - Because this is multi-surface work, I’d do a simplify pass on the diff before calling it ready.
+   - Then I’d run the configured review gate if the repo expects one.
+   - Final closeout would report: changed files by track, proof commands/results, any skipped checks, and any remaining risk.
+
+The key constraint is isolation: I’d allow the three tasks to proceed in parallel conceptually, but I’d keep their file ownership separate and treat any need for shared implementation changes as a design conflict to resolve before implementation.

@@ -1,0 +1,41 @@
+I’d treat this as a small parallel-work coordination task, not a single linear implementation.
+
+**Workflow**
+
+1. **Preflight**
+   - Confirm repo status, branch safety, and local instructions.
+   - Identify the acceptance gate for each deliverable:
+     - `test/fixtures`: fixture shape matches existing tests or schema.
+     - `docs/runbooks`: runbook follows existing docs style and covers operator actions.
+     - `tools/format-log`: CLI runs locally, has focused tests or a sample input/output check.
+
+2. **Split Into Three Independent Workstreams**
+   - Workstream A: add fixture data under `test/fixtures`.
+   - Workstream B: write the operations runbook under `docs/runbooks`.
+   - Workstream C: create the standalone CLI formatter under `tools/format-log`.
+
+   Since they do not share files or interfaces, these can be worked in parallel without coordination overhead beyond naming and final integration.
+
+3. **Use Separate Contexts Or Agents**
+   - Assign each stream a narrow brief with:
+     - exact target directory
+     - expected output
+     - constraints from nearby files
+     - proof gate
+   - Keep each stream from touching unrelated files.
+
+4. **Bring Results Back Together**
+   - Review each deliverable independently first.
+   - Then inspect the combined diff for accidental overlap, inconsistent style, missing docs, or forgotten tests.
+   - Run the smallest relevant verification:
+     - fixture-related tests or schema checks
+     - docs lint if the repo has one
+     - CLI formatter test or sample invocation
+     - broader test/build only if touched tooling requires it
+
+5. **Closeout**
+   - Summarize what changed by deliverable.
+   - Report the verification results.
+   - Call out any residue, such as missing test coverage, unclear fixture ownership, or runbook details needing operator confirmation.
+
+I would not start by creating abstractions or shared plumbing. The efficient move is three isolated streams, then one final integration pass to make sure the repo still feels coherent.

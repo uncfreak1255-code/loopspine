@@ -1,0 +1,25 @@
+
+> test
+> node verify.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^## Usage$/m. Input:
+
+'# Tiny Docs\n\n## Getting Started\n\n- [Usage](docs/usgae.md)\n'
+
+    at file:///private/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-docs-heading-link-with-skill-2JJK02/verify.mjs:8:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '# Tiny Docs\n\n## Getting Started\n\n- [Usage](docs/usgae.md)\n',
+  expected: /^## Usage$/m,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v22.22.0

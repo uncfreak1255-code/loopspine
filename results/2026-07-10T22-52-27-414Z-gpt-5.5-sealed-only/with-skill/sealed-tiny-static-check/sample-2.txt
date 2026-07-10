@@ -1,0 +1,22 @@
+I would use `loopspine` in **plan** mode, because this is a verification task with a strict “do not edit unless proven broken” boundary.
+
+```text
+LANE: plan
+GOAL: confirm the handbook table-of-contents link to the incident page resolves correctly
+PROGRESS: evidence from reading the handbook link target and checking the corresponding incident page path/anchor
+BUDGET: one verification pass; stop after proof or a clear broken-link finding
+PROOF: exact readback of the TOC link target plus the matching file/anchor or rendered/link-check result
+STOP: success if the link resolves; blocked if files are unavailable; approval-required only if a fix is needed
+OWNER: lead agent
+```
+
+Workflow:
+
+1. Read fresh repo state and nearest instructions.
+2. Identify the handbook file and the incident page it links to.
+3. Inspect the handbook table of contents link target without editing.
+4. Verify that the target page, and any anchor if present, still exists.
+5. If the link works, return a clean no-op receipt.
+6. If the link is proven broken, stop and report the exact failure before making any document change.
+
+The boundary is: **verification only**. No commands or edits in this turn, and no document changes unless the check itself proves the link is broken.

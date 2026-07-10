@@ -1,0 +1,45 @@
+LANE: `investigate`
+
+I would treat “mail vendor is down” as a hypothesis, not the conclusion.
+
+```yaml
+lane: investigate
+goal: establish where order-confirmation delivery is failing, then identify the smallest safe fix or escalation
+progress: each pass must narrow the failure boundary: app event -> email job -> vendor API -> vendor delivery -> recipient inbox
+budget: quick incident loop with stop on confirmed root cause, no-progress, or approval-required fix
+proof: current logs, job/queue state, vendor API responses, delivery receipts, and a known recent failed order
+stop: success | no-progress | blocked | approval-required
+owner: lead agent keeps the evidence chain and final call
+```
+
+Workflow:
+
+1. Confirm the symptom with real examples  
+   Get 2-3 affected order IDs from this morning and compare against a known-good order from yesterday or earlier. The first proof gate is whether the app created the order-confirmation event at all.
+
+2. Trace one failed order through the system  
+   Check, in order: order created, confirmation event emitted, email payload built, job enqueued, job attempted, vendor API called, vendor accepted/rejected, delivery/bounce/suppression result.
+
+3. Separate app failure from vendor failure  
+   If no event/job exists, it is likely our app or queue path.  
+   If jobs exist but fail before vendor call, it is likely payload/config/auth/rate-limit code.  
+   If vendor returns errors or no accepted message IDs, then vendor/API/config is implicated.  
+   If vendor accepts messages but users do not receive them, check bounces, suppressions, spam, domain/DNS, or vendor delivery incidents.
+
+4. Check scope before fixing  
+   Determine whether all confirmations are affected or only certain stores, templates, regions, recipient domains, payment paths, or new orders after a deploy/config change.
+
+5. Only then choose action  
+   If the failure is established and local, make the smallest repair with regression proof.  
+   If the vendor is confirmed failing, prepare a vendor-status receipt and mitigation path.  
+   If evidence is inconclusive, stop with the exact missing proof instead of guessing.
+
+Receipt shape I would return:
+
+```text
+LANE: investigate
+RESULT: success | no-progress | blocked | approval-required
+PROOF: failed order IDs traced through logs/queue/vendor receipts
+BOUNDARY: no code/config changes until failure location is proven
+RESIDUE: fix, vendor escalation, or missing access/evidence
+```

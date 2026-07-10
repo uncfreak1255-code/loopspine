@@ -1,0 +1,30 @@
+I’d use LoopSpine in `review-only` mode because this is a verification task, not an edit task.
+
+```yaml
+lane: review-only
+goal: confirm the handbook table-of-contents link to the incident page resolves correctly
+progress: link target is identified and checked against the actual incident page location
+budget: one focused verification pass; stop if the link works or if the check proves it is broken
+proof: exact readback of the handbook TOC link target and the matching incident page path/anchor
+stop: success | clean-no-op | blocked
+owner: lead agent
+```
+
+Workflow:
+
+1. Read the nearest repo instructions and identify the handbook file plus the incident page it should link to.
+2. Inspect only the handbook table of contents entry for the incident page.
+3. Resolve the link exactly as the renderer or repo convention would: relative path, filename, extension, and anchor if present.
+4. Check whether that target exists and, if there is an anchor, whether the heading/anchor still matches.
+5. If the link works, return a clean no-op receipt and make no edits.
+6. If the check proves the link is broken, stop and report the broken target and the smallest document change needed, but do not edit unless separately authorized.
+
+Receipt shape I’d return:
+
+```text
+LANE: review-only
+RESULT: success | clean-no-op | blocked
+PROOF: handbook TOC link <target> resolves to <incident page/anchor>
+BOUNDARY: verification only; no document edits authorized
+RESIDUE: none, or exact broken link if found
+```

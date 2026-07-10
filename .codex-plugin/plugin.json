@@ -1,0 +1,18 @@
+{
+  "name": "loopspine",
+  "version": "0.2.0",
+  "description": "A benchmarked development loop for coding agents: plan, test, debug, review, and stop with proof.",
+  "author": {
+    "name": "Sawyer Beck"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "LoopSpine",
+    "shortDescription": "Keep coding agents moving until proof or a real stop.",
+    "longDescription": "LoopSpine routes non-trivial software work through bounded planning, TDD, debugging, QA, review, and shipping loops while preserving explicit publish and production boundaries.",
+    "developerName": "Sawyer Beck",
+    "category": "Developer Tools",
+    "capabilities": ["Planning", "Testing", "Debugging", "Review"],
+    "defaultPrompt": "Use LoopSpine to handle this software task end to end, continuing through bounded feedback loops until the proof gate passes or a named stop condition fires."
+  }
+}

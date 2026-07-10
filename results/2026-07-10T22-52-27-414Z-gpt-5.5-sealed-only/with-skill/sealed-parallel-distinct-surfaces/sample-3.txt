@@ -1,0 +1,64 @@
+Use `loopspine` in **plan → build/qa → review/ship-prep** shape, with one lead agent coordinating three independent workstreams.
+
+```yaml
+lane: plan
+goal: three changes are implemented in separate files, verified independently, then verified together
+progress: each stream has its own proof gate and no shared implementation files
+budget: finite worklist of three scoped changes, stop on overlap, no-progress, or approval boundary
+proof: endpoint test for CSV export, UI screenshot/flow check for billing settings, demo seed/test readback for sample records
+stop: success | no-progress | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. **Fresh state read**
+   Read repo instructions, branch state, app structure, routing, billing UI area, API conventions, and demo seed/data conventions. Name the exact files each stream may touch before anyone edits.
+
+2. **Split the work**
+   Assign three non-overlapping streams:
+
+   - Agent A: CSV export endpoint  
+     Owns only API route/controller/service/test files for export.
+   - Agent B: billing settings screen refresh  
+     Owns only billing UI component/style/test/story files.
+   - Agent C: demo sample records  
+     Owns only demo seed/fixture/migration/sample-data files.
+
+   The lead agent owns integration, conflict checks, final proof, and final receipt.
+
+3. **Declare per-stream proof gates**
+   - CSV export: request endpoint, assert status, headers, and CSV rows.
+   - Billing screen: run relevant UI test or capture screenshot/readback of the refreshed settings flow.
+   - Demo records: run seed/demo fixture command or test that proves records are created and readable.
+
+4. **Run bounded parallel loops**
+   Each agent follows the smallest loop for its lane:
+
+   - CSV export: build loop with focused endpoint test first.
+   - Billing screen: QA/build loop using existing UI patterns and a visible proof.
+   - Demo records: build loop with seed/readback proof.
+
+   Stop any stream immediately if it needs a shared file owned by another stream. The lead then either narrows scope or explicitly serializes that shared change.
+
+5. **Integrate**
+   Lead rereads the diff and checks:
+   - no shared implementation files were changed;
+   - tests/proofs are still valid after combining work;
+   - no cross-stream assumptions broke routing, data shape, or UI state.
+
+6. **Review threshold**
+   Because this is non-trivial and parallel, run a focused review after proof passes. Look especially for hidden coupling, fixture pollution, export authorization gaps, and UI regressions.
+
+7. **Final receipt**
+   Return:
+
+```text
+LANE: build + qa, coordinated from plan
+RESULT: success | blocked | no-progress
+PROOF: endpoint test result, billing UI proof, demo record readback, combined check
+BOUNDARY: local scoped implementation only; no push/PR/merge/deploy unless authorized
+RESIDUE: none, or exact remaining blocker
+```
+
+The key control is that the lead agent never accepts child-agent completion claims blindly. It rereads the files, verifies the no-overlap rule, and reruns the combined proof before calling the work done.

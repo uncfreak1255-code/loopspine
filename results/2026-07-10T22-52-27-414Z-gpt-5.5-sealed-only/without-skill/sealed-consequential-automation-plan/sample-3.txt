@@ -1,0 +1,105 @@
+I would handle this as a planning and risk-design task, not an implementation task.
+
+**Workflow**
+
+1. **Define Ownership**
+   - Billing owns invoice state and overdue rules.
+   - Customer Success owns customer communication and exceptions.
+   - Support owns inbound questions and appeal intake.
+   - Product/Engineering owns the automation, audit trail, and safety controls.
+   - Finance or Ops owns final suspension policy approval.
+
+2. **Map Account States**
+   I would define explicit states instead of jumping straight from “overdue” to “suspended”:
+
+   - `current`
+   - `invoice_due`
+   - `overdue_notice_sent`
+   - `at_risk_of_suspension`
+   - `suspension_pending`
+   - `suspended`
+   - `appeal_pending`
+   - `restored`
+   - `exempt`
+
+   Each transition should have a clear owner, reason, timestamp, and audit record.
+
+3. **Set Guardrails**
+   Suspension should never happen from a single raw invoice signal. I would require checks like:
+
+   - invoice is genuinely overdue past the policy threshold
+   - payment provider confirms no pending payment
+   - account is not marked exempt
+   - no open appeal or active support escalation
+   - customer has received required notices
+   - suspension window is outside sensitive periods if applicable
+   - manual override exists for high-value or legally sensitive accounts
+
+4. **Design Customer Notices**
+   The workflow should include staged, plain-language communication:
+
+   - first overdue notice
+   - reminder with payment link
+   - warning that access may be limited
+   - final notice before suspension
+   - suspension confirmation with restore steps
+   - appeal instructions in every serious notice
+
+5. **Create Appeal Path**
+   Customers need a visible way to challenge or delay suspension.
+
+   Appeal intake should capture:
+   - account
+   - invoice
+   - reason
+   - supporting notes or documents
+   - requested outcome
+   - owner
+   - deadline
+
+   While an appeal is open, automation should pause suspension unless policy says otherwise.
+
+6. **Choose Suspension Behavior**
+   I would avoid destructive account changes. Prefer reversible access limits:
+
+   - block new usage or new bookings/actions
+   - keep data readable where appropriate
+   - preserve admin access to billing and support
+   - allow payment and appeal actions
+   - avoid deleting data or canceling active commitments automatically
+
+7. **Add Auditability**
+   Every automated decision should produce a readable record:
+
+   - what invoice triggered the action
+   - which policy rule matched
+   - which notices were sent
+   - which guardrails passed
+   - who approved or overrode
+   - when access changed
+   - how restoration happened
+
+8. **Safe Rollout**
+   I would roll this out in phases:
+
+   - policy review with Finance, Legal, Support, and Customer Success
+   - dry-run mode only, producing “would suspend” reports
+   - internal review of dry-run accounts
+   - limited pilot on low-risk account segments
+   - manual approval before first real suspensions
+   - gradual automation with thresholds and kill switch
+   - regular review of false positives, appeals, and customer impact
+
+9. **Acceptance Gates Before Building**
+   Before implementation, I would want written answers for:
+
+   - exact overdue thresholds
+   - who can exempt an account
+   - who can approve suspension
+   - what pauses automation
+   - what restores access
+   - what customer data remains accessible
+   - what the appeal SLA is
+   - what metrics define a safe rollout
+
+The important design principle is that billing automation can recommend or prepare suspension, but actual suspension should be reversible, explainable, appealable, and guarded by clear ownership.

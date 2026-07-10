@@ -1,0 +1,126 @@
+I’d treat this as a policy-sensitive product workflow, not just an automation task. The goal is to design a suspension process that is fair, auditable, reversible, and hard to trigger accidentally.
+
+**Workflow**
+
+1. **Define Ownership**
+   
+   Assign one clear owner for each stage:
+   
+   - Billing owns invoice status, payment reminders, and overdue thresholds.
+   - Customer Success owns customer communication and escalation context.
+   - Support owns appeal intake and customer-facing explanations.
+   - Finance or Ops owns final suspension approval policy.
+   - Engineering owns implementation only after the policy and controls are approved.
+
+   I would avoid letting an unattended job be the sole decision-maker for suspension.
+
+2. **Map The Account States**
+   
+   Define explicit states before automation:
+   
+   - `current`
+   - `payment_due`
+   - `overdue_warning`
+   - `final_notice`
+   - `pending_suspension`
+   - `suspended`
+   - `appeal_pending`
+   - `restored`
+
+   Each transition should have a documented trigger, owner, timestamp, and customer-visible message.
+
+3. **Set Suspension Criteria**
+   
+   Suspension should require more than “invoice overdue.”
+   
+   Example gates:
+   
+   - Invoice is overdue by a defined number of days.
+   - Multiple reminders were sent.
+   - No active payment dispute exists.
+   - No approved payment plan exists.
+   - Account is not marked exempt by Finance/Ops.
+   - Final notice period has elapsed.
+   - Suspension action is approved or eligible under policy.
+
+4. **Create The Appeal Path**
+   
+   Before suspension, every final notice should include a clear appeal option.
+
+   The appeal process should define:
+   
+   - How customers appeal.
+   - Who reviews appeals.
+   - Expected response time.
+   - What pauses suspension.
+   - What evidence or context is needed.
+   - How restoration happens if the appeal succeeds.
+
+   While an appeal is pending, the account should move to `appeal_pending`, not `suspended`.
+
+5. **Design Human Review For Risky Cases**
+   
+   I would require manual review for:
+   
+   - Large accounts.
+   - Recently renewed customers.
+   - Accounts with open support escalations.
+   - Customers with payment processor errors.
+   - Accounts with partial payments.
+   - First-time overdue customers.
+   - Any account near a configurable revenue or usage threshold.
+
+6. **Build Auditability Into The Plan**
+   
+   Every decision should produce a record:
+   
+   - Invoice IDs involved.
+   - Reminder timestamps.
+   - Policy version used.
+   - Account state before and after.
+   - Actor or job that initiated the transition.
+   - Whether a human approved it.
+   - Customer messages sent.
+   - Appeal status.
+
+   This matters because suspension is customer-impacting and may become a support, legal, or revenue issue.
+
+7. **Safe Rollout Plan**
+   
+   I would roll it out in phases:
+   
+   - Phase 1: reporting only, no customer impact.
+   - Phase 2: internal review queue only.
+   - Phase 3: send warnings, but do not suspend.
+   - Phase 4: suspend a small low-risk cohort with manual approval.
+   - Phase 5: expand with monitoring and rollback controls.
+
+   The first production version should default to “flag for review,” not “suspend automatically.”
+
+8. **Rollback And Restoration**
+   
+   Before any suspension exists, restoration must be designed.
+
+   Restoration should happen when:
+   
+   - Payment clears.
+   - An appeal is approved.
+   - An operator grants an exception.
+   - A mistaken suspension is detected.
+
+   Restoration should be fast, logged, and customer-visible.
+
+9. **Acceptance Gate Before Building**
+   
+   I would not implement until these are approved:
+   
+   - Written policy for overdue thresholds and exemptions.
+   - State transition diagram.
+   - Owner map.
+   - Appeal process.
+   - Customer message templates.
+   - Audit requirements.
+   - Rollout and rollback plan.
+   - Test cases for edge conditions.
+
+The workflow I’d follow is: define the policy and states first, review the customer-risk cases, design the appeal and restoration paths, then build the smallest system that can safely flag accounts before any automatic suspension is allowed.

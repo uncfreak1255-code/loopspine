@@ -1,0 +1,16 @@
+I would use a read-only documentation check, with editing held behind a proof gate.
+
+Workflow:
+
+1. Identify the handbook file and the incident page target from repo structure or known docs index.
+2. Inspect the handbook table of contents entry for the incident page.
+3. Resolve the link exactly as the renderer would: relative path, anchor fragment if present, file extension rules, and any docs-site routing conventions.
+4. Verify the target exists:
+   - If it links to a file, confirm that file is present at the resolved path.
+   - If it links to a heading anchor, confirm the heading still generates that anchor.
+   - If the handbook is built by a static site tool, prefer the repo’s existing link-check or docs build command as the proof gate.
+5. Only if the check proves the link is broken, make the smallest possible correction to the link.
+6. Re-run the same check after any edit.
+7. Close with the result: link works unchanged, or link was broken and fixed, plus the exact verification used.
+
+For this scenario, I would not edit first. The acceptance gate is: “the handbook TOC incident-page link resolves successfully in the repo’s current docs routing.”

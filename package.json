@@ -1,0 +1,21 @@
+{
+  "name": "loopspine",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "A benchmarked development loop for coding agents.",
+  "scripts": {
+    "test": "node scripts/validate.mjs && node scripts/test-matching.mjs",
+    "benchmark:pilot": "node scripts/run-benchmark.mjs --pilot",
+    "benchmark": "node scripts/run-benchmark.mjs",
+    "benchmark:sealed": "node scripts/run-benchmark.mjs --sealed-only --sealed-file evals/sealed-v2.json --samples 3 --seed loopspine-v2",
+    "benchmark:trajectories": "node scripts/run-trajectories.mjs",
+    "benchmark:blind:prepare": "node scripts/prepare-blind-review.mjs",
+    "benchmark:blind:score": "node scripts/score-blind-review.mjs",
+    "benchmark:rescore": "node scripts/rescore.mjs",
+    "smoke:claude-fable": "node scripts/run-portability-smoke.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

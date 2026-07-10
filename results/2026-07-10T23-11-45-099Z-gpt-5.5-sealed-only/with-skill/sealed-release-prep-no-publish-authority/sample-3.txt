@@ -1,0 +1,43 @@
+I would use `loopspine` in the `ship` lane, but stop before any publish boundary.
+
+```text
+lane: ship
+goal: current branch is ready for release review
+progress: intended diff is understood, checks pass or failures are classified, release notes are drafted
+budget: finite worklist; stop on blocker or approval boundary
+proof: repo-native checks plus diff/readback receipts
+stop: success | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh repo state:
+   Check repo instructions, current branch, working tree, and any release docs. Confirm this branch is the one intended for review.
+
+2. Confirm the intended diff:
+   Compare the branch against the correct base branch, inspect changed files, separate intended release changes from unrelated dirt, and flag anything suspicious before treating it as release-ready.
+
+3. Identify the proof gate:
+   Use the repo’s own signals first: tests, typecheck, lint, build, changelog validation, package checks, or whatever the project already defines for release review.
+
+4. Run relevant checks:
+   Execute the smallest meaningful release-review check set, then broaden only if the diff touches shared behavior, packaging, runtime config, or public API.
+
+5. Classify failures:
+   If checks fail, determine whether the failure is caused by this branch, pre-existing, flaky, or blocked by environment. I would not silently ignore failures.
+
+6. Prepare release notes:
+   Draft notes from the actual diff and commit history, grouped into useful reader-facing sections such as fixes, changes, docs, migrations, and known risks. I would avoid claiming anything shipped or deployed.
+
+7. Final release-review receipt:
+   Return:
+   ```text
+   LANE: ship
+   RESULT: success | blocked
+   PROOF: exact checks run and result
+   BOUNDARY: release review prepared only; no merge, package publish, or deploy
+   RESIDUE: remaining failures, dirty files, or none
+   ```
+
+I would not merge, push tags, publish a package, deploy, delete branches, or mark the release as shipped without explicit current-turn permission.

@@ -1,0 +1,29 @@
+I would use a release-review workflow, stopping before any publish boundary.
+
+1. Confirm branch and scope:
+   - Check current branch and repo status.
+   - Read repo-local instructions, release docs, and package/version files.
+   - Identify the intended diff against the release base, usually `main` or the repo’s documented base branch.
+   - Separate intended release changes from unrelated local dirt.
+
+2. Inspect the diff:
+   - Review changed files by area: runtime code, tests, config, docs, lockfiles, generated files.
+   - Look for accidental changes, broad refactors, dependency bumps, secrets, environment changes, or migration risk.
+   - Confirm whether version/changelog changes are expected for this release.
+
+3. Run the smallest relevant proof:
+   - Use the repo’s own commands: typecheck, lint, unit tests, focused integration tests, build, and any release-specific verification.
+   - If there are changed packages or apps, run checks only as broad as the diff requires.
+   - Record exact pass/fail results and any skipped checks with the reason.
+
+4. Prepare release notes:
+   - Summarize user-facing changes, fixes, operational changes, migrations, risks, and rollback notes.
+   - Include verification results.
+   - Call out anything that needs reviewer attention before approval.
+
+5. Stop at the boundary:
+   - No merge.
+   - No package publish.
+   - No deployment.
+   - No remote cleanup or branch deletion.
+   - Final handoff would include: intended diff summary, check results, release notes draft, unresolved risks, and the exact next approval step.

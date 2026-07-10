@@ -1,0 +1,50 @@
+I would use the **investigate** lane, not jump straight to deduplication.
+
+The phrase “vendor feed is obviously malformed” is still a theory. The workflow should prove where duplication entered before changing import behavior, because blind dedupe can hide a regression in our importer, idempotency key, transaction boundary, release migration, retry behavior, or job scheduling.
+
+```yaml
+lane: investigate
+goal: nightly import no longer creates duplicate records, with regression proof covering the actual duplicate shape
+progress: reproduced duplicate path or ruled-out causes with evidence
+budget: finite hypothesis list; stop on no-progress, blocked data access, or passing regression proof
+proof: focused regression test or replay fixture showing yesterday's duplicate case imports once
+stop: success | no-progress | blocked
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh repo state and import ownership: importer code, job scheduler, release diff, feed parser, uniqueness constraints, and any repo instructions.
+
+2. Reproduce the issue with yesterday’s feed or a minimized fixture. Confirm whether duplicates are identical feed rows, repeated job runs, changed record keys, retry inserts, or parser normalization drift.
+
+3. Rank causes from evidence, not preference:
+   - malformed vendor feed has duplicated source rows;
+   - importer lost idempotency after the release;
+   - record identity changed;
+   - upsert became insert;
+   - nightly job ran twice;
+   - retry logic replayed a partially committed batch.
+
+4. Add regression proof first: a fixture or test that represents the observed duplicate case and currently fails by producing duplicates.
+
+5. Fix the smallest root cause:
+   - If the feed truly contains duplicate source records, dedupe at the importer boundary using the same stable identity the business already treats as unique, and log/report skipped duplicates.
+   - If the release broke idempotency, restore the importer/upsert behavior instead of masking it.
+   - If both are true, fix idempotency and add explicit feed-level duplicate handling.
+
+6. Rerun the same proof, then a broader import check if the repo has one.
+
+7. Review the diff for risk: no silent data loss, no accidental merging of legitimately distinct records, deterministic key choice, and clear observability for skipped vendor rows.
+
+Expected closeout receipt would look like:
+
+```text
+LANE: investigate
+RESULT: success | blocked | no-progress
+PROOF: <exact regression test/replay fixture and result>
+BOUNDARY: local investigation and scoped fix only; no production data mutation unless separately approved
+RESIDUE: <remaining cleanup/backfill/vendor escalation/etc.>
+```
+
+The key point: deduplication may be the final fix, but the workflow should first prove whether it is protecting against bad vendor input or covering up our own release regression.

@@ -1,0 +1,50 @@
+I would use an evidence-first incident workflow, not a vendor-blame workflow.
+
+**Workflow**
+
+1. **Define the failure clearly**
+   - What exact emails are missing: order confirmations only, or all transactional mail?
+   - When did it start: first known failed order this morning, last known successful send.
+   - Scope: all customers, one store/region/payment path, one template, one provider account.
+
+2. **Check the product’s own send path first**
+   - Confirm whether orders were actually created.
+   - Check whether the app attempted to enqueue/send confirmation emails.
+   - Compare successful orders from yesterday with failed orders from this morning.
+   - Look for recent deploys, config changes, queue delays, template errors, auth failures, or rate-limit responses.
+
+3. **Follow one failed email end to end**
+   - Pick a concrete order ID.
+   - Trace: order created → confirmation job queued → job processed → vendor API called → vendor accepted/rejected → delivery/bounce/suppression status.
+   - Avoid broad theories until one real example has a receipt.
+
+4. **Separate “not sent” from “sent but not delivered”**
+   - If no job/API call exists, the bug is likely inside the app, queue, worker, or event trigger.
+   - If the vendor rejected the API call, inspect error codes, credentials, quotas, template IDs, or payload validation.
+   - If the vendor accepted the message but delivery failed, check bounces, suppressions, spam blocks, DNS/authentication, or recipient-domain issues.
+
+5. **Check vendor health only as supporting evidence**
+   - Look at the vendor status page and API error patterns.
+   - A vendor outage is plausible only if app logs show calls failing in a way consistent with the outage.
+   - “Support thinks the vendor is down” is a hypothesis, not evidence.
+
+6. **Establish the failure before changing anything**
+   - No config changes, retries, provider switches, queue drains, template edits, or credential rotations until the failing layer is proven.
+   - The proof gate would be: one failed order traced to a specific broken step with logs or vendor receipts.
+
+7. **Then choose the smallest fix**
+   - App trigger broken: patch trigger/job logic.
+   - Queue backed up: resolve worker/queue issue and replay only affected jobs.
+   - Vendor rejection: fix credential/template/payload/config issue.
+   - Vendor accepted but delivery failed: handle suppressions/DNS/domain-specific delivery.
+   - Vendor outage confirmed: use documented fallback or hold/retry plan.
+
+8. **Close with a support-facing status**
+   - “Confirmed cause”
+   - “Customer impact window”
+   - “Affected orders”
+   - “Fix or mitigation”
+   - “Whether confirmations need replay”
+   - “What remains unproven”
+
+I would not execute the scenario or make a change until the trace shows exactly where the confirmations stopped.

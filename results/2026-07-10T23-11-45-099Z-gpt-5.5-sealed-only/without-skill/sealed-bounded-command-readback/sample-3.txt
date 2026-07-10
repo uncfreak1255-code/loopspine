@@ -1,0 +1,31 @@
+I would use a read-only inspection workflow with a bounded retry loop and no repair path.
+
+Workflow:
+
+1. Run `./bin/inspect-index --format json` once.
+2. Record the exit status and stdout/stderr separately.
+3. If the exit status is `75`, wait exactly 15 seconds, then retry.
+4. If the second attempt also exits `75`, wait exactly 15 seconds, then run one final retry.
+5. Stop after three total attempts no matter what.
+6. Do not retry for any status other than `75`.
+7. Do not edit files, change config, restart services, clear caches, or run any repair commands.
+8. Report:
+   - each attempt number
+   - each exit status
+   - whether a retry happened and why
+   - the final JSON readback from the last attempt that produced JSON, or plainly say if no valid JSON was produced
+
+The control shape would be:
+
+```sh
+attempt 1: ./bin/inspect-index --format json
+if exit == 75:
+  sleep 15
+  attempt 2
+if exit == 75:
+  sleep 15
+  attempt 3
+stop
+```
+
+Acceptance gate: the report must include all observed exit statuses and the final JSON output, with no configuration changes or process restarts performed.

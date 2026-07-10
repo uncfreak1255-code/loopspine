@@ -1,0 +1,9 @@
+I would use a read-only verification workflow and stop before any edit:
+
+1. Check repo guidance first: read `AGENTS.md` or nearby docs if already available in context.
+2. Identify the service config surface: look for request/body/upload size settings in files like service config, reverse proxy config, framework middleware config, env schema, or deployment manifests.
+3. Trace the effective value: prefer the value actually loaded by the service over defaults or comments.
+4. Confirm whether the configured limit is at least `12 MB`.
+5. Report only the evidence: the exact file path, setting name, and value that establish the answer.
+
+I’m not executing commands or reading files in this turn, so I can’t truthfully say whether this repo already permits 12 MB uploads. The answer would need to come from the repo’s actual config value, not inference.

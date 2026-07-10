@@ -1,0 +1,39 @@
+I would treat this as a regression investigation first, not jump straight to deduplication.
+
+**Workflow**
+
+1. **Confirm the failure shape**
+   Check a small sample of duplicated records from the nightly import: IDs, timestamps, vendor payload identity, internal natural keys, and whether duplicates were created in one run or across multiple runs.
+
+2. **Compare against yesterday’s release**
+   Inspect the release diff around import parsing, idempotency keys, upserts, batching, retries, and transaction boundaries. The vendor feed may be malformed, but the timing says the release is suspect until proven otherwise.
+
+3. **Reproduce with a fixture**
+   Build or use a captured vendor payload that shows the malformed case and duplicated output. The acceptance gate would be: one import run and one retry produce exactly one canonical record per real vendor item.
+
+4. **Identify the correct ownership boundary**
+   Decide whether the fix belongs in:
+   - feed validation/rejection,
+   - import normalization,
+   - idempotency key generation,
+   - database uniqueness constraints,
+   - or retry/job orchestration.
+
+5. **Prefer idempotency over cleanup-only dedupe**
+   I would not just add a broad “dedupe after import” pass unless that is truly the safest local fix. The better fix is usually making writes idempotent using a stable vendor identity or derived natural key, backed by a focused uniqueness constraint if the data model supports it.
+
+6. **Add a narrow regression test**
+   Cover the malformed feed case and the retry/double-run case. If existing records are already duplicated, separately plan a one-time cleanup migration or script with dry-run output.
+
+7. **Verify blast radius**
+   Run the smallest relevant import test suite, plus any migration/model tests if constraints changed. For a data bug, I’d also verify counts on representative historical feeds if fixtures exist.
+
+8. **Close with evidence**
+   Report:
+   - root cause,
+   - exact malformed input behavior,
+   - why the chosen fix prevents recurrence,
+   - whether existing duplicated data remains,
+   - and what cleanup, if any, is still needed.
+
+The key pushback: “vendor feed is malformed” is not enough proof. A nightly import should usually be resilient to malformed or repeated vendor data, especially after retries or partial failures. Deduplication may be part of the fix, but I’d first prove where idempotency broke.

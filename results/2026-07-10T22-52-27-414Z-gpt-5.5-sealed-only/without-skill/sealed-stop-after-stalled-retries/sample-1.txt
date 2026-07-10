@@ -1,0 +1,34 @@
+Best loop: `quality streak`, adapted for browser test retries.
+
+Why it fits: the goal is not “retry forever”; it is “prove the flaky/browser behavior eventually passes, or stop with useful evidence.” The loop needs a clear pass condition and a clear repeated-failure stop condition.
+
+GStack lane: `qa`, because this is live behavior verification, not implementation.
+
+Proof gate: one browser test run passes.
+
+Budget / stop path: retry until either the test passes, or three consecutive attempts fail with the same timeout signature. “Same” should mean the same test name, timeout threshold/message, and failing step or selector if available.
+
+What I would do first:
+1. Record the exact browser test command I intend to run.
+2. Run attempt 1 and save the key result: pass/fail, failing test, timeout text, elapsed time, and artifact paths if any.
+3. Retry only if the failure is a timeout.
+4. Compare each new timeout to the previous timeout signature.
+5. Stop immediately on pass.
+6. Stop after three identical timeout signatures in a row and leave a concise receipt:
+
+```text
+Browser test did not pass.
+
+Command: <test command>
+Attempts: 3 consecutive matching timeouts
+Timeout signature: <test name + timeout message + failing step/selector>
+Artifacts: <trace/video/screenshot/log paths, if produced>
+Last attempt time: <timestamp>
+
+Next move: inspect the failing step/selector or runtime wait condition before retrying again.
+```
+
+Mode: adapted  
+Fresh state read: not performed, per your instruction not to execute commands  
+Proof gate: browser test pass, or three matching timeout failures  
+Outcome: workflow only, no scenario execution

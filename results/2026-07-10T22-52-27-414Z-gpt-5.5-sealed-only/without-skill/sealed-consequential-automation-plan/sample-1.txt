@@ -1,0 +1,96 @@
+I would treat this as a planning/spec workflow, not an implementation task.
+
+**Workflow**
+
+1. **Define Ownership**
+   Establish who owns each decision:
+   - Billing owns invoice status and payment records.
+   - Customer Success owns customer communication and relationship exceptions.
+   - Support owns inbound questions and appeal intake.
+   - Product/Engineering owns the account state change mechanism.
+   - Legal/Compliance reviews suspension language, grace periods, and edge cases.
+
+2. **Map The Account Lifecycle**
+   Define the exact states before building anything:
+   - `active`
+   - `payment_overdue`
+   - `at_risk_of_suspension`
+   - `suspended_limited_access`
+   - `suspended_full`
+   - `reactivated`
+   - `appeal_pending`
+
+   Each state should have a clear trigger, owner, customer-facing message, and reversal path.
+
+3. **Set Suspension Rules**
+   Write the policy in plain terms first:
+   - How many days overdue before warning.
+   - How many reminders are sent.
+   - Which customers are exempt or require manual review.
+   - Whether suspension is partial or full.
+   - What happens to data, active users, integrations, and API access.
+   - What payment or approval reactivates the account.
+
+4. **Add Human Review Before Harmful Actions**
+   I would not allow automatic suspension at first. The first version should produce a review queue for Billing or Customer Success.
+
+   The system can recommend suspension, but a named owner approves it until the policy has proven reliable.
+
+5. **Create The Appeal Path**
+   Customers need a clear way to dispute or delay suspension:
+   - Appeal link in every overdue notice.
+   - Support queue or form tagged as billing appeal.
+   - Temporary hold state while appeal is reviewed.
+   - SLA for response.
+   - Clear outcomes: approved extension, denied, more information needed, payment plan, or reactivation.
+
+6. **Design Customer Communications**
+   Draft messages for each stage:
+   - First overdue notice.
+   - Final warning.
+   - Suspension notice.
+   - Appeal received.
+   - Appeal decision.
+   - Reactivation confirmation.
+
+   These should say what happened, why it matters, what the customer can do next, and who to contact.
+
+7. **Define Safety Controls**
+   Before rollout, require:
+   - Audit log for every state change.
+   - Manual override with reason.
+   - Exemption list.
+   - Dry-run mode.
+   - Internal notifications before suspension.
+   - Rate limits on how many accounts can be suspended per day.
+   - Rollback path to restore access quickly.
+
+8. **Roll Out Gradually**
+   I would phase this in:
+   - Phase 1: reporting only, no customer impact.
+   - Phase 2: internal review queue.
+   - Phase 3: send warnings automatically, still manual suspension.
+   - Phase 4: limited automatic suspension for low-risk segments.
+   - Phase 5: broader automation after reviewing incidents, appeals, and false positives.
+
+9. **Measure And Review**
+   Track:
+   - Number of overdue accounts.
+   - Warnings sent.
+   - Suspensions recommended.
+   - Suspensions approved.
+   - Appeals opened and outcomes.
+   - False positives.
+   - Reactivation time.
+   - Customer complaints or escalations.
+
+10. **Acceptance Gate Before Build**
+   I would not build until there is a signed-off workflow document covering:
+   - Ownership matrix.
+   - Account states and transitions.
+   - Customer communication drafts.
+   - Appeal handling process.
+   - Rollout phases.
+   - Audit and rollback requirements.
+
+The main principle: billing automation can recommend and route decisions early, but anything that removes customer access needs ownership, visibility, appeal, and rollback before it becomes automatic.

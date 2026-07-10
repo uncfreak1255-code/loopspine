@@ -1,0 +1,140 @@
+LANE: `plan`
+
+RESULT: `success`
+
+PROOF: planning-only receipt; no commands run and no files edited.
+
+BOUNDARY: design workflow only. No implementation, no account changes, no billing actions.
+
+RESIDUE: implementation, policy approval, legal/compliance review, and rollout plan still pending.
+
+**Workflow I Would Follow**
+
+I would treat this as a high-risk plan lane because it can suspend customer accounts and affect revenue, access, and trust.
+
+```yaml
+lane: plan
+goal: approved suspension workflow with clear ownership, customer notice, appeal path, rollout gates, and rollback criteria
+progress: each pass must reduce ambiguity around who decides, when action happens, how customers recover, and how mistakes are prevented
+budget: finite worklist with no-progress stop
+proof: written workflow reviewed by billing, support, legal/compliance, product, and engineering owners
+stop: success | blocked | approval-required
+owner: billing operations as business owner, engineering as implementation owner
+```
+
+**Workflow Shape**
+
+1. Define ownership
+
+Billing owns the suspension policy and invoice state.
+
+Support owns customer communication and appeal intake.
+
+Engineering owns automation, access controls, audit logs, and rollback tools.
+
+Legal/compliance reviews notice language, grace periods, and account-impact rules.
+
+A named business owner must approve the first rollout and any policy changes.
+
+2. Define eligibility
+
+Only accounts with confirmed overdue invoices enter the workflow.
+
+Before suspension is even considered, the system should verify:
+
+- invoice is past due by the approved threshold
+- payment retry attempts are complete
+- customer received required notices
+- no active billing dispute or appeal exists
+- no internal hold, enterprise exception, or contract-specific protection applies
+- account is not in a protected class such as trial, migration, incident recovery, or manual billing review
+
+3. Customer notice sequence
+
+The workflow should use staged notices before any suspension:
+
+- initial overdue notice
+- reminder with payment link and due date
+- final warning with exact suspension date
+- suspension notice only after action is taken
+
+Each notice should say what is happening, why it matters, what the customer can do next, and how to appeal.
+
+4. Appeal path
+
+Customers need a clear way to stop or reverse suspension.
+
+Appeals should create a visible case owned by support or billing. While an appeal is open, suspension should pause automatically unless a policy owner manually overrides it with a logged reason.
+
+Appeal outcomes should be:
+
+- payment resolved
+- payment plan approved
+- billing error confirmed
+- dispute rejected
+- extension granted
+- suspension approved
+
+Every outcome needs an owner, timestamp, reason, and customer-visible next step.
+
+5. Suspension behavior
+
+Suspension should be reversible and limited.
+
+Preferred first stage: restrict non-essential actions while preserving login, billing access, data export, support contact, and payment recovery.
+
+Avoid immediate hard lockout unless the business explicitly approves it.
+
+The suspension action should produce an audit record showing:
+
+- invoice IDs
+- account ID
+- notices sent
+- eligibility checks passed
+- appeal status
+- actor or automation version
+- rollback command/path
+
+6. Rollout
+
+Start with dry-run mode.
+
+Dry run should identify accounts that would be suspended without taking action. Billing and support review the list manually.
+
+Then move through:
+
+- internal test accounts
+- small allowlisted cohort
+- low-risk customer segment
+- broader rollout with daily monitoring
+
+Each phase needs stop conditions, such as unexpected appeal volume, false positives, failed notices, support overload, or payment recovery problems.
+
+7. Safety gates
+
+Before automation can suspend anything, require:
+
+- policy owner approval
+- legal/compliance signoff
+- support playbook ready
+- billing dashboard ready
+- manual override available
+- rollback tested
+- monitoring and alerting live
+- dry-run results reviewed
+
+8. Success and stop conditions
+
+Success means the workflow can identify overdue accounts, notify customers, pause for appeal, suspend only eligible accounts, and reverse mistakes quickly.
+
+Stop if:
+
+- eligibility rules are ambiguous
+- notices are not provably delivered
+- appeal ownership is unclear
+- rollback is untested
+- contract exceptions are not modeled
+- support cannot handle the volume
+- legal/compliance has not approved the policy
+
+This should not be built until the policy, ownership, appeal handling, and rollout gates are approved in writing.

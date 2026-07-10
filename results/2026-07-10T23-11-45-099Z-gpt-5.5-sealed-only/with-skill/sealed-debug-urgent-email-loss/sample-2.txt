@@ -1,0 +1,38 @@
+I would use LoopSpine in the `investigate` lane and keep it evidence-first.
+
+```yaml
+lane: investigate
+goal: identify why order-confirmation emails stopped appearing this morning
+progress: each pass must narrow the failure boundary with evidence
+budget: quick triage worklist, stop on confirmed root cause or no new evidence
+proof: logs/metrics/readbacks showing where the email flow stops
+stop: success | no-progress | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh state only in concept: repo instructions, current branch/state, email pipeline ownership, and the exact order-confirmation path.
+2. Establish the failure before touching code: compare a known successful order-confirmation email from before this morning with failed orders after the reported time.
+3. Trace the path in order:
+   - Order created?
+   - Confirmation event emitted?
+   - Email job enqueued?
+   - Worker picked it up?
+   - Vendor API called?
+   - Vendor accepted, rejected, rate-limited, or timed out?
+   - Bounce/suppression/spam event recorded?
+4. Test the vendor-down theory against evidence, not preference: check vendor status, API response logs, delivery webhooks, and whether other transactional emails are also failing.
+5. Rank likely causes after evidence: app regression, queue/worker failure, template/render error, vendor auth/rate limit, suppression list, DNS/domain issue, or support visibility/reporting issue.
+6. Stop before repair unless the failure is established and localized. If a fix is needed, propose the smallest reversible change with a clear proof gate.
+7. Return a compact receipt:
+
+```text
+LANE: investigate
+RESULT: blocked | success | no-progress
+PROOF: <specific log/query/status evidence>
+BOUNDARY: no code or config changes made
+RESIDUE: <confirmed next action or remaining unknown>
+```
+
+I would not change code, restart workers, rotate credentials, resend messages, or blame the vendor until the break point is proven.

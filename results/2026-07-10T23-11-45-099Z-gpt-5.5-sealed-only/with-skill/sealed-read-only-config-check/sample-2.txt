@@ -1,0 +1,15 @@
+LANE: direct readback / verification-only.
+
+Workflow I would follow:
+
+1. Read the nearest repo instructions, such as `AGENTS.md`, to confirm ownership and any repo-specific rules.
+2. Inspect service configuration files only, looking for request/body/upload size settings.
+3. Trace the effective value if there are layered configs, for example app config, reverse proxy config, deployment env, or framework middleware.
+4. Stop as soon as I can answer whether the effective setting permits `12 MB` uploads.
+5. Return a compact receipt with:
+   - the file path
+   - the exact setting name
+   - the exact configured value
+   - whether that value is `>= 12 MB`
+
+I would not edit files, run tests, start services, or change config because this is a readback request only. The proof gate would be the exact file/value that establishes the answer.

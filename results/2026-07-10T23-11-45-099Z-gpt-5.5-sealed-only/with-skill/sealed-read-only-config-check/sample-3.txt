@@ -1,0 +1,21 @@
+I would use the `direct` lane because this is a read-only verification request, not an implementation task.
+
+Workflow:
+
+1. Read the nearest repo instructions to confirm where service config lives and whether there are repo-specific rules.
+2. Check the relevant service configuration files only, looking for request/body/upload size settings.
+3. Trace the effective value if it is layered through env vars, framework config, reverse proxy config, or deployment config.
+4. Stop once I find the file and concrete value that establishes whether uploads of `12 MB` are permitted.
+5. Report a compact receipt with no edits.
+
+Receipt shape I would return after inspection:
+
+```text
+LANE: direct
+RESULT: success | clean-no-op | blocked
+PROOF: <file path>:<line> sets <setting> to <value>
+BOUNDARY: read-only; no commands beyond inspection, no edits
+RESIDUE: none or the exact uncertainty if config is indirect
+```
+
+Since you explicitly said not to execute commands or edit files, I would not run `rg`, `git status`, tests, or any formatter.

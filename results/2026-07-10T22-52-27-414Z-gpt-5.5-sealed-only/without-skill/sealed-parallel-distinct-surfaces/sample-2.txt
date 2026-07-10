@@ -1,0 +1,44 @@
+I would run this as a **parallel planning, serial integration** workflow.
+
+**Workflow**
+
+1. **Triage ownership and boundaries**
+   - Identify the three intended change areas:
+     - CSV export endpoint: backend/API files only.
+     - Billing settings refresh: frontend/settings UI files only.
+     - Demo sample records: seed/demo data files only.
+   - Confirm they do not need shared helpers, shared schema changes, shared copy files, or shared config edits. If they do, stop and split the work differently.
+
+2. **Create three independent work items**
+   - Work item A: CSV export endpoint.
+   - Work item B: billing settings screen refresh.
+   - Work item C: demo sample records.
+   - Each item gets its own acceptance gate:
+     - Endpoint: API test or request-level smoke check.
+     - Billing screen: component/page test plus screenshot or local visual check.
+     - Demo records: seed/demo-data test or deterministic load check.
+
+3. **Assign parallel implementation lanes**
+   - Each lane works only in its owned files.
+   - No lane edits shared routing, shared types, global constants, migrations, package config, or app-wide styles without raising a conflict.
+   - If a shared file is required, that lane pauses and the task is re-planned, because the scenario explicitly says the changes should not share implementation files.
+
+4. **Integrate one lane at a time**
+   - Review each diff separately before combining.
+   - Run the smallest relevant proof after each lane lands locally.
+   - Watch for hidden coupling: imports, generated files, snapshots, seed ordering, route registration, billing copy/constants.
+
+5. **Run combined verification**
+   - After all three are together, run the repo’s normal test/build gate.
+   - Then run the three feature-specific checks again if the combined build changed behavior.
+
+6. **Review threshold**
+   - Because this is multi-surface work, I would do a focused review before calling it ready:
+     - Are the file boundaries clean?
+     - Did any lane accidentally touch shared implementation?
+     - Are tests scoped to the changed behavior?
+     - Is demo data isolated from production paths?
+
+**Stop Condition**
+
+I would stop and re-plan if any task requires editing the same implementation file as another task, because that violates the scenario’s core constraint. The likely fix would be to split sequencing, introduce a narrow pre-approved shared change, or reduce one lane’s scope.

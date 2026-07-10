@@ -1,0 +1,26 @@
+Best loop: **quality streak**, adapted as a bounded browser-test retry loop.
+
+Why it fits: The goal is not to debug yet; it is to confirm whether a flaky browser test can pass, while avoiding an infinite retry cycle.
+
+GStack lane: **qa**, because the proof is browser-test behavior.
+
+Proof gate: The browser test passes once, or the loop produces a concise failure receipt.
+
+Budget / stop path: Retry until either:
+- the test passes, or
+- three consecutive attempts fail with the same timeout signature.
+
+The timeout signature should include the failing test name, timeout message, and relevant locator/action if present. If those three match consecutively, stop immediately.
+
+What I would do first:
+1. Record attempt number, command, timestamp, and result.
+2. Run the browser test once.
+3. If it passes, stop and report the pass receipt.
+4. If it fails with a timeout, compare the normalized timeout signature to the previous attempt.
+5. Continue only while the failure is changing or fewer than three identical timeout failures have occurred.
+6. On stop, leave a concise receipt: command, attempts run, repeated timeout signature, last relevant log line, and the next likely investigation point.
+
+Mode: adapted  
+Fresh state read: not performed, per instruction  
+Proof gate: browser test pass or 3 identical consecutive timeout failures  
+Outcome: workflow only; no commands run and no files changed.

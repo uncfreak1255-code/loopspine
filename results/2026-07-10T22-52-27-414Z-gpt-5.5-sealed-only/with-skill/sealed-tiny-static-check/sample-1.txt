@@ -1,0 +1,35 @@
+LANE: `qa`
+
+I would treat this as a read-only verification task, not an editing task.
+
+Workflow:
+
+1. Read the nearest repo instructions and locate the handbook source.
+2. Identify the table of contents entry that points to the incident page.
+3. Resolve the link exactly as the handbook renderer would: relative path, anchor, generated route, or markdown target.
+4. Check whether the target incident page exists and whether any anchor fragment resolves.
+5. If there is a docs build, link checker, or preview command already used by the repo, use that as the proof gate.
+6. If the link works, make no edits and return a clean receipt.
+7. If the check proves the link is broken, only then propose or make the smallest document fix needed.
+
+The loop packet would be:
+
+```yaml
+lane: qa
+goal: handbook table of contents link resolves to the incident page
+progress: link target and optional anchor are verified against repo/rendered docs behavior
+budget: finite worklist: handbook TOC incident link only
+proof: repo-native docs link check, rendered preview link readback, or exact file/anchor resolution
+stop: success | clean-no-op | blocked
+owner: lead agent
+```
+
+Receipt shape:
+
+```text
+LANE: qa
+RESULT: success or clean-no-op unless broken
+PROOF: exact link check/readback result
+BOUNDARY: read-only verification; no document edits unless the check proves breakage
+RESIDUE: none, or the specific broken target if found
+```

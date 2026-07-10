@@ -1,0 +1,72 @@
+{
+  "model": "gpt-5.5",
+  "codex_version": "codex-cli 0.143.0",
+  "timestamp_utc": "2026-07-10T23:11:45.099Z",
+  "seed": "loopspine-v2",
+  "samples": 3,
+  "pilot": false,
+  "sealed": true,
+  "sealed_only": true,
+  "skill_sha256": "5f58a9f74a57569f3554e33d24508464ede7bb50589a5eb24e38073fe2d905a6",
+  "eval_files": [
+    {
+      "path": "evals/evals.json",
+      "source": "development",
+      "sha256": "1bd77ae4bce8bb64e5251dd2d18134450c3e004da3ac8d92fb5d945babc3bbb9"
+    },
+    {
+      "path": "evals/sealed-v2.json",
+      "source": "sealed",
+      "sha256": "e3845f85a38e835b8428f4770862ba4b12daea2d032f633ded025aa2d17d7d5c"
+    }
+  ],
+  "command_args": [
+    "--sealed-only",
+    "--sealed-file",
+    "evals/sealed-v2.json",
+    "--samples",
+    "3",
+    "--seed",
+    "loopspine-v2"
+  ],
+  "reasoning_effort": "provider-default",
+  "temperature": "provider-default-not-configurable-by-runner",
+  "platform": {
+    "platform": "darwin",
+    "release": "25.5.0",
+    "arch": "arm64",
+    "node": "v22.22.0"
+  },
+  "cases": [
+    {
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed"
+    }
+  ]
+}

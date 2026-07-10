@@ -1,0 +1,82 @@
+LANE: `plan`  
+RESULT: `success`  
+PROOF: plan-only workflow; no commands run and no files edited  
+BOUNDARY: safe implementation plan only, no code changes  
+RESIDUE: implementation still needs repo inspection and approval before edits
+
+I would run this as a planning lane first, because a 30-day deletion policy can affect customer downloads, billing/legal expectations, support workflows, and background cleanup behavior.
+
+**Workflow**
+
+1. **Read Fresh State**
+   - Read repo instructions and ownership boundaries.
+   - Identify where exported reports are created, stored, listed, downloaded, and deleted.
+   - Find current retention behavior, if any.
+   - Identify report metadata fields: created time, export status, download URL, owner/customer, storage key, expiry fields.
+   - Name the proof gate before code: likely focused tests for retention eligibility plus an integration-style check that expired reports disappear or fail download correctly.
+
+2. **Clarify Product Policy**
+   - Define “30-day deletion” precisely:
+     - 30 days from export creation, completion, or first availability?
+     - Does deletion mean hard-delete from storage, soft-delete from DB, or both?
+     - What should customers see after expiry?
+     - Are admins/support allowed to recover reports?
+     - Are any report types exempt for legal, tax, audit, enterprise, or compliance reasons?
+   - Decide whether existing downloadable reports are grandfathered or deleted based on their original age.
+
+3. **Map Risk**
+   - Customer-facing risk: a user loses a report they expected to download.
+   - Data risk: storage object deleted but DB row still claims downloadable.
+   - Race risk: report expires while a download URL is being generated or used.
+   - Operational risk: bulk deletion job removes too much.
+   - Compliance risk: retention policy conflicts with contracts or legal holds.
+
+4. **Design The Behavior**
+   - Add an explicit expiration concept, preferably `expires_at`, rather than recomputing loosely everywhere.
+   - On report creation/completion, set `expires_at = available_at + 30 days`.
+   - In list/detail APIs, show expired reports as unavailable or omit them, depending on product requirements.
+   - In download paths, enforce expiry server-side even if an old link exists.
+   - In cleanup, delete only reports whose `expires_at < now` and which are not protected by legal/admin holds.
+   - Make deletion idempotent so retries are safe.
+
+5. **Plan Migration**
+   - Backfill `expires_at` for existing exported reports.
+   - Decide rollout posture:
+     - Dry-run first: count reports that would be deleted.
+     - Log/report candidates by tenant/customer.
+     - Optional grace period for existing reports.
+   - Avoid immediate hard-delete on deploy unless explicitly approved.
+
+6. **Test Plan**
+   - Unit tests for eligibility:
+     - 29 days old: downloadable.
+     - exactly 30 days boundary: defined expected behavior.
+     - over 30 days: not downloadable and cleanup-eligible.
+     - legal/admin hold: not deleted.
+   - API tests:
+     - expired report cannot generate/download URL.
+     - active report still works.
+   - Job tests:
+     - deletes storage object and updates DB consistently.
+     - safe retry when object is already missing.
+   - Migration/backfill test:
+     - existing reports get correct `expires_at`.
+
+7. **Operational Proof Before Launch**
+   - Run dry-run cleanup in a non-production or read-only production mode.
+   - Produce a deletion candidate receipt: counts by age, tenant, report type, and storage location.
+   - Review unexpected large customers or high-value report types before enabling deletion.
+   - Add metrics/alerts for deletion count, failed storage deletes, expired download attempts, and cleanup job errors.
+
+8. **Implementation Stop Point**
+   - Stop planning when another engineer can implement without guessing:
+     - policy definition
+     - affected files/services
+     - schema changes
+     - migration strategy
+     - cleanup job behavior
+     - tests
+     - rollout/dry-run gate
+     - rollback plan
+
+I would not write code until the policy ambiguity is resolved, especially the start time for the 30-day clock and whether existing reports should be deleted immediately or given a grace period.

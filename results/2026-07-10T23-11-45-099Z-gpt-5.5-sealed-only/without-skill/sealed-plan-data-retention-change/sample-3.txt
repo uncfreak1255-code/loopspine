@@ -1,0 +1,112 @@
+I’d use a **plan-first change workflow** with a privacy/data-retention risk gate before implementation. I would not start coding until the policy, customer impact, and recovery behavior are explicit.
+
+**Workflow**
+
+1. **Define the policy precisely**
+   
+   First, pin down what “30-day deletion” means:
+   
+   - 30 days from report export creation?
+   - 30 days from last successful download?
+   - 30 days from customer notification?
+   - Does the rule apply to all report types, historical exports, failed exports, and regenerated exports?
+   - Are there legal, billing, audit, or enterprise-contract exceptions?
+
+   Acceptance gate: a short written policy decision that product, support, and engineering can all interpret the same way.
+
+2. **Map the current export lifecycle**
+   
+   Before code, inspect how reports are created, stored, linked, downloaded, and deleted:
+   
+   - database records
+   - object storage files
+   - signed URLs or public links
+   - background jobs
+   - customer UI states
+   - support/admin access
+   - logs, audit records, analytics
+
+   Acceptance gate: a lifecycle map showing every place exported reports exist.
+
+3. **Classify customer impact**
+   
+   This is the key risk: customers may still expect downloads to work.
+
+   I’d decide the product behavior before implementation:
+   
+   - show expiration date next to each export
+   - warn when a report is close to deletion
+   - disable or replace download links after expiration
+   - offer regeneration if source data still exists
+   - define error copy for expired reports
+   - decide whether existing exports get a grace period
+
+   Acceptance gate: approved customer-facing behavior for active, expiring, expired, and deleted reports.
+
+4. **Choose a deletion architecture**
+   
+   I’d prefer a staged lifecycle over immediate hard delete:
+
+   - mark exports as `expires_at`
+   - make download authorization check `expires_at`
+   - run a scheduled cleanup job after expiration
+   - delete storage objects idempotently
+   - retain minimal metadata if needed for audit/support
+   - emit deletion receipts/logs
+
+   This avoids relying only on a background cleanup job. Even if deletion is delayed, expired reports stop being downloadable.
+
+5. **Plan migration/backfill**
+   
+   Existing exported reports need a deliberate rule.
+
+   Options:
+   
+   - set `expires_at = created_at + 30 days`
+   - give all existing exports a 30-day grace period from launch
+   - exempt legacy exports temporarily
+   - phase by customer/account tier
+
+   Acceptance gate: a migration plan with rollback behavior and customer/support messaging.
+
+6. **Define safety and observability**
+   
+   The plan should include:
+   
+   - dry-run mode for deletion job
+   - metrics for eligible/deleted/failed deletions
+   - structured logs with report ID, account ID, storage key, and reason
+   - alerting on deletion failures
+   - admin/support visibility into expiration status
+   - no sensitive report contents in logs
+
+   Acceptance gate: operators can prove what would be deleted before enabling actual deletion.
+
+7. **Write the implementation plan**
+   
+   I’d break the eventual code work into small PRs:
+
+   1. Add schema fields like `expires_at`, `deleted_at`, maybe `deletion_reason`.
+   2. Update export creation to set expiration.
+   3. Update download authorization to block expired exports.
+   4. Add UI/API expiration states.
+   5. Add dry-run cleanup job.
+   6. Add hard-delete mode behind a feature flag.
+   7. Backfill legacy exports after review.
+   8. Remove or tighten feature flag once proven.
+
+8. **Review before coding**
+   
+   Because this touches customer data and possible contractual expectations, I’d require review from:
+   
+   - product owner
+   - support/customer-success owner
+   - privacy/legal if applicable
+   - engineering owner for storage/jobs
+   - security if download links are externally accessible
+
+   Acceptance gate: approved spec plus test plan before implementation starts.
+
+**Core safety rule**
+
+The safest implementation is not just “delete files after 30 days.” It is: **make expired reports unavailable at authorization time, then delete the underlying stored files through a monitored, reversible rollout path.** That protects customers and the company even if cleanup jobs lag, fail, or need to be paused.

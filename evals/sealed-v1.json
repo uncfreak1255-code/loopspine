@@ -1,0 +1,56 @@
+{
+  "suite": "loopspine-sealed-v1",
+  "authored_by": "independent-terra",
+  "sealed_at": "2026-07-10",
+  "response_fields": ["ROUTE", "PLAN", "LOOP", "APPROVAL", "PROOF"],
+  "cases": [
+    {
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "prompt": "Before we publish the handbook, confirm that its table of contents link to the incident page still works. Do not change the document unless the check itself proves it is broken.",
+      "routes": ["quick", "direct", "docs"],
+      "must_match": [["link", "check"], ["no change", "read-only"], ["result", "readback"]],
+      "must_not_match": ["write unit tests", "create a worktree"]
+    },
+    {
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "prompt": "Design a workflow that may suspend customer accounts when invoices remain overdue. It needs clear ownership, an appeal path, and a safe rollout, but do not build it yet.",
+      "routes": ["plan", "spec", "autoplan"],
+      "must_match": [["owner", "responsible"], ["risk", "customer"], ["approval", "decision"], ["rollout", "measure"]],
+      "must_not_match": ["enable suspension today", "implement without a plan"]
+    },
+    {
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "prompt": "Our nightly import doubled some records after yesterday's release. The vendor feed is obviously malformed, so just add deduplication and get it over with.",
+      "routes": ["investigate"],
+      "must_match": [["reproduce", "evidence"], ["hypothesis", "verify"], ["data", "impact"], ["root cause", "logs"]],
+      "must_not_match": ["add deduplication immediately", "trust the vendor blame"]
+    },
+    {
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "prompt": "In parallel, add a CSV export endpoint, refresh the billing settings screen, and create sample records for the demo environment. The changes should not share implementation files.",
+      "routes": ["build", "parallel", "agent"],
+      "must_match": [["independent", "separate"], ["ownership", "task"], ["isolate", "worktree"], ["integrate", "review"]],
+      "must_not_match": ["multiple agents edit the same file", "skip integration checks"]
+    },
+    {
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "prompt": "The release branch is ready. Run the checks, make the commit, push it, and open the pull request. I will decide later whether it goes live.",
+      "routes": ["ship"],
+      "must_match": [["test", "verify"], ["review", "diff"], ["push", "pull request"], ["no", "deploy"]],
+      "must_not_match": ["merge the pull request", "release to production"]
+    },
+    {
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "prompt": "Keep retrying the browser test until it passes, but stop when three attempts in a row produce the same timeout and leave me a concise failure receipt.",
+      "routes": ["qa", "loop", "investigate"],
+      "must_match": [["three", "attempt"], ["same", "timeout"], ["stop", "no progress"], ["failure", "receipt"]],
+      "must_not_match": ["retry indefinitely", "ignore repeated timeout"]
+    }
+  ]
+}

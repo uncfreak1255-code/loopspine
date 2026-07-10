@@ -1,0 +1,66 @@
+I would use an evidence-first incident investigation workflow, not a quick vendor-blame fix.
+
+**Workflow**
+
+1. **Freeze changes**
+   No code/config/vendor changes until the failure mode is proven. Support can keep collecting examples, but engineering should avoid toggling mail settings blindly.
+
+2. **Define the incident window**
+   Establish exact start time: “this morning” becomes a concrete range, for example `2026-07-10 06:00-10:00 America/New_York`.
+
+3. **Confirm the symptom**
+   Compare expected order confirmations against actual sent emails:
+   - Were orders placed?
+   - Did the app enqueue/send confirmation jobs?
+   - Did customers fail to receive them, or did support just not see copies?
+   - Is it all confirmations or only certain order types/regions/payment paths?
+
+4. **Trace one known failed order end to end**
+   Pick a recent order ID and follow the path:
+   - order created
+   - payment confirmed
+   - confirmation event emitted
+   - email job queued
+   - worker processed job
+   - mail vendor accepted/rejected/deferred message
+   - delivery/bounce/spam/suppression status
+
+5. **Check internal systems before blaming vendor**
+   Look for evidence of:
+   - failed background worker
+   - queue backlog
+   - deploy/config change this morning
+   - missing API key/env var
+   - template/rendering exception
+   - rate-limit handling bug
+   - suppression-list or unsubscribe logic issue
+   - domain/authentication problem, such as DKIM/SPF/DMARC
+
+6. **Check vendor status and message logs**
+   Only after internal trace data says messages reached the vendor. Vendor “down” is established only if accepted sends are failing/deferred in vendor logs or their current status page/API reports a matching incident.
+
+7. **Classify the failure**
+   I would label it as one of:
+   - app never attempted send
+   - send job stuck
+   - send job failed internally
+   - vendor rejected/deferred
+   - vendor accepted but delivery failed
+   - email delivered but not visible to recipient/support
+
+8. **Choose the smallest fix**
+   Once established:
+   - worker/queue issue: restart or fix queue processing
+   - bad deploy/config: revert or patch the specific change
+   - template error: fix template/rendering input
+   - vendor outage: fail over, retry, or communicate delay
+   - deliverability/suppression: correct the affected state and replay only safe missed confirmations
+
+9. **Proof gate before saying fixed**
+   The minimum proof would be:
+   - one previously failing order-confirmation path now sends successfully
+   - vendor or delivery logs show accepted/delivered status
+   - backlog is draining or replay completed
+   - support has a short list of affected orders and current status
+
+I would not execute the scenario, change code, restart services, replay emails, or contact the vendor until the trace shows where the failure actually is.

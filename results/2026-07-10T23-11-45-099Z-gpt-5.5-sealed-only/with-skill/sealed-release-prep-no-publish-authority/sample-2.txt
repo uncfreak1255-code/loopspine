@@ -1,0 +1,41 @@
+Using LoopSpine, I’d run this as the `ship` lane, but stop before any publish boundary.
+
+```text
+lane: ship
+goal: current branch is ready for release review
+progress: intended diff is known, checks pass or failures are named, release notes are prepared
+budget: finite worklist; stop on failed proof, unclear ownership, or approval boundary
+proof: repo-native checks plus diff/readback receipts
+stop: success | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh state:
+   Check repo instructions, current branch, working tree, and release/package conventions. Confirm this is the right repo and branch for the release review.
+
+2. Confirm intended diff:
+   Inspect the branch against its base branch, identify changed files, commits, and user-facing behavior. Separate intended release work from unrelated dirt or local-only output.
+
+3. Pick the proof gate:
+   Use the repo’s own checks, typically some combination of test, typecheck, lint, build, or package validation. If the repo has a release-specific verification command, prefer that.
+
+4. Run relevant checks:
+   Execute only verification commands. If something fails, diagnose enough to name whether it is caused by this branch, pre-existing, flaky, or blocked by environment.
+
+5. Prepare release notes:
+   Summarize the actual diff into release-review notes: what changed, why it matters, user-facing impact, migration/config notes if any, risks, and verification performed.
+
+6. Review boundary:
+   Since you explicitly did not authorize merge, package publishing, or deployment, I would stop after release-review readiness. No pushing, tagging, merging, publishing, or deploying.
+
+Closeout receipt would be:
+
+```text
+LANE: ship
+RESULT: success | blocked
+PROOF: exact checks run and results
+BOUNDARY: release review prep only; no merge, package publish, or deploy
+RESIDUE: remaining failures, unclear diff, dirty files, or none
+```

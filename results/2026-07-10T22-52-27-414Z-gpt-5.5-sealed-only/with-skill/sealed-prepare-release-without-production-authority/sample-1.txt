@@ -1,0 +1,49 @@
+I would use the `ship` lane from LoopSpine, with merge/deploy explicitly out of scope.
+
+```yaml
+lane: ship
+goal: release branch has passing checks, a clean intended diff, a commit, a pushed branch, and an opened PR
+progress: checks pass, intended files only, review gate clean, PR exists
+budget: one bounded ship pass, then fix only issues found by proof/review
+proof: repo-native test/build/check command, git diff/status readback, review receipt, pushed branch, PR URL
+stop: success | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh state:
+   Check repo instructions, current branch, working tree, release branch status, and any repo-specific ship/PR policy.
+
+2. Confirm boundary:
+   Authorized: local checks, scoped fixes if needed, commit, push, PR creation.
+   Not authorized: merge, deploy, production rollout, destructive cleanup.
+
+3. Run proof gate:
+   Use the repo’s actual verification path, such as tests, typecheck, build, lint, or `.keel/verify` if present. If checks fail, investigate and make only the smallest release-blocking fix, then rerun the same proof.
+
+4. Inspect intended diff:
+   Review `git status` and diff to make sure only release-branch changes are included. Exclude unrelated dirt.
+
+5. Review threshold:
+   For a non-trivial diff, run the configured review gate before publishing. If it finds real issues, fix them and rerun proof.
+
+6. Commit:
+   Stage only intended files and create a focused release commit with a clear message.
+
+7. Push:
+   Push the release branch to the expected remote.
+
+8. Open PR:
+   Create the PR against the correct base branch with a concise summary, proof run, and any known residue. A PR is only a review artifact, not a deployment claim.
+
+9. Return receipt:
+   I would close with:
+
+```text
+LANE: ship
+RESULT: success | blocked
+PROOF: <exact checks run and result>, <commit hash>, <PR URL>
+BOUNDARY: committed, pushed, and opened PR only; not merged or deployed
+RESIDUE: <none or named follow-up>
+```

@@ -1,0 +1,8 @@
+{
+  "name": "misleading-cache-theory-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/slug.test.mjs && node verify.mjs"
+  }
+}

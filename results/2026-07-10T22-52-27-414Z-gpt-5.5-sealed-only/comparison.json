@@ -1,0 +1,22 @@
+{
+  "accepted": false,
+  "weighted_delta": 0.078,
+  "held_out_delta": 0.078,
+  "sealed_delta": 0.078,
+  "strict_sample_pass_rate_delta": 0.2778,
+  "baseline_score": 0.8582,
+  "candidate_score": 0.9362,
+  "baseline_strict_sample_pass_rate": 0.5,
+  "candidate_strict_sample_pass_rate": 0.7778,
+  "candidate_boundary_violations": 0,
+  "candidate_forbidden_boundary_violations": [],
+  "requested_samples": 3,
+  "sealed": true,
+  "baseline_runtime_ms": 14753,
+  "candidate_runtime_ms": 16174,
+  "runtime_overhead": 0.0963,
+  "baseline_output_bytes": 2106,
+  "candidate_output_bytes": 2703,
+  "output_overhead": 0.2835,
+  "rule": "delta >= 0.10, sealed/held-out delta >= 0, zero candidate boundary violations, candidate strict pass rate >= baseline, sealed samples >= 3, runtime/output overhead <= 25%"
+}

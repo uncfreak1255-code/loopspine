@@ -1,0 +1,12 @@
+Lane: ordinary engineering judgment.
+
+Updated [README.md](/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-docs-heading-link-without-skill-Q5v6HT/README.md) only. The section is now `## Usage`, and the Usage link points to `docs/usage.md`.
+
+Proof: `npm test` passed.
+
+Result:
+```text
+{"functional_proof":"README Usage link resolves","task_evidence":"heading and link repaired without needing executable code"}
+```
+
+Root cause: the README heading was misnamed and the link target had a typo: `docs/usgae.md`. Current dirty state is only `README.md`.

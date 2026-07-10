@@ -1,0 +1,28 @@
+I’d use an evidence-first incident workflow, with a hard rule: no vendor blame and no code/config change until we know where the failure is.
+
+**Workflow**
+
+1. Define the failure precisely:
+   “Order-confirmation emails stopped appearing” could mean not created, not queued, not sent, rejected by vendor, delivered to spam, or missing only for some customers. I’d pin down first known bad time, last known good time, affected order IDs, customer domains, and whether other email types still work.
+
+2. Follow one real order end to end:
+   Pick a recent affected order and trace it through the system: order created → confirmation event emitted → email job/enqueue step → template/render step → mail provider API call → provider response/webhook → delivery/bounce/suppression status.
+
+3. Compare against a known good case:
+   Use a confirmation email from before this morning, or another email type that still works, and compare logs, payloads, queue state, provider responses, template version, config, and environment.
+
+4. Check recent changes:
+   Look for deploys, config changes, secrets rotation, template edits, DNS/auth changes, queue/worker changes, provider account changes, rate-limit changes, and cron/worker health around the break time.
+
+5. Test the vendor-down hypothesis with evidence:
+   I would not accept “vendor is down” unless provider status, API responses, webhook data, or successful/failed sends prove it. If password reset or support emails are sending through the same vendor, the vendor is probably not globally down.
+
+6. Form one hypothesis at a time:
+   Example: “Confirmation jobs are queued but not processed because the email worker stopped after this morning’s deploy.” Then test that specific claim from logs/metrics before moving on.
+
+7. Only after root cause is established:
+   Make the smallest targeted fix, ideally with a failing test or reproducible check first. Then verify with a real or staging order-confirmation path and provider-side delivery evidence.
+
+**Acceptance gate**
+
+The investigation is complete only when we can say: “For affected order `X`, the email flow reached step `Y` and failed at step `Z`, proven by `specific log/provider/queue evidence`.” Only then should anyone change code, config, or vendor routing.

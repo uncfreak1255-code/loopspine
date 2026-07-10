@@ -1,0 +1,40 @@
+I would use an **incident debugging workflow**, not jump straight to deduplication.
+
+The claim “vendor feed is obviously malformed” is a hypothesis, not a conclusion. Deduplication may be the right fix, but first I’d prove where duplication entered and whether yesterday’s release changed import behavior.
+
+Workflow:
+
+1. **Freeze the blast radius**
+   Identify affected import runs, tables, record keys, and customer-facing impact. Pause or gate the nightly job if it can keep worsening data.
+
+2. **Compare before and after release**
+   Check yesterday’s diff, import logs, job config, schema changes, and vendor feed samples from the last good run versus the bad run.
+
+3. **Classify the duplicates**
+   Determine whether records are duplicated in the raw vendor feed, duplicated during parsing, duplicated during upsert/insert, or duplicated by retry/replay behavior.
+
+4. **Define the identity rule**
+   Confirm the correct natural key or idempotency key for a vendor record. If that key is unclear, dedupe logic can silently merge distinct records.
+
+5. **Write a failing regression test**
+   Use a minimal malformed-feed fixture and, if relevant, a retry/replay fixture. The test should prove the import is idempotent and does not double records.
+
+6. **Implement the smallest fix**
+   Depending on evidence, that could be:
+   - reject or quarantine malformed vendor rows,
+   - dedupe within a single feed batch,
+   - enforce idempotent upserts,
+   - add a database uniqueness constraint,
+   - fix retry handling,
+   - or some combination.
+
+7. **Add repair path**
+   Prepare a bounded cleanup for already-doubled records, with dry-run output before any mutation.
+
+8. **Verify**
+   Run the targeted regression test, the importer test suite, and a dry-run/import replay against the bad feed sample. Confirm counts match expected unique records.
+
+9. **Close the incident**
+   Document root cause, affected scope, cleanup result, and a monitor or alert so the same failure is caught before writing bad data again.
+
+I would not “just add deduplication” until the duplicate source and identity rule are proven. The proof gate would be: replaying the bad feed fixture produces the expected unique records, and replaying the same import twice does not create additional rows.

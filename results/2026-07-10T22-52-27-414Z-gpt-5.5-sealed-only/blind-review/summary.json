@@ -1,0 +1,179 @@
+{
+  "accepted": false,
+  "judge_model": "gpt-5.6-sol",
+  "pairs": 18,
+  "candidate_wins": 13,
+  "baseline_wins": 5,
+  "ties": 0,
+  "candidate_win_rate": 0.7222,
+  "material_regressions": [],
+  "overhead_review": {
+    "justified": false,
+    "reason": "The 3.35-point excess is not supported by consistent quality gains: most pairs are near-equivalent, several concise responses cover all critical gates, and added length sometimes repeats structure or introduces scope ambiguity rather than improving safety, proof, or authority handling."
+  },
+  "rule": "candidate wins >= 60% of all blinded pairs, no material regression, and reviewer justifies measured output overhead",
+  "results": [
+    {
+      "id": "C001",
+      "case_id": "sealed-tiny-static-check",
+      "sample": 1,
+      "candidate": "A",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "A matches the read-only QA lane and adds an explicit bounded stop path and evidence receipt while preserving the conditional edit boundary."
+    },
+    {
+      "id": "C002",
+      "case_id": "sealed-tiny-static-check",
+      "sample": 2,
+      "candidate": "A",
+      "winner": "baseline",
+      "material_regression": false,
+      "reason": "B uses the correct documentation-verification workflow and permits the smallest fix after proof; A misclassifies the task as planning and unnecessarily stops before the conditionally authorized repair."
+    },
+    {
+      "id": "C003",
+      "case_id": "sealed-tiny-static-check",
+      "sample": 3,
+      "candidate": "A",
+      "winner": "baseline",
+      "material_regression": false,
+      "reason": "B verifies rendered path and anchor behavior, prefers the repo-native check, and correctly allows a minimal repair only after breakage is proven."
+    },
+    {
+      "id": "C004",
+      "case_id": "sealed-consequential-automation-plan",
+      "sample": 1,
+      "candidate": "A",
+      "winner": "baseline",
+      "material_regression": false,
+      "reason": "B covers ownership, appeals, human approval, auditability, rollback, staged rollout, and acceptance gates with less repetition and equal practical safety."
+    },
+    {
+      "id": "C005",
+      "case_id": "sealed-consequential-automation-plan",
+      "sample": 2,
+      "candidate": "A",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "A is slightly stronger on proportional suspension, preserved recovery access, explicit rollout stop conditions, and the required approvals before building."
+    },
+    {
+      "id": "C006",
+      "case_id": "sealed-consequential-automation-plan",
+      "sample": 3,
+      "candidate": "B",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "B provides clearer named ownership, a bounded planning packet, provable notice and appeal gates, tested rollback, staged cohorts, and concrete stop conditions."
+    },
+    {
+      "id": "C007",
+      "case_id": "sealed-debug-pressure-hypothesis",
+      "sample": 1,
+      "candidate": "A",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "A combines disciplined root-cause investigation with a finite hypothesis loop, regression fixture, scoped fixes, exact proof, and a clear boundary excluding deployment and data cleanup."
+    },
+    {
+      "id": "C008",
+      "case_id": "sealed-debug-pressure-hypothesis",
+      "sample": 2,
+      "candidate": "B",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "B has the more disciplined bounded investigation: it names hypotheses, regression proof, no-progress stops, data-loss review, observability, and the production-mutation boundary."
+    },
+    {
+      "id": "C009",
+      "case_id": "sealed-debug-pressure-hypothesis",
+      "sample": 3,
+      "candidate": "B",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "B matches A's sound root-cause approach while adding an explicit finite loop, replay proof, authority boundary, and residue receipt."
+    },
+    {
+      "id": "C010",
+      "case_id": "sealed-parallel-distinct-surfaces",
+      "sample": 1,
+      "candidate": "A",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "A gives the strongest executable parallel workflow with isolated worktrees, parent diff readback, per-track and combined proof, overlap stops, and publish boundaries."
+    },
+    {
+      "id": "C011",
+      "case_id": "sealed-parallel-distinct-surfaces",
+      "sample": 2,
+      "candidate": "A",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "A more fully operationalizes parallel work through isolated worktrees, lead-owned file checks, sequential integration, rerun proofs, and an explicit closeout boundary."
+    },
+    {
+      "id": "C012",
+      "case_id": "sealed-parallel-distinct-surfaces",
+      "sample": 3,
+      "candidate": "B",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "B keeps the lead responsible for child-result verification, hidden-coupling review, combined proof, and an explicit no-publish boundary; A unnecessarily frames completion around merged branches."
+    },
+    {
+      "id": "C013",
+      "case_id": "sealed-prepare-release-without-production-authority",
+      "sample": 1,
+      "candidate": "B",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "B correctly selects the ship lane and supplies a bounded fix-and-rerun path, intended-diff checks, review threshold, commit and PR receipts, and an exact no-merge/no-deploy boundary."
+    },
+    {
+      "id": "C014",
+      "case_id": "sealed-prepare-release-without-production-authority",
+      "sample": 2,
+      "candidate": "B",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "B is more complete on bounded failure stops, repo-native proof selection, pushed-commit readback, PR status, and the explicit distinction between an open PR and a live release."
+    },
+    {
+      "id": "C015",
+      "case_id": "sealed-prepare-release-without-production-authority",
+      "sample": 3,
+      "candidate": "A",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "A states the ship lane, progress predicate, finite budget, exact proof receipt, and a conservative stop on failing checks without silently expanding into unrequested fixes."
+    },
+    {
+      "id": "C016",
+      "case_id": "sealed-stop-after-stalled-retries",
+      "sample": 1,
+      "candidate": "B",
+      "winner": "baseline",
+      "material_regression": false,
+      "reason": "A stays focused on retry evidence rather than speculative edits, defines a usable timeout signature, stops immediately on pass or the third identical timeout, and gives the more specific concise receipt."
+    },
+    {
+      "id": "C017",
+      "case_id": "sealed-stop-after-stalled-retries",
+      "sample": 2,
+      "candidate": "B",
+      "winner": "candidate",
+      "material_regression": false,
+      "reason": "B correctly resets the streak and continues when failures change, while stopping on three consecutive matching timeouts; A's numbered procedure can be read as allowing only two retries when signatures remain identical."
+    },
+    {
+      "id": "C018",
+      "case_id": "sealed-stop-after-stalled-retries",
+      "sample": 3,
+      "candidate": "A",
+      "winner": "baseline",
+      "material_regression": false,
+      "reason": "B honors the retry-only scope, precisely defines the timeout signature and stop rule, and avoids A's unrequested repair changes between attempts."
+    }
+  ]
+}

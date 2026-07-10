@@ -1,0 +1,59 @@
+I would treat this as a planning and risk-control task first, not a quick backend change.
+
+**Workflow**
+
+1. **Confirm policy details**
+   - What counts as an “exported report”?
+   - Does deletion mean removing the stored file only, the database record, or both?
+   - Is the 30-day clock based on export creation time, last download, report completion, or customer notification?
+   - Are there legal, billing, audit, or enterprise-contract exceptions?
+   - Should customers see expiry dates before deletion?
+
+2. **Map current report lifecycle**
+   - Find where reports are created, stored, listed, downloaded, and deleted today.
+   - Identify storage locations, DB tables, background jobs, signed URL behavior, and access checks.
+   - Trace customer-facing surfaces: dashboard lists, download links, emails, API responses, exports page.
+
+3. **Define the safe product behavior**
+   - Reports older than 30 days should no longer be downloadable.
+   - UI/API should show a clear expired/deleted state, not a broken link.
+   - Customers should ideally see “available until DATE” before expiry.
+   - Existing reports need an intentional transition plan, not surprise deletion on deploy.
+
+4. **Choose the deletion model**
+   - Prefer a lifecycle state such as `available -> expired -> deleted`.
+   - First block new downloads after expiry.
+   - Then delete physical files with a background job.
+   - Keep minimal metadata if needed for audit/history: report name, created date, deleted date, requester, status.
+
+5. **Plan backfill and rollout**
+   - Add expiry timestamps for existing reports.
+   - Decide whether existing reports get immediate 30-day enforcement or a grace period.
+   - Roll out behind a feature flag or config value.
+   - Start with dry-run logging: “would delete N reports/files.”
+   - Only enable real deletion after validating counts and customer impact.
+
+6. **Implementation plan**
+   - Add `expires_at`, `expired_at`, or equivalent metadata.
+   - Update report creation to set expiry at creation time.
+   - Update listing/download endpoints to respect expiry.
+   - Update UI/API copy to show expiry and expired states.
+   - Add a scheduled cleanup job that deletes files older than policy.
+   - Make deletion idempotent so retries are safe.
+   - Record deletion attempts and failures.
+
+7. **Verification gates before code lands**
+   - Unit tests for expiry calculation.
+   - API tests for downloadable vs expired reports.
+   - Job tests proving only eligible reports are deleted.
+   - Migration/backfill test on realistic data.
+   - Dry-run receipt showing expected deletion counts.
+   - Manual QA for customer-visible report list and download behavior.
+
+8. **Operational safety**
+   - Metrics: reports expired, files deleted, deletion failures, attempted downloads after expiry.
+   - Logs with report IDs but no sensitive report contents.
+   - Alert on cleanup job failures or unusually high deletion volume.
+   - Rollback path: disable cleanup job and expiry enforcement separately if possible.
+
+The key safety point: do not start by deleting files. First make the system understand expiry, make customer-facing behavior explicit, validate the affected set with dry-run evidence, then enable deletion gradually.

@@ -1,0 +1,150 @@
+LANE: `plan`  
+RESULT: `success`  
+PROOF: plan-only workflow defined; no commands run and no files edited  
+BOUNDARY: design only, no implementation, no account actions, no policy changes  
+RESIDUE: implementation spec, legal review, and rollout approvals still needed
+
+I would treat this as a **plan lane**, because account suspension affects customers, revenue, support, billing, and potentially legal obligations. The goal is not to automate suspension quickly; it is to design a workflow where every suspension is owned, explainable, appealable, and reversible.
+
+**Workflow I Would Follow**
+
+1. **Define Ownership**
+
+   Assign one accountable owner for the policy, probably Finance or Revenue Ops, and one technical owner for the system behavior.
+
+   The workflow needs clear responsibility for:
+
+   - invoice truth: billing system
+   - customer status: account system
+   - customer communication: lifecycle/email system
+   - exceptions and appeals: support or success team
+   - final suspension approval rules: Finance/RevOps
+   - audit trail: internal operations system
+
+   No automated suspension should happen unless the source invoice state is current, trusted, and traceable.
+
+2. **Define Suspension Eligibility**
+
+   Create exact rules before designing automation.
+
+   Example criteria:
+
+   - invoice is overdue by more than `N` days
+   - customer received at least `X` prior notices
+   - no open billing dispute or appeal
+   - no active payment plan
+   - no manual hold placed by Support, Sales, Finance, or Legal
+   - customer is not in a protected segment, such as enterprise contract, regulated account, or strategic exception
+
+   The system should distinguish between:
+
+   - `overdue`
+   - `at risk`
+   - `pending suspension`
+   - `suspended`
+   - `appeal open`
+   - `reinstatement pending`
+
+3. **Design The Customer Notice Path**
+
+   Before suspension, the customer should get a clear sequence:
+
+   - first overdue reminder
+   - warning with payment link and due date
+   - final notice with suspension date
+   - suspension confirmation only after action is taken
+
+   Every notice should explain:
+
+   - what invoice is overdue
+   - what will happen
+   - when it will happen
+   - how to pay
+   - how to appeal or contact support
+   - what access, data, or services will be affected
+
+4. **Build In An Appeal And Hold Path**
+
+   Appeals should pause suspension automatically.
+
+   A customer should be able to appeal because of:
+
+   - disputed invoice
+   - payment already sent
+   - billing error
+   - contract mismatch
+   - hardship or negotiated extension
+   - account ownership issue
+
+   Internally, the appeal should create a visible case with an owner, status, due date, and decision log. While the appeal is open, the account should not be suspended unless a named owner explicitly overrides that hold.
+
+5. **Require Human Review Before First Automation**
+
+   For rollout, I would not start with full automatic suspension.
+
+   Initial path:
+
+   - system identifies eligible accounts
+   - Finance/RevOps reviews the queue
+   - Support/Success can add holds
+   - approved accounts move to pending suspension
+   - final notices are sent
+   - suspension happens only after the notice window expires
+
+   Later, if evidence supports it, low-risk accounts can move to automatic suspension under strict rules.
+
+6. **Define Reinstatement**
+
+   Reinstatement should be as deliberate as suspension.
+
+   The workflow should specify:
+
+   - what payment or approval clears suspension
+   - how quickly access returns
+   - whether partial payment is enough
+   - who can manually reinstate
+   - how customer communications are sent
+   - how the audit trail records the reason
+
+7. **Add Auditability And Safety Controls**
+
+   Every state change should record:
+
+   - invoice ID
+   - account ID
+   - previous state
+   - new state
+   - triggering rule
+   - timestamp
+   - actor, either system or human
+   - notices sent
+   - appeal or hold status
+
+   Safety controls should include dry-run mode, allowlists, blocklists, rate limits, and a kill switch.
+
+8. **Roll Out Safely**
+
+   Rollout should move in stages:
+
+   - policy review with Finance, Support, Success, Legal, and Engineering
+   - dry run using historical overdue invoices
+   - internal-only dashboard showing who would be suspended
+   - manual approval pilot on a small low-risk segment
+   - monitored rollout with daily review
+   - gradual automation only after false positives are acceptably low
+
+   Success metrics should include recovered payments, appeal volume, mistaken suspension rate, support burden, time to reinstate, and customer complaints.
+
+**Stop Conditions**
+
+I would stop rollout or keep the workflow manual if:
+
+- invoice data is not reliable
+- notices are not provably delivered
+- appeal holds are not enforced
+- reinstatement is slow or flaky
+- ownership is unclear
+- false positives appear in dry run or pilot
+- legal or contract terms are unresolved
+
+The acceptance gate before building would be a signed-off workflow spec covering ownership, eligibility, notices, appeals, audit trail, reinstatement, rollout stages, and rollback controls.

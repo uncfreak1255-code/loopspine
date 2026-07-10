@@ -1,0 +1,25 @@
+I would use the normal guarded release workflow, stopping before any merge or deploy.
+
+1. Check repo state first  
+   I would inspect the current branch, git status, and repo instructions to confirm this is actually the intended release branch and not `main`/`master` or a dirty unrelated worktree.
+
+2. Define the proof gate  
+   I would identify the repo’s expected checks, usually something like tests, typecheck, lint, build, or a repo-specific verify script. The release branch is not “ready” until those pass in the current checkout.
+
+3. Review the intended diff  
+   I would inspect the changed files and staged/untracked state, making sure only release-related changes are included. Any unrelated local dirt would stay out of the commit.
+
+4. Run checks  
+   I would run the smallest complete verification set required for release confidence. If this is a non-trivial diff, I would also run the configured review gate before calling it PR-ready.
+
+5. Commit only the intended files  
+   I would stage the release changes explicitly, create a clear commit message, then re-check git status to confirm the commit contains the right scope.
+
+6. Push the branch  
+   Since the scenario explicitly asks to push, I would push the release branch to the remote after local proof passes.
+
+7. Open the pull request  
+   I would create a PR with a concise summary, verification results, and any known residue or risk. The PR would be framed as ready for review, not as shipped.
+
+8. Stop before live changes  
+   I would not merge, deploy, tag a production release, delete branches, or claim anything is live. Your stated boundary is clear: you will decide later whether it goes live.

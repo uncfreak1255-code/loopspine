@@ -1,0 +1,31 @@
+I’d use the `qa` or `investigate` lane, depending on whether the browser test is a user-flow failure or a test-only failure.
+
+```yaml
+lane: qa | investigate
+goal: browser test passes under the same recorded conditions
+progress: each retry must produce a different failure, clearer evidence, or a passing result
+budget: stop after three consecutive attempts with the same timeout
+proof: exact browser test command result
+stop: success | three-identical-timeouts | blocked
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh state: repo instructions, branch status, test command, and the failing browser test target.
+2. Run the browser test once and record the failure shape: test name, timeout point, URL/state, stack trace, and timing.
+3. If it times out, make one bounded change or evidence-gathering pass only if the output suggests a plausible cause.
+4. Rerun the same browser test under the same conditions.
+5. Track timeout signatures. “Same timeout” means same test, same wait/action, same failure location, and no new useful evidence.
+6. Continue only while the result changes or there is a clear next fix.
+7. Stop immediately if the test passes, or if three attempts in a row produce the same timeout.
+
+Failure receipt shape:
+
+```text
+LANE: qa
+RESULT: exhausted
+PROOF: <browser test command> timed out 3 consecutive times at <same location/action>
+BOUNDARY: no further retries because the stop condition fired
+RESIDUE: likely next step is <specific investigation>, but no fix was proven
+```

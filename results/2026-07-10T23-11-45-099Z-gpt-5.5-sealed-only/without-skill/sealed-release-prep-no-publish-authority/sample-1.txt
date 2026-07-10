@@ -1,0 +1,39 @@
+I would treat this as a release-readiness lane, stopping before any publish boundary.
+
+**Workflow**
+
+1. Confirm repo state and branch intent  
+   I’d inspect the current branch, upstream, working tree, and recent commits to make sure the branch is the one meant for review and that there is no unrelated local dirt mixed in.
+
+2. Confirm the intended diff  
+   I’d compare the branch against the release base, usually `main` or the repo’s configured target branch, then separate:
+   - intended product/code changes
+   - test or fixture changes
+   - generated files
+   - unrelated residue that should not ship
+
+3. Read the local release rules  
+   I’d check repo-local instructions such as `AGENTS.md`, release docs, package scripts, CI expectations, and changelog conventions before choosing checks or release-note format.
+
+4. Run the smallest relevant proof gate  
+   I’d use the repo’s existing commands, typically some combination of:
+   - formatter or lint
+   - typecheck
+   - unit/integration tests
+   - build
+   - package-specific verification if the diff touches release/runtime behavior
+
+5. Review risk before calling it ready  
+   For a non-trivial diff, I’d do a focused review pass for regressions, missing tests, config changes, migration risk, public API changes, and release-impacting behavior.
+
+6. Prepare release notes  
+   I’d draft notes from the verified diff and commits, usually grouped as:
+   - Summary
+   - User-facing changes
+   - Fixes
+   - Internal changes
+   - Tests/checks run
+   - Known risks or follow-ups
+
+7. Stop at the review boundary  
+   I would not merge, tag, push release branches, publish packages, deploy, delete branches, or change remote release state. The final handoff would say exactly what was verified, what changed, what remains risky or dirty, and what approval would be needed next.

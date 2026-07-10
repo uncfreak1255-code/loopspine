@@ -1,0 +1,26 @@
+Using `loopspine`, I would treat this as the `ship` lane, stopping before merge/deploy because you explicitly said you’ll decide later whether it goes live.
+
+```text
+lane: ship
+goal: release branch has passing checks, one intended commit, pushed branch, and an open PR
+progress: clean proof gate, reviewed intended diff, successful push, PR URL/readback
+budget: finite release-prep worklist; stop on failed proof, dirty ambiguity, or publish boundary mismatch
+proof: repo-native test/build/check command plus PR creation receipt
+stop: success | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh state: repo instructions, branch name, `git status`, recent commits, and release branch diff.
+2. Confirm the branch is not a protected root branch and identify the exact intended files.
+3. Name and run the repo’s proof gate: tests, typecheck, build, or release-specific verification.
+4. If checks fail, investigate and stop or fix only if the task allowed edits. For this scenario, because the branch is “ready,” I’d report the blocker rather than silently changing scope.
+5. Inspect the final diff so only intended release changes are committed.
+6. Run the required review gate for a non-trivial diff, if applicable.
+7. Stage only intended files and create the commit with a release-appropriate message.
+8. Push the branch because you explicitly authorized push.
+9. Open the PR because you explicitly authorized PR creation.
+10. Read back the PR URL, base/head branch, CI status if available, and any remaining residue.
+
+I would not merge, deploy, delete branches, change production config, or claim it is live. The receipt would end at “PR opened and ready for your decision.”

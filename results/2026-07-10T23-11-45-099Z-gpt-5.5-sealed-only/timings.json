@@ -1,0 +1,479 @@
+{
+  "model": "gpt-5.5",
+  "seed": "loopspine-v2",
+  "samples": 3,
+  "pilot": false,
+  "sealed": true,
+  "sealed_only": true,
+  "cases": 6,
+  "timings": [
+    {
+      "variant": "with-skill",
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 9362,
+      "output_bytes": 1028
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 8893,
+      "output_bytes": 998
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 7799,
+      "output_bytes": 839
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 7821,
+      "output_bytes": 857
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 7806,
+      "output_bytes": 1032
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 8826,
+      "output_bytes": 1280
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 27033,
+      "output_bytes": 4541
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 17479,
+      "output_bytes": 3330
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 28226,
+      "output_bytes": 3242
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 17188,
+      "output_bytes": 3842
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 21462,
+      "output_bytes": 4259
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 21306,
+      "output_bytes": 4325
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 15013,
+      "output_bytes": 3033
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 19343,
+      "output_bytes": 2299
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 26745,
+      "output_bytes": 1959
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 16892,
+      "output_bytes": 2861
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 20094,
+      "output_bytes": 2873
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 13303,
+      "output_bytes": 2463
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 10921,
+      "output_bytes": 2016
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 22538,
+      "output_bytes": 2163
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 19869,
+      "output_bytes": 1701
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 20023,
+      "output_bytes": 2085
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 13574,
+      "output_bytes": 2424
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 13367,
+      "output_bytes": 2271
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 10313,
+      "output_bytes": 1847
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 11059,
+      "output_bytes": 1776
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 10577,
+      "output_bytes": 1916
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 13606,
+      "output_bytes": 1961
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 15332,
+      "output_bytes": 2064
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 10973,
+      "output_bytes": 1571
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 8979,
+      "output_bytes": 1084
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 7306,
+      "output_bytes": 1072
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 7171,
+      "output_bytes": 722
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 7357,
+      "output_bytes": 884
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 7722,
+      "output_bytes": 1098
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 11369,
+      "output_bytes": 1414
+    }
+  ]
+}

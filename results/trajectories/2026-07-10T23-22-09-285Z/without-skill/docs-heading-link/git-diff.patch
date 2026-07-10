@@ -1,0 +1,12 @@
+diff --git a/README.md b/README.md
+index 87670b9..2376f32 100644
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,5 @@
+ # Tiny Docs
+ 
+-## Getting Started
++## Usage
+ 
+-- [Usage](docs/usgae.md)
++- [Usage](docs/usage.md)

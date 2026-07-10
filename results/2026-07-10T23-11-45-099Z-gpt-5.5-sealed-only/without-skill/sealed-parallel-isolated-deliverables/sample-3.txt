@@ -1,0 +1,44 @@
+I’d use a small parallel-lane workflow with one integration pass at the end.
+
+**Workflow**
+
+1. **Preflight**
+   - Read repo instructions and current branch state.
+   - Confirm the three deliverables truly do not share files, interfaces, test setup, or ownership boundaries.
+   - Define the shared acceptance gate up front: fixture tests load correctly, runbook is discoverable and accurate, CLI formatter has focused tests or a smoke check.
+
+2. **Split Into Three Independent Workstreams**
+   - Lane A: `test/fixtures`
+     - Add fixture data only.
+     - Keep schema/naming consistent with existing fixtures.
+     - Add or update the smallest test that proves the fixture is valid if the repo has that pattern.
+
+   - Lane B: `docs/runbooks`
+     - Write the operations runbook in the repo’s existing runbook style.
+     - Include purpose, when to use it, prerequisites, steps, rollback/escape path, and verification.
+     - Avoid inventing operational claims not backed by repo/runtime truth.
+
+   - Lane C: `tools/format-log`
+     - Create the standalone CLI formatter using the repo’s existing tool conventions.
+     - Keep it isolated: own entrypoint, README/help text if expected, focused tests or sample input/output.
+     - Avoid wiring it into global scripts unless the task explicitly asks.
+
+3. **Parallel Execution**
+   - Assign each lane to a separate worker because the files and interfaces do not overlap.
+   - Give each worker a clear boundary: only touch its target path plus any directly required test/doc index file.
+   - Each worker returns a short receipt: files changed, proof run, assumptions, and any residue.
+
+4. **Integration Pass**
+   - Review all diffs together for accidental overlap, inconsistent naming, duplicated helpers, and docs that reference nonexistent commands or paths.
+   - Run the smallest combined proof set:
+     - fixture-related tests,
+     - CLI formatter tests or smoke examples,
+     - docs lint/build if the repo has one,
+     - full typecheck/build only if the CLI touches compiled code or package metadata.
+
+5. **Closeout**
+   - Summarize the three deliverables separately.
+   - Report exact verification results.
+   - Call out any remaining dirty files, skipped checks, or assumptions.
+
+The key is to parallelize the independent authoring, but serialize the final review and verification so the repo lands as one coherent change instead of three unrelated local edits.

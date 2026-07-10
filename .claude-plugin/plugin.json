@@ -1,0 +1,8 @@
+{
+  "name": "loopspine",
+  "version": "0.2.0",
+  "description": "A benchmarked development loop for coding agents: plan, test, debug, review, and stop with proof.",
+  "author": {
+    "name": "Sawyer Beck"
+  }
+}

@@ -1,0 +1,33 @@
+I would use LoopSpine in `direct` mode because this is a readback-only verification request with an exact command and strict retry rule.
+
+```yaml
+lane: direct
+goal: run ./bin/inspect-index --format json once, with retries only for exit status 75
+progress: each attempt records its exit status; final successful or terminal attempt provides JSON readback if emitted
+budget: initial attempt + exactly two additional attempts only if status is 75
+proof: recorded exit statuses and final command stdout JSON
+stop: success | exhausted | blocked
+owner: lead agent
+```
+
+Workflow:
+
+1. Do not inspect or modify config, restart anything, or repair failures.
+2. Run `./bin/inspect-index --format json`.
+3. Record the exit status and stdout/stderr.
+4. If the exit status is `75`, wait exactly 15 seconds, then retry.
+5. Repeat that retry behavior only once more, for a maximum of three total attempts.
+6. Stop immediately on any non-`75` status, or after the third attempt.
+7. Report every exit status in order and include the final JSON readback from the last attempt.
+
+Receipt shape I would return:
+
+```text
+LANE: direct
+RESULT: success | exhausted | blocked
+PROOF: ./bin/inspect-index --format json
+ATTEMPTS: <status1>, <status2 if retried>, <status3 if retried>
+FINAL_JSON: <stdout from final attempt>
+BOUNDARY: read-only command execution; no repairs, restarts, or config changes
+RESIDUE: none or the observed blocker
+```

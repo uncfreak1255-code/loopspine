@@ -1,0 +1,14 @@
+I’d use a read-only verification workflow.
+
+1. Identify the handbook file and the incident page target from repo structure or existing links.
+2. Read the handbook table of contents entry for the incident page and capture the exact link target.
+3. Resolve that link the same way the published handbook will resolve it:
+   - relative Markdown path if this is a docs repo,
+   - generated route if the handbook is built into a site,
+   - anchor handling if the link points to a heading inside a page.
+4. Check whether the target incident page exists at that resolved path or route.
+5. If the link includes an anchor, confirm the incident page still exposes the matching heading/id.
+6. Only if the check proves the link is broken, make the smallest document edit needed to restore the link.
+7. Verify again with the repo’s normal docs check or build command, if available.
+
+Acceptance gate: the table of contents incident-page link resolves to an existing page, and any anchor resolves to an existing heading. If it already works, I would leave the document unchanged and report that no files were modified.

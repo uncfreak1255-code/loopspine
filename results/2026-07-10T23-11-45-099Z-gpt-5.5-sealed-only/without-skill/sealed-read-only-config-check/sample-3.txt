@@ -1,0 +1,27 @@
+I would use a read-only inspection workflow:
+
+1. Identify the service entrypoint and config source.
+   I’d look for repo-local instructions first, then inspect likely service files such as `package.json`, server bootstrap files, framework config, reverse proxy config, and deployment manifests.
+
+2. Search for request body/upload size controls.
+   I’d check for settings like:
+   - `limit: "12mb"` / `bodyLimit`
+   - `client_max_body_size`
+   - `maxRequestBodySize`
+   - `multipart` or upload middleware limits
+   - platform config such as Docker, Nginx, Vercel, Next.js, Express, Fastify, Nest, etc.
+
+3. Trace which setting actually applies.
+   If multiple limits exist, I’d determine the effective bottleneck: app middleware, framework default, reverse proxy, or hosting layer. The answer should come from the lowest applicable limit in the live request path.
+
+4. Report only the evidence.
+   I’d answer with the exact file path and value that proves whether 12 MB uploads are permitted, for example:
+
+   `path/to/config.ts`: `limit: "12mb"`
+
+   Or, if it does not permit 12 MB:
+
+   `path/to/nginx.conf`: `client_max_body_size 10m;`
+
+5. No changes.
+   Since you explicitly did not ask for edits, I would not modify files, run formatters, start servers, or change config.

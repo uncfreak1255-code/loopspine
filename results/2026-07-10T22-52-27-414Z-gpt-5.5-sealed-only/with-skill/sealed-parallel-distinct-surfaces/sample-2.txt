@@ -1,0 +1,53 @@
+I would run this as a `build` lane with one lead agent and three bounded worker tracks, because the task has executable behavior and the work must stay file-disjoint.
+
+```yaml
+lane: build
+goal: CSV export endpoint works, billing settings UI is refreshed, and demo sample records exist without shared implementation-file edits
+progress: each track produces passing local proof plus parent readback of changed files
+budget: finite worklist across three independent tracks; stop on file overlap, no-progress, or failed proof that cannot be isolated
+proof: endpoint test/export readback, billing UI screenshot or component test, demo seed/sample data verification
+stop: success | blocked | no-progress | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. **Read fresh state first**
+   I would inspect repo instructions, branch/worktree state, app structure, routing/API patterns, billing UI ownership, demo seed/data ownership, and existing test commands. Since you asked not to execute, this stays as the planned first step rather than something I do now.
+
+2. **Split ownership before writing**
+   I would assign non-overlapping scopes:
+   - Worker A: CSV export endpoint only, including endpoint tests.
+   - Worker B: billing settings screen only, including UI proof.
+   - Worker C: demo sample records only, including seed/data verification.
+
+   The lead agent would reserve integration decisions, file-overlap checks, final proof, and final receipt.
+
+3. **Use separate worktrees or branches for parallel writing**
+   Because the changes are parallel and must not share implementation files, each worker should operate in its own worktree. The lead checks the planned file list before work starts. If two tracks need the same helper, route, schema, config, or fixture file, that is a stop condition until the plan is narrowed or sequenced.
+
+4. **Run each track as a small build loop**
+   For each worker:
+   - Select or add the focused proof first.
+   - Implement the smallest change.
+   - Run the track-specific proof.
+   - Report changed files, proof result, and any needed integration concern.
+
+5. **Parent readback, not trust-by-claim**
+   The lead reviews each worker’s diff, confirms there are no shared implementation files, and checks that each proof actually covers the requested behavior.
+
+6. **Integrate sequentially**
+   After all three tracks are green independently, the lead merges/apply them one at a time, rerunning the relevant proof after each integration. If integration introduces conflict or file overlap, stop and resolve only within the owning track’s boundary.
+
+7. **Final verification**
+   Run the smallest broader check that exercises the combined result: API/export proof, billing settings UI proof, demo data proof, and likely the repo’s normal test/typecheck/build command.
+
+Final receipt shape:
+
+```text
+LANE: build
+RESULT: success | blocked | no-progress
+PROOF: <endpoint proof>, <billing UI proof>, <demo data proof>, <broader repo check>
+BOUNDARY: local repo work only; no push, PR, merge, deploy, or shared implementation-file edits
+RESIDUE: none, or exact blocker/dirty state
+```

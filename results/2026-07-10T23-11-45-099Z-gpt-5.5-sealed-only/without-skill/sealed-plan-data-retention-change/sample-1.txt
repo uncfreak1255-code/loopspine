@@ -1,0 +1,70 @@
+I’d use a plan-first workflow with a hard “no code until risk is understood” gate.
+
+**Workflow**
+
+1. **Define the policy precisely**
+   - What counts as an exported report?
+   - Does “30 days” mean 30 calendar days from creation, completion, last download, or customer notification?
+   - Are there legal, billing, audit, enterprise contract, or support exceptions?
+   - What should happen to reports already older than 30 days?
+
+2. **Map the current report lifecycle**
+   - Where exports are created.
+   - Where files are stored.
+   - Where metadata lives.
+   - How download links are generated.
+   - Whether reports are copied to email, CDN, object storage, cache, or customer portals.
+   - Which jobs already clean up files, if any.
+
+3. **Classify customer impact**
+   - Customers may still have active download links.
+   - Deleting files could break links, support workflows, retries, audits, or invoices.
+   - The safe product behavior should be explicit: expired reports should show a clear “expired” state and offer regeneration if allowed.
+
+4. **Design the data model change**
+   - Add an `expires_at` field or equivalent lifecycle metadata.
+   - Preserve `created_at`, `completed_at`, `deleted_at`, and deletion reason if they already exist.
+   - Avoid inferring expiration only from file timestamps.
+
+5. **Design deletion as a staged lifecycle**
+   - Day 0: report created.
+   - Before expiration: downloadable.
+   - Near expiration: optionally show warning.
+   - After 30 days: mark expired and block download.
+   - Cleanup job deletes the underlying file.
+   - Metadata remains long enough for audit/support unless policy says otherwise.
+
+6. **Use a soft-delete-first rollout**
+   - First release should mark reports expired without deleting files.
+   - Verify download behavior, UI/API responses, metrics, and support visibility.
+   - Only after that should physical deletion be enabled.
+
+7. **Handle existing reports carefully**
+   - Backfill `expires_at` from the correct source timestamp.
+   - Run a dry-run report showing how many reports would expire/delete.
+   - Exclude unclear or contract-sensitive records until reviewed.
+   - Avoid deleting historical reports in the first deployment.
+
+8. **Add operational controls**
+   - Feature flag for enforcement.
+   - Separate flag for physical deletion.
+   - Dry-run mode.
+   - Rate limits/batching for cleanup.
+   - Logging for every expired/deleted report.
+   - Metrics for attempted downloads after expiration.
+
+9. **Update customer-facing behavior**
+   - API returns a clear expired response, not a generic 404.
+   - UI shows expiration date before expiry.
+   - Expired reports show a regeneration path if available.
+   - Support/admin tools can see why a report is unavailable.
+
+10. **Verification gate before implementation**
+   - Written policy approved by product/legal/support if needed.
+   - Report lifecycle mapped.
+   - Backfill impact counted.
+   - Dry-run deletion query reviewed.
+   - Rollback plan documented.
+   - Tests planned for active, expired, missing-file, regenerated, and legacy reports.
+
+The implementation should be split into small phases: metadata first, read-path enforcement second, dry-run cleanup third, physical deletion last. That keeps customer-visible breakage and irreversible deletion out of the first code change.

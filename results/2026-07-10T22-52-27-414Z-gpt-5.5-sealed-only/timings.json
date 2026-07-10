@@ -1,0 +1,479 @@
+{
+  "model": "gpt-5.5",
+  "seed": "loopspine-v1",
+  "samples": 3,
+  "pilot": false,
+  "sealed": true,
+  "sealed_only": true,
+  "cases": 6,
+  "timings": [
+    {
+      "variant": "with-skill",
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 10077,
+      "output_bytes": 1418
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 7891,
+      "output_bytes": 1106
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 9050,
+      "output_bytes": 1259
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 8628,
+      "output_bytes": 1043
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 21029,
+      "output_bytes": 1498
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 8218,
+      "output_bytes": 1172
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 19016,
+      "output_bytes": 3650
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 23948,
+      "output_bytes": 5120
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 19914,
+      "output_bytes": 4072
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 19252,
+      "output_bytes": 4166
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 18120,
+      "output_bytes": 3677
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 20210,
+      "output_bytes": 4568
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 15404,
+      "output_bytes": 2935
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 12821,
+      "output_bytes": 2555
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 16039,
+      "output_bytes": 2854
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 14533,
+      "output_bytes": 2282
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 17064,
+      "output_bytes": 2696
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 12999,
+      "output_bytes": 2416
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 18138,
+      "output_bytes": 3376
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 14794,
+      "output_bytes": 2516
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 16392,
+      "output_bytes": 3124
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 17154,
+      "output_bytes": 2442
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 16234,
+      "output_bytes": 3097
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 14712,
+      "output_bytes": 2863
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 12881,
+      "output_bytes": 1990
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 14953,
+      "output_bytes": 1930
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 17691,
+      "output_bytes": 1682
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 16114,
+      "output_bytes": 2710
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 18339,
+      "output_bytes": 1713
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 12288,
+      "output_bytes": 1769
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 15350,
+      "output_bytes": 1750
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 18592,
+      "output_bytes": 1656
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 10887,
+      "output_bytes": 1500
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "execution_order": [
+        "with-skill",
+        "without-skill"
+      ],
+      "duration_ms": 20705,
+      "output_bytes": 1874
+    },
+    {
+      "variant": "without-skill",
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 13843,
+      "output_bytes": 1403
+    },
+    {
+      "variant": "with-skill",
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "execution_order": [
+        "without-skill",
+        "with-skill"
+      ],
+      "duration_ms": 11105,
+      "output_bytes": 1568
+    }
+  ]
+}

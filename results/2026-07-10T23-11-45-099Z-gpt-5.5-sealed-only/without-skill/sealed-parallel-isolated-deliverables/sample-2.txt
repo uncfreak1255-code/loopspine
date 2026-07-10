@@ -1,0 +1,29 @@
+I’d use a parallel dispatch workflow with one coordinator and three isolated workstreams.
+
+**Workflow**
+
+1. Confirm independence up front: `test/fixtures`, `docs/runbooks`, and `tools/format-log` do not share files, interfaces, or review ownership. That makes them good parallel candidates.
+
+2. Create three focused tasks:
+   - Fixture task: add only the requested test fixture data under `test/fixtures`; include expected shape and any naming conventions.
+   - Runbook task: write the operations runbook under `docs/runbooks`; keep it operator-facing and avoid touching product docs.
+   - CLI task: create the standalone formatter under `tools/format-log`; define its inputs, outputs, exit behavior, and how it should be tested.
+
+3. Give each worker strict boundaries:
+   - Only edit its assigned path.
+   - Do not introduce shared helpers unless explicitly approved.
+   - Return a short receipt: files changed, behavior added, verification run, and any open question.
+
+4. Bring the work back together:
+   - Review each result separately against its acceptance gate.
+   - Check for accidental overlap or inconsistent conventions.
+   - Run the smallest targeted checks for each deliverable, then a repo-level verification if available.
+   - Resolve integration issues centrally instead of letting workers coordinate ad hoc.
+
+5. Close out with one combined summary:
+   - What changed in each deliverable.
+   - What was verified.
+   - Any residue or follow-up.
+   - Whether the final tree is clean or what remains dirty.
+
+The key is that the coordinator owns boundaries and final integration, while each worker gets a narrow, self-contained task. That preserves speed without creating hidden coupling.

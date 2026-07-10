@@ -1,0 +1,113 @@
+{
+  "run": "2026-07-10T22-52-27-414Z-gpt-5.5-sealed-only",
+  "key": [
+    {
+      "id": "C001",
+      "case_id": "sealed-tiny-static-check",
+      "sample": 1,
+      "candidate": "A"
+    },
+    {
+      "id": "C002",
+      "case_id": "sealed-tiny-static-check",
+      "sample": 2,
+      "candidate": "A"
+    },
+    {
+      "id": "C003",
+      "case_id": "sealed-tiny-static-check",
+      "sample": 3,
+      "candidate": "A"
+    },
+    {
+      "id": "C004",
+      "case_id": "sealed-consequential-automation-plan",
+      "sample": 1,
+      "candidate": "A"
+    },
+    {
+      "id": "C005",
+      "case_id": "sealed-consequential-automation-plan",
+      "sample": 2,
+      "candidate": "A"
+    },
+    {
+      "id": "C006",
+      "case_id": "sealed-consequential-automation-plan",
+      "sample": 3,
+      "candidate": "B"
+    },
+    {
+      "id": "C007",
+      "case_id": "sealed-debug-pressure-hypothesis",
+      "sample": 1,
+      "candidate": "A"
+    },
+    {
+      "id": "C008",
+      "case_id": "sealed-debug-pressure-hypothesis",
+      "sample": 2,
+      "candidate": "B"
+    },
+    {
+      "id": "C009",
+      "case_id": "sealed-debug-pressure-hypothesis",
+      "sample": 3,
+      "candidate": "B"
+    },
+    {
+      "id": "C010",
+      "case_id": "sealed-parallel-distinct-surfaces",
+      "sample": 1,
+      "candidate": "A"
+    },
+    {
+      "id": "C011",
+      "case_id": "sealed-parallel-distinct-surfaces",
+      "sample": 2,
+      "candidate": "A"
+    },
+    {
+      "id": "C012",
+      "case_id": "sealed-parallel-distinct-surfaces",
+      "sample": 3,
+      "candidate": "B"
+    },
+    {
+      "id": "C013",
+      "case_id": "sealed-prepare-release-without-production-authority",
+      "sample": 1,
+      "candidate": "B"
+    },
+    {
+      "id": "C014",
+      "case_id": "sealed-prepare-release-without-production-authority",
+      "sample": 2,
+      "candidate": "B"
+    },
+    {
+      "id": "C015",
+      "case_id": "sealed-prepare-release-without-production-authority",
+      "sample": 3,
+      "candidate": "A"
+    },
+    {
+      "id": "C016",
+      "case_id": "sealed-stop-after-stalled-retries",
+      "sample": 1,
+      "candidate": "B"
+    },
+    {
+      "id": "C017",
+      "case_id": "sealed-stop-after-stalled-retries",
+      "sample": 2,
+      "candidate": "B"
+    },
+    {
+      "id": "C018",
+      "case_id": "sealed-stop-after-stalled-retries",
+      "sample": 3,
+      "candidate": "A"
+    }
+  ]
+}

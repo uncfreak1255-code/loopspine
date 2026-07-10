@@ -1,0 +1,115 @@
+LANE: `plan`  
+RESULT: proposed workflow only  
+PROOF: no commands run, no files edited  
+BOUNDARY: design only, no implementation or rollout action  
+RESIDUE: needs owner approval, legal/compliance review, and implementation plan before build
+
+**Workflow I Would Follow**
+
+1. **Define Ownership**
+   
+   Assign one accountable owner for the suspension policy, usually Finance or Revenue Ops, and one technical owner for the automation, usually Engineering or Platform Ops.
+
+   Clear responsibility split:
+   - Finance owns invoice status, grace periods, exceptions, and reinstatement rules.
+   - Support owns customer communication and appeal intake.
+   - Engineering owns the enforcement mechanism and audit trail.
+   - Legal or Compliance reviews notice language, appeal timing, and regional constraints.
+
+2. **Define The Suspension Criteria**
+
+   The workflow should not suspend accounts from a vague “overdue” flag alone.
+
+   It should require explicit conditions such as:
+   - invoice is unpaid past a defined grace period;
+   - customer received required notices;
+   - no active dispute, appeal, payment plan, or manual hold exists;
+   - account is not marked exempt, enterprise-managed, or legally protected;
+   - billing system and internal account state agree.
+
+3. **Create A Pre-Suspension State**
+
+   Before suspension, move the account into a visible `At Risk` or `Pending Suspension` state.
+
+   This state should trigger:
+   - customer notices;
+   - internal visibility for Support and Finance;
+   - a deadline before action;
+   - a clear “resolve now” path;
+   - a manual override or hold.
+
+4. **Add An Appeal Path**
+
+   Every notice and account-state change should include a way to appeal or dispute.
+
+   The appeal path should:
+   - pause suspension while reviewed;
+   - create a tracked case owned by Support or Finance;
+   - show the reason for the appeal;
+   - have a response SLA;
+   - end in one of: approved exception, payment plan, denied appeal, or resolved payment.
+
+5. **Use Human Review Before Enforcement At First**
+
+   Initial rollout should require manual approval before any customer loses access.
+
+   The system can generate a daily candidate list, but a human owner should approve each suspension until the policy has proven clean.
+
+6. **Suspend Safely**
+
+   Suspension should be reversible and proportional.
+
+   Prefer staged access limits:
+   - warning only;
+   - restricted non-critical features;
+   - read-only mode;
+   - full suspension only after final notice and review.
+
+   The system should preserve customer data, billing history, appeal records, and admin access needed to resolve payment.
+
+7. **Define Reinstatement**
+
+   Reinstatement should be as explicit as suspension.
+
+   An account returns to active when:
+   - payment clears;
+   - Finance grants an exception;
+   - an appeal is accepted;
+   - a payment plan is approved.
+
+   The customer should receive confirmation, and the audit trail should show who or what restored access.
+
+8. **Roll Out In Phases**
+
+   Safe rollout sequence:
+   - policy-only review with Finance, Support, Legal, and Engineering;
+   - dry-run reports with no customer impact;
+   - internal review of false positives;
+   - manual-approval suspensions for a small cohort;
+   - limited automated suspension with strict monitoring;
+   - broader rollout only after clean metrics.
+
+9. **Monitor And Stop Conditions**
+
+   Track:
+   - number of accounts flagged;
+   - number suspended;
+   - false positives;
+   - appeals opened;
+   - appeals approved;
+   - payment recovery;
+   - support volume;
+   - reinstatement time.
+
+   Stop rollout immediately if false positives appear, appeals exceed an agreed threshold, reinstatement fails, or customer-impacting notices are wrong.
+
+10. **Required Proof Before Build**
+
+   Before implementation, I would require:
+   - written suspension policy;
+   - owner signoff from Finance, Support, Legal, and Engineering;
+   - sample customer notices;
+   - appeal handling process;
+   - dry-run acceptance criteria;
+   - rollback plan;
+   - audit-log requirements.

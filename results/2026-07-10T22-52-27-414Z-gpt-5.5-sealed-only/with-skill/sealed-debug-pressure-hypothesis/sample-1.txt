@@ -1,0 +1,54 @@
+LANE: `investigate`
+
+I would not start by “just adding deduplication.” The feed may be malformed, but the first job is to prove where duplication entered: vendor payload, import parsing, idempotency logic, database upsert behavior, or a retry/replay from the nightly job.
+
+Workflow packet:
+
+```yaml
+lane: investigate
+goal: duplicated records no longer occur for the same nightly import input, and existing duplicate shape is understood
+progress: each pass must narrow the duplication source or produce a failing regression proof
+budget: finite investigation/fix loop; stop on repeated identical evidence or approval boundary
+proof: focused import regression test using a captured malformed feed fixture, plus the repo's relevant import test/check command
+stop: success | no-progress | blocked | approval-required
+owner: lead agent
+```
+
+I would follow this sequence:
+
+1. Read fresh state: repo instructions, branch status, yesterday’s release diff, import code, schema constraints, and any existing import tests.
+
+2. Reproduce the issue with evidence: identify a duplicated record example, compare raw vendor rows to imported rows, and confirm whether the same vendor key appears twice or whether our importer created duplicates from one source row.
+
+3. Rank likely causes before editing:
+   - vendor feed contains duplicate logical records;
+   - importer lacks a stable uniqueness key;
+   - release changed matching/upsert behavior;
+   - retry logic reprocessed the same batch;
+   - database constraints allow duplicates that should be impossible.
+
+4. Add or select regression proof: create a small captured fixture representing the bad feed or replay condition, then make the current importer fail in the same way.
+
+5. Fix the root cause with the smallest change:
+   - If the feed truly repeats the same logical record, dedupe on the correct business key before write.
+   - If retries doubled records, make the write idempotent.
+   - If matching changed yesterday, restore the correct identity rule.
+   - If this should be impossible at storage level, add or repair a uniqueness constraint only after checking migration risk.
+
+6. Verify:
+   - Run the focused regression test.
+   - Run the relevant broader import tests.
+   - Check that the fix does not silently drop legitimate distinct records.
+   - Inspect the intended diff for scope creep.
+
+7. Return a receipt in this form:
+
+```text
+LANE: investigate
+RESULT: success | blocked | no-progress
+PROOF: <focused regression test + broader import check and result>
+BOUNDARY: local investigation/fix only; no deploy or data cleanup unless explicitly authorized
+RESIDUE: <existing duplicates cleanup, vendor escalation, monitoring, or none>
+```
+
+The important pushback is that deduplication is probably part of the fix, but not automatically the whole fix. If yesterday’s release broke idempotency, a superficial dedupe could hide the symptom while leaving the nightly job unsafe.

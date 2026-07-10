@@ -1,0 +1,32 @@
+I’d run this as a bounded `qa` or `investigate` loop, depending on whether the browser test is validating a user flow or exposing an unexplained failure.
+
+```yaml
+lane: qa/investigate
+goal: browser test passes under the same recorded conditions
+progress: each retry produces a different failure, more diagnostic evidence, or a targeted fix opportunity
+budget: stop after three consecutive attempts with the same timeout signature
+proof: the exact browser test command and its pass/fail output
+stop: success | repeated-timeout | blocked
+owner: lead agent keeps the retry count, compares failures, and writes the receipt
+```
+
+Workflow:
+
+1. Read fresh state first: repo instructions, branch/worktree status, test command, and any existing failure output.
+2. Run the browser test once and record the timeout signature: test name, URL/step, timeout duration, stack line, browser, and any relevant trace/screenshot path.
+3. If it fails, compare it to the previous attempt.
+4. Retry only while the failure is changing or there is a plausible repair/debug step.
+5. Count only consecutive identical timeouts toward the stop condition.
+6. If the same timeout happens three times in a row, stop immediately instead of tweaking blindly.
+7. If a non-timeout or different timeout appears, reset the identical-timeout streak and continue within the same bounded loop.
+8. If the test passes, stop with the passing command as proof.
+
+The failure receipt would be short:
+
+```text
+LANE: qa/investigate
+RESULT: no-progress
+PROOF: <browser test command> timed out 3 consecutive times with the same signature
+BOUNDARY: no edits/push/PR performed unless separately authorized
+RESIDUE: failing test remains; next useful step is inspect trace/screenshot for <test/step>
+```

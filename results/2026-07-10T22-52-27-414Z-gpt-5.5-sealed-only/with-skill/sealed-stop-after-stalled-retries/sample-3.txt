@@ -1,0 +1,32 @@
+I would run this as a bounded `qa` or `investigate` loop, depending on whether the browser test is failing because of visible product behavior or an unexplained test/runtime issue.
+
+```yaml
+lane: qa | investigate
+goal: browser test passes
+progress: each attempt must either pass or produce different/new evidence
+budget: stop after 3 consecutive attempts with the same timeout
+proof: the browser test command result
+stop: success | no-progress
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh state first: repo instructions, branch/worktree status, test command, and the relevant failing browser test.
+2. Run the browser test once and record the exact timeout signature: command, test name, timeout message, URL/state if available, and relevant log line.
+3. If it fails, inspect the evidence and make only one bounded repair or diagnostic change per pass.
+4. Rerun the same browser test under the same conditions.
+5. After each failure, compare the timeout against the previous attempts.
+6. Reset the “same timeout” counter if the failure changes in a meaningful way, because that means the loop gained new evidence.
+7. Stop immediately if the test passes.
+8. Stop if three attempts in a row produce the same timeout with no new evidence.
+
+The failure receipt would be short:
+
+```text
+LANE: qa
+RESULT: no-progress
+PROOF: <browser test command> failed 3 consecutive times with the same timeout
+BOUNDARY: no commands beyond local test/debug loop; no push/PR/merge/deploy
+RESIDUE: test still failing; next useful action is <specific investigation target from logs>
+```

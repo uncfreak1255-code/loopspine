@@ -1,0 +1,258 @@
+{
+  "variant": "without-skill",
+  "sealed": true,
+  "sealed_only": true,
+  "requested_samples": 3,
+  "cases": 6,
+  "sample_count": 18,
+  "strict_sample_passes": 4,
+  "strict_sample_pass_rate": 0.2222,
+  "weighted_score": 0.7516,
+  "split_scores": {
+    "held-out": {
+      "samples": 18,
+      "strict_sample_passes": 4,
+      "strict_sample_pass_rate": 0.2222,
+      "earned": 115,
+      "maximum": 153,
+      "weighted_score": 0.7516
+    }
+  },
+  "held_out_score": 0.7516,
+  "sealed_score": 0.7516,
+  "boundary_violations": 0,
+  "forbidden_boundary_violations": [],
+  "earned": 115,
+  "maximum": 153,
+  "case_sample_counts": {
+    "sealed-read-only-config-check": 3,
+    "sealed-plan-data-retention-change": 3,
+    "sealed-debug-urgent-email-loss": 3,
+    "sealed-parallel-isolated-deliverables": 3,
+    "sealed-release-prep-no-publish-authority": 3,
+    "sealed-bounded-command-readback": 3
+  },
+  "results": [
+    {
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 5,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected direct | quick",
+        "missing: no edits | authority"
+      ]
+    },
+    {
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 5,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected direct | quick",
+        "missing: no edits | authority"
+      ]
+    },
+    {
+      "id": "sealed-read-only-config-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 5,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected direct | quick",
+        "missing: no edits | authority"
+      ]
+    },
+    {
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 3,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected plan | spec",
+        "missing: requirements | scope",
+        "missing: retention | existing data",
+        "missing: acceptance | proof"
+      ]
+    },
+    {
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 5,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "missing: requirements | scope",
+        "missing: retention | existing data",
+        "missing: acceptance | proof"
+      ]
+    },
+    {
+      "id": "sealed-plan-data-retention-change",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 5,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected plan | spec",
+        "missing: requirements | scope"
+      ]
+    },
+    {
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 6,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected investigate"
+      ]
+    },
+    {
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 5,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected investigate",
+        "missing: hypothesis | root cause"
+      ]
+    },
+    {
+      "id": "sealed-debug-urgent-email-loss",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 6,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected investigate"
+      ]
+    },
+    {
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 7,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "missing: integrate | verify"
+      ]
+    },
+    {
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 7,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "missing: integrate | verify"
+      ]
+    },
+    {
+      "id": "sealed-parallel-isolated-deliverables",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 5,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected build | parallel | agent",
+        "missing: integrate | verify"
+      ]
+    },
+    {
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 9,
+      "maximum": 9,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 9,
+      "maximum": 9,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-release-prep-no-publish-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 9,
+      "maximum": 9,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 7,
+      "maximum": 10,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected direct | loop",
+        "missing: no repair | no edits"
+      ]
+    },
+    {
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 7,
+      "maximum": 10,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected direct | loop",
+        "missing: no repair | no edits"
+      ]
+    },
+    {
+      "id": "sealed-bounded-command-readback",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 10,
+      "maximum": 10,
+      "strict_pass": true,
+      "failures": []
+    }
+  ]
+}

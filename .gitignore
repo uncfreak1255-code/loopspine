@@ -1,0 +1,18 @@
+.DS_Store
+node_modules/
+npm-debug.log*
+
+# Keep local iteration history on disk; publish only the named release receipts.
+results/*
+!results/2026-07-10T22-52-27-414Z-gpt-5.5-sealed-only/
+!results/2026-07-10T23-11-45-099Z-gpt-5.5-sealed-only/
+!results/trajectories/
+results/trajectories/*
+!results/trajectories/2026-07-10T23-22-09-285Z/
+!results/portability/
+
+# Trajectory summaries keep final messages, diffs, tests, and verification.
+results/trajectories/**/agent-stderr.log
+results/trajectories/**/agent-stdout.log
+results/trajectories/**/agent-transcript.log
+results/trajectories/**/workdir.txt

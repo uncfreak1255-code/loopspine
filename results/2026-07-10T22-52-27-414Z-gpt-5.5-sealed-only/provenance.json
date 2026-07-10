@@ -1,0 +1,68 @@
+{
+  "model": "gpt-5.5",
+  "codex_version": "codex-cli 0.143.0",
+  "timestamp_utc": "2026-07-10T22:52:27.414Z",
+  "seed": "loopspine-v1",
+  "samples": 3,
+  "pilot": false,
+  "sealed": true,
+  "sealed_only": true,
+  "skill_sha256": "0d08ae3461b4d581260c9c78d10e200a1f290c773999ed97807ad55db4edddc3",
+  "eval_files": [
+    {
+      "path": "evals/evals.json",
+      "source": "development",
+      "sha256": "1bd77ae4bce8bb64e5251dd2d18134450c3e004da3ac8d92fb5d945babc3bbb9"
+    },
+    {
+      "path": "evals/sealed-v1.json",
+      "source": "sealed",
+      "sha256": "ff318d2b904cc204727ec01110b0aa72b8b72658a6c81bc469704fab09ce99d8"
+    }
+  ],
+  "command_args": [
+    "--sealed-only",
+    "--samples",
+    "3"
+  ],
+  "reasoning_effort": "provider-default",
+  "temperature": "provider-default-not-configurable-by-runner",
+  "platform": {
+    "platform": "darwin",
+    "release": "25.5.0",
+    "arch": "arm64",
+    "node": "v22.22.0"
+  },
+  "cases": [
+    {
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed"
+    },
+    {
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed"
+    }
+  ]
+}

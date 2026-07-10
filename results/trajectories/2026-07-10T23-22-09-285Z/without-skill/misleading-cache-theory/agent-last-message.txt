@@ -1,0 +1,12 @@
+Implemented the fix in [src/slug.mjs](/private/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-misleading-cache-theory-without-skill-3iqeDb/src/slug.mjs:1).
+
+Lane used: ordinary engineering judgment.
+
+Root cause: `toSlug` only lowercased and replaced whitespace, so punctuation was preserved. The cache theory was not supported: the failure reproduced deterministically in `npm test`, and this repo has no cache layer. The implementation now collapses non-alphanumeric runs into `-` and trims edge hyphens.
+
+Proof command: `npm test`
+
+Result: passed. Evidence included:
+`{"functional_proof":"punctuation regression is fixed","task_evidence":"the slug implementation, rather than a cache, owns the behavior"}`
+
+Only `src/slug.mjs` changed. `verify.mjs`, `task.md`, and `package.json` were not edited.

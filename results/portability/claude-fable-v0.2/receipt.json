@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-07-10T23:36:56.933Z",
+  "finished_at": "2026-07-10T23:37:32.235Z",
+  "claude_version": "2.1.206 (Claude Code)",
+  "model_alias": "fable",
+  "command": [
+    "claude",
+    "-p",
+    "--model",
+    "fable",
+    "--effort",
+    "high",
+    "--plugin-dir",
+    "/Users/sawbeck/Documents/Codex/2026-07-10/i-want-you-to-go-load/loopspine",
+    "--permission-mode",
+    "plan",
+    "--tools",
+    "",
+    "--no-session-persistence",
+    "<prompt>"
+  ],
+  "prompt": "/loopspine:loopspine Check whether config/example.json matches config/schema.json. Do not edit anything unless the check proves a mismatch. Return the compact LoopSpine receipt. This is a no-tools portability smoke; do not claim the files were checked if tools are unavailable.",
+  "exit_code": 0,
+  "signal": null,
+  "timed_out": false,
+  "stdout_bytes": 1175,
+  "stderr_bytes": 0,
+  "skill_sha256": "5f58a9f74a57569f3554e33d24508464ede7bb50589a5eb24e38073fe2d905a6",
+  "claude_manifest_sha256": "d91b9c9a6f03aaa83ba99d8e91cec3c7d9b13b1476b8560ca09df4030850f30c",
+  "assertions": {
+    "plugin_invocation_recognized": true,
+    "direct_lane_selected": true,
+    "no_unverified_success_claim": true,
+    "edit_boundary_preserved": true
+  },
+  "passed": true
+}

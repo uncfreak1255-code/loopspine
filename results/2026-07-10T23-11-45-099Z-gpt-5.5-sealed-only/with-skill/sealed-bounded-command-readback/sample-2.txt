@@ -1,0 +1,14 @@
+LANE: `direct`
+
+I would follow the exact readback loop, with no repair path:
+
+1. Run `./bin/inspect-index --format json` once.
+2. Record its exit status and any JSON output.
+3. If the exit status is `75`, wait 15 seconds and retry.
+4. If the second attempt also exits `75`, wait another 15 seconds and retry once more.
+5. Stop after the third total attempt, regardless of status.
+6. If any attempt exits with a status other than `75`, stop immediately.
+7. Report every attempted exit status in order, plus the final JSON readback from the last attempt.
+
+BOUNDARY: I would not edit files, alter configuration, restart processes, or attempt any repair.  
+STOP CONDITION: first non-`75` exit, or exactly three total attempts.

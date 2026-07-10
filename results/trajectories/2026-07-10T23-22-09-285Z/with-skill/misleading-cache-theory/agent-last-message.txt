@@ -1,0 +1,12 @@
+LANE: investigate  
+RESULT: success  
+PROOF: `npm test` passed: 1 test passed, `verify.mjs` printed `punctuation regression is fixed`.
+
+Changed [src/slug.mjs](/private/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-misleading-cache-theory-with-skill-rDjV9V/src/slug.mjs:1) so slug generation replaces runs of non-alphanumeric characters with `-` and trims edge hyphens.
+
+Root cause: implementation only replaced whitespace, so punctuation was preserved. The cache theory was not supported: the failing test reproduced deterministically in pure slug logic, and this repo has no cache layer.
+
+Regression coverage already existed in `test/slug.test.mjs`, so I did not add redundant tests.
+
+BOUNDARY: edited only implementation; did not edit `verify.mjs`, `task.md`, or `package.json`.  
+RESIDUE: working tree has `M src/slug.mjs`. Branch creation was blocked by sandbox permissions on `.git`, so the edit remains on `main`.

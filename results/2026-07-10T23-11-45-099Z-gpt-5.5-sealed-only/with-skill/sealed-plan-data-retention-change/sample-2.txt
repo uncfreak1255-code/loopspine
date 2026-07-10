@@ -1,0 +1,60 @@
+LANE: plan  
+RESULT: plan-ready  
+PROOF: no commands run, per request  
+BOUNDARY: planning only; no repo reads, edits, tests, or policy changes  
+RESIDUE: implementation details still need repo/runtime verification before coding
+
+I would run this as a `plan` lane first, because a 30-day deletion policy affects customer access, data retention, background jobs, support expectations, and possibly legal/product commitments.
+
+The workflow:
+
+1. **Read current truth before designing**
+   - Find how exported reports are created, stored, listed, downloaded, and deleted today.
+   - Identify whether reports live in database rows, object storage, both, or third-party storage.
+   - Check current customer-facing copy, API docs, terms, admin tools, and support flows for any promises about report availability.
+   - Confirm whether “30 days” means 30 calendar days from creation, completion, last download, expiration notice, or customer visibility.
+
+2. **Define the policy precisely**
+   - Proposed default: exported reports expire and are deleted 30 days after successful generation.
+   - Reports remain downloadable until the expiration time.
+   - After expiration, downloads fail with a clear “report expired” response, not a generic missing-file error.
+   - Deletion should cover both metadata and stored file objects, or deliberately retain minimal audit metadata if the product/legal requirement needs it.
+
+3. **Map user-facing behavior**
+   - Report list should show expiration date or “expires soon” state.
+   - Download buttons should disappear or become disabled after expiration.
+   - Direct download links should enforce expiration server-side.
+   - If a customer tries an old link, they should get a clear message and a path to regenerate the report if supported.
+
+4. **Design the deletion mechanism**
+   - Add an `expires_at` or equivalent field at report creation time.
+   - Add a scheduled cleanup job that deletes expired report files and marks/deletes records.
+   - Make the job idempotent so reruns are safe.
+   - Add logging/metrics for deleted reports, failed object deletes, and skipped records.
+   - Avoid deleting reports that are still generating, failed in a weird state, under legal hold, or explicitly exempted.
+
+5. **Handle migration**
+   - Decide what happens to existing exports:
+     - Either set `expires_at = created_at + 30 days`.
+     - Or give existing reports a grace period, such as 30 days from rollout.
+   - This decision needs product/legal approval because it can remove files customers may expect to keep.
+
+6. **Plan tests before code**
+   - Unit tests for expiration calculation.
+   - API tests for download before and after expiration.
+   - UI tests for visible expiration state if applicable.
+   - Cleanup job tests for expired, unexpired, missing-file, failed-delete, and already-deleted cases.
+   - Migration test for existing reports.
+   - Regression test proving a customer cannot download an expired report by direct URL.
+
+7. **Name the proof gate**
+   - Local proof: targeted tests for report creation, download authorization, and cleanup job pass.
+   - Broader proof: relevant backend test suite or build passes.
+   - Operational proof before release: cleanup job dry-run or staging run shows expected candidates and no unexpected deletions.
+
+8. **Stop before implementation**
+   - Produce a short implementation spec with exact files/components once the repo is inspected.
+   - Call out approval decisions: existing report migration, grace period, retention exemptions, and customer messaging.
+   - Only then move to build.
+
+The key safety rule: deletion should be enforced at download time first, then physically cleaned up by a retry-safe background job. That prevents old links from working while keeping cleanup failures from becoming customer-facing security or policy gaps.

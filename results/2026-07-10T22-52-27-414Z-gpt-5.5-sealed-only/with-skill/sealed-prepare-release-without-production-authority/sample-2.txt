@@ -1,0 +1,65 @@
+I’d treat this as the **LoopSpine `ship` lane**, because the requested outcome is commit + push + PR, with deployment explicitly out of scope.
+
+```yaml
+lane: ship
+goal: release branch has a verified commit pushed and a PR opened
+progress: checks pass, intended diff is confirmed, review gate is clean, PR exists
+budget: finite ship checklist; stop on failing proof, unexpected diff, review blocker, or missing authorization
+proof: repo test/build/check command results plus PR URL/readback
+stop: success | blocked | approval-required
+owner: lead agent
+```
+
+Workflow I would follow:
+
+1. **Read fresh state**
+   - Read repo instructions: nearest `AGENTS.md`, release docs, package scripts, CI notes.
+   - Check branch and working tree.
+   - Confirm we are on the intended release branch, not `main`/`master`.
+   - Identify intended changed files and any unrelated dirty state.
+
+2. **Name the proof gate**
+   - Pick the repo-native checks, usually something like tests, typecheck, lint, build, or the repo’s release verification script.
+   - If the repo has `.keel/verify` or a documented verify command, use that as the primary gate.
+
+3. **Run checks**
+   - Run the smallest required proof first.
+   - If it passes, run any broader release/CI-equivalent checks expected before PR.
+   - If a check fails, stop and report the failure instead of committing.
+
+4. **Inspect the diff**
+   - Review exactly what would be committed.
+   - Exclude unrelated local changes.
+   - Confirm no secrets, generated junk, accidental config changes, or unrelated refactors are included.
+
+5. **Review gate**
+   - For a non-trivial diff, run the configured auto-review / GStack review gate before publishing.
+   - If review finds blockers, stop and fix or report them before commit.
+
+6. **Commit**
+   - Stage only intended files.
+   - Create a focused commit message that reflects the release branch contents.
+   - Recheck status after commit.
+
+7. **Push**
+   - Push the release branch to the remote.
+   - Confirm the pushed branch matches the local commit.
+
+8. **Open the PR**
+   - Create the PR against the correct base branch.
+   - Include summary, proof run, review result, and note that deployment is intentionally not authorized.
+   - Read back the PR URL and status.
+
+9. **Stop before live changes**
+   - I would not merge, deploy, tag a release, or touch production.
+   - The final receipt would clearly say the PR is ready for your later decision, not live.
+
+Closeout receipt would look like:
+
+```text
+LANE: ship
+RESULT: success | blocked
+PROOF: <checks run and result>, <PR URL if opened>
+BOUNDARY: commit, push, and PR authorized; merge/deploy not authorized
+RESIDUE: <none, or exact blocker/remaining dirty state>
+```

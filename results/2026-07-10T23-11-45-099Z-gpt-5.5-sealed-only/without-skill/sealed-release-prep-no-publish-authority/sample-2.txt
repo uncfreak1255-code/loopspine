@@ -1,0 +1,27 @@
+I would use a guarded release-review prep workflow, stopping before any publish boundary.
+
+1. Confirm branch and scope  
+   I would read the current branch, repo status, and recent commits, then identify the intended diff against the release base, usually `main`, `master`, or the repo’s configured release branch. I would separate intended changes from unrelated local dirt and call out anything ambiguous before proceeding.
+
+2. Inspect the diff  
+   I would review changed files, public API changes, config changes, dependency changes, migrations, generated files, and test updates. The goal is to answer: what is actually going into review, what risk it carries, and whether the diff matches the release intent.
+
+3. Choose the proof gate  
+   I would use the repo’s own signals first: package scripts, CI config, `.keel/verify`, Makefile, task runner, or documented release checklist. Typical checks would be lint, typecheck, unit tests, build, and any focused integration or smoke tests relevant to the changed surface.
+
+4. Run checks and classify results  
+   I would run the smallest complete check set that proves the release candidate is reviewable. If something fails, I would stop and report the failure with the likely owner/area instead of continuing into release-note polishing.
+
+5. Prepare release notes  
+   I would draft notes from the intended diff and commit history, grouped by user-facing changes, fixes, internal changes, migrations/config, and known risks. I would avoid overstating anything not proven by tests or runtime evidence.
+
+6. Final release-review handoff  
+   I would end with:
+   - intended diff summary
+   - checks run and results
+   - release notes draft
+   - known risks or skipped checks
+   - current dirty state
+   - explicit confirmation that nothing was merged, published, or deployed
+
+I would not merge, push tags, publish packages, deploy, delete branches, or alter release state without fresh explicit permission.

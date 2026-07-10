@@ -1,0 +1,61 @@
+I would run this as a `build` lane with one lead agent and three independent worker threads, because the work changes executable/product behavior and the scenario explicitly says the changes must not share implementation files.
+
+```yaml
+lane: build
+goal: CSV export endpoint works, billing settings UI is refreshed, demo sample records exist
+progress: each thread produces isolated diff + focused proof
+budget: finite worklist of 3 independent changes, stop on shared-file conflict or no-progress
+proof: endpoint test, UI screenshot/flow check, demo seed/readback test
+stop: success | blocked | no-progress | approval-required
+owner: lead agent
+```
+
+The workflow:
+
+1. **Read fresh state first**
+   I would inspect repo instructions, branch/worktree state, routing/ownership, existing API patterns, billing UI patterns, and demo data conventions. Before any edit, I would name the proof gates:
+   - CSV export: request/response test or integration test for the endpoint.
+   - Billing screen: UI test, screenshot, or local visual readback.
+   - Demo records: seed fixture test or demo environment readback.
+
+2. **Split the work by file ownership**
+   I would assign three bounded workers only if the ownership is clean:
+   - Worker A: CSV export endpoint files only.
+   - Worker B: billing settings screen/component/style files only.
+   - Worker C: demo seed/sample-record files only.
+
+   If any worker needs to touch shared routing, shared schema, shared fixtures, or shared billing data models, the lead pauses parallelism and serializes that shared change first.
+
+3. **Use separate worktrees or branches for parallel writes**
+   Since the changes must not share implementation files, each worker gets a separate worktree or isolated branch. The lead keeps the integration branch clean and does not accept a worker result until file overlap is checked.
+
+4. **Each worker runs a small loop**
+   Each worker follows the same bounded pattern:
+   - Identify existing local convention.
+   - Make the smallest scoped change.
+   - Add or update focused proof.
+   - Run that proof.
+   - Return changed files, proof result, and any residue.
+
+5. **Lead integrates, does not trust summaries**
+   The lead reads each diff directly, verifies no implementation files overlap, then integrates one result at a time. After each integration, the lead reruns that worker’s proof so failures are caught at the boundary.
+
+6. **Run broader verification after integration**
+   Once all three are integrated, I would run the smallest broader check that covers cross-effects, likely typecheck/build plus focused tests for API, UI, and demo data. If the billing UI has visible behavior, I would also do a screenshot or browser readback.
+
+7. **Stop conditions**
+   I would stop before continuing if:
+   - two tasks require the same implementation file;
+   - a shared schema/model change is needed but not authorized by the scenario;
+   - one proof repeatedly fails without new evidence;
+   - the work reaches push, PR, merge, deploy, or production demo mutation boundaries without explicit approval.
+
+Final receipt shape would be:
+
+```text
+LANE: build
+RESULT: success | blocked | no-progress
+PROOF: endpoint test + billing UI proof + demo seed/readback proof
+BOUNDARY: local scoped implementation only; no push/PR/merge/deploy unless authorized
+RESIDUE: none, or named blocker/shared-file conflict
+```

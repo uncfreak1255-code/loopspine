@@ -1,0 +1,40 @@
+I would treat this as a release-prep workflow, stopping before any merge or deploy.
+
+**Workflow**
+
+1. Confirm branch and scope  
+   Check the current branch, repo status, and recent diff. I would make sure we are on the intended release branch, not `main`/`master`, and identify exactly which files belong in the release.
+
+2. Read local instructions  
+   Check repo-local `AGENTS.md`, release docs, package scripts, and any CI/release policy so the verification path matches the repo rather than guessing.
+
+3. Run the proof gate  
+   Run the smallest complete check set for the branch, usually some combination of:
+   - formatter or lint
+   - typecheck
+   - unit/integration tests
+   - build
+   - any repo-specific release verification script
+
+4. Inspect the diff  
+   Review the final diff for unrelated changes, generated noise, secrets, config mistakes, or accidental broad edits. If the diff is non-trivial, I would run the configured review gate before publishing.
+
+5. Commit only intended files  
+   Stage the release files deliberately, leaving unrelated dirty files alone. Commit with a clear release-focused message.
+
+6. Push the branch  
+   Push the current release branch to the remote. This is a publish boundary, but it is within your requested scope.
+
+7. Open the pull request  
+   Create the PR against the correct base branch with:
+   - concise summary of what changed
+   - verification commands and results
+   - known risks or follow-up items
+   - explicit note that merge/deploy is not authorized yet
+
+8. Read back PR and CI state  
+   Confirm the PR URL, branch, base branch, and initial CI/check status. If checks fail immediately, I would stop and report the failure rather than trying to merge or deploy.
+
+**Stop Boundary**
+
+I would stop after the PR exists and checks are reported. I would not merge, deploy, delete branches, tag releases, or change production state until you explicitly approve that later.

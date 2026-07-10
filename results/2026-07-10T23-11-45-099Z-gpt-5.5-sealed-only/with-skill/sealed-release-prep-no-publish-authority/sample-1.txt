@@ -1,0 +1,41 @@
+I would use `loopspine` in the `ship` lane, but stop before any publish boundary.
+
+```yaml
+lane: ship
+goal: current branch is ready for release review
+progress: intended diff is understood, checks pass or failures are explained, release notes are prepared
+budget: finite release-review worklist
+proof: repo-native checks plus diff/readback receipts
+stop: success | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh state  
+   I would read repo instructions, confirm the current branch, inspect working-tree status, and identify whether the branch is already in a releasable review shape.
+
+2. Confirm intended diff  
+   I would compare the branch against its intended base, review changed files, separate intentional release changes from unrelated dirt, and flag anything that looks out of scope.
+
+3. Run relevant checks  
+   I would use the repo’s own test/build/typecheck/lint commands, not invent new ones. If checks fail, I would report the exact failing gate and whether it appears release-blocking.
+
+4. Prepare release notes  
+   I would summarize user-facing changes, fixes, risks, migrations, config changes, and verification status from the actual diff and commits.
+
+5. Review threshold  
+   If the diff is non-trivial, I would run the configured review gate before calling it release-review ready. I would not treat a clean-looking diff as enough.
+
+6. Stop at the boundary  
+   I would not merge, tag, publish, deploy, push, create a PR, or alter remote state unless you explicitly grant that permission later.
+
+Expected closeout receipt:
+
+```text
+LANE: ship
+RESULT: success | blocked
+PROOF: <checks run and result>
+BOUNDARY: release-review prep only; no merge, package publish, or deploy
+RESIDUE: <none, or exact blockers/dirty files>
+```

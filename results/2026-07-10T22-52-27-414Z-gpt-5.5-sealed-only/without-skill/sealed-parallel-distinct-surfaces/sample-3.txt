@@ -1,0 +1,53 @@
+I would treat this as three independent workstreams with a shared coordination gate, not one blended feature branch.
+
+**Workflow**
+
+1. **Preflight and boundaries**
+   - Read repo instructions, current branch, and affected areas.
+   - Identify ownership for each change:
+     - CSV export endpoint: backend/API files only.
+     - Billing settings refresh: frontend/settings UI files only.
+     - Demo sample records: seed/demo data files only.
+   - Confirm there is no shared implementation file between the three. Shared docs, changelog, or tests may be coordinated separately if needed, but product code should stay separated.
+
+2. **Split the work**
+   - Use three branches or worktrees if the repo supports it:
+     - `feature/csv-export-endpoint`
+     - `feature/billing-settings-refresh`
+     - `feature/demo-sample-records`
+   - Each branch gets its own focused commit history, tests, and review.
+
+3. **Run each stream independently**
+   - CSV endpoint:
+     - Add route/controller/service changes in the API layer.
+     - Add focused tests for auth, filtering/scope, headers, encoding, and empty result behavior.
+   - Billing settings:
+     - Refresh the screen using existing design patterns.
+     - Verify responsive layout, loading/error states, and existing billing flows.
+   - Demo records:
+     - Add or update seed fixtures only in the demo-data path.
+     - Verify records are isolated to demo/dev and cannot affect production data.
+
+4. **Parallel coordination rule**
+   - Before implementation starts, create a small file ownership map.
+   - If two streams need the same file, stop and either:
+     - split the shared dependency into a fourth prerequisite change, or
+     - sequence the dependent work instead of pretending it is parallel.
+   - This avoids merge churn and unclear ownership.
+
+5. **Proof gates**
+   - CSV export: API tests plus a manual or integration check that downloads a valid CSV.
+   - Billing screen: frontend test/build plus screenshot or browser check.
+   - Demo records: seed/test reset check proving records appear only in demo mode.
+
+6. **Review and merge order**
+   - Review each branch independently.
+   - Merge the lowest-risk or prerequisite-free branch first.
+   - Rebase the remaining branches after each merge and rerun only the relevant proof gate unless shared config changed.
+   - If all three truly touch separate files, merge order should not matter.
+
+7. **Closeout**
+   - Report what changed per stream, proof run per stream, and any residue.
+   - Do not call the scenario complete until all three branches are merged and the relevant runtime or build evidence is current.
+
+The key constraint is file isolation. I would enforce that early with an ownership map, because “parallel” only stays cheap if the streams do not quietly converge on shared helpers, shared settings state, or shared seed utilities.

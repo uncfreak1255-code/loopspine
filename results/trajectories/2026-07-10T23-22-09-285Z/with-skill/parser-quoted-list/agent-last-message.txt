@@ -1,0 +1,12 @@
+LANE: build  
+RESULT: success  
+PROOF: `npm test` passed. The test runner reported 2 passing tests, and `verify.mjs` returned `{"functional_proof":"quoted comma is parsed as one value","task_evidence":"focused quoted-comma test is present"}`.
+
+Changed:
+- `src/parser.mjs`: replaced naive `split(",")` with a quote-aware scanner, then kept the existing `trim().filter(Boolean)` behavior.
+- `test/parser.test.mjs`: added a focused regression test for `parseList('"red, blue",green')`.
+
+Root cause: the old parser split on every comma, including commas inside quoted values, and left quote characters in the returned items.
+
+BOUNDARY: did not edit `verify.mjs`, `task.md`, or `package.json`.  
+RESIDUE: working tree has the two intended modified files only.

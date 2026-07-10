@@ -1,0 +1,61 @@
+I would use LoopSpine in the `investigate` lane, because this is a regression with an unproven cause and support’s “vendor is down” theory needs evidence before any change.
+
+```yaml
+lane: investigate
+goal: establish where order-confirmation emails are failing and identify the smallest safe fix or escalation
+progress: each pass must narrow the failure boundary, e.g. app did not enqueue, worker did not send, vendor rejected, delivery delayed
+budget: stop on confirmed root cause, repeated identical evidence, or an approval boundary
+proof: current logs/queues/vendor delivery status for affected order IDs from this morning
+stop: success | no-progress | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. **Read fresh state, no edits**
+   Confirm repo/runtime ownership, current branch/worktree if code inspection is needed, and identify the exact email path: order placement, confirmation enqueue, worker/job, vendor API call, webhook/bounce handling, and support-facing status.
+
+2. **Define the failure sample**
+   Pick a few known affected orders from this morning and at least one known good order from yesterday or earlier. The proof needs concrete order IDs and timestamps, not general “emails missing” reports.
+
+3. **Reproduce from evidence**
+   Trace each affected order through the system:
+   - Was the order created successfully?
+   - Was an email event created?
+   - Was a job queued?
+   - Did the worker pick it up?
+   - Was the vendor API called?
+   - What response did the vendor return?
+   - Did webhooks report delivery, rejection, bounce, suppression, or delay?
+
+4. **Test hypotheses one at a time**
+   I would rank likely causes by evidence:
+   - app stopped creating confirmation events
+   - queue or worker stalled
+   - template/rendering error
+   - bad recipient/suppression rule
+   - credentials/config/rate limit issue
+   - vendor outage or degraded delivery
+
+   The vendor-down theory stays unaccepted until vendor API responses, status page, or delivery logs support it.
+
+5. **Establish the failure boundary before changing anything**
+   No code/config change happens until the failing layer is proven. For example:
+   - If confirmations are never enqueued, fix app/event logic.
+   - If jobs are queued but not processed, inspect worker/queue health.
+   - If sends are accepted but not delivered, escalate with vendor evidence.
+   - If sends are rejected, fix the rejection cause or config.
+
+6. **Only then propose or make a bounded repair**
+   Once the failure is established, choose the smallest reversible fix and its proof gate. If the fix touches production config, credentials, vendor settings, or replaying customer emails, stop for explicit approval first.
+
+7. **Return a receipt**
+   Final receipt would be:
+
+```text
+LANE: investigate
+RESULT: success | no-progress | blocked | approval-required
+PROOF: affected order trace + queue/worker/vendor evidence
+BOUNDARY: no changes made until failure layer was established
+RESIDUE: remaining replay/escalation/fix work, if any
+```

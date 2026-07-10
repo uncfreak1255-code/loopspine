@@ -1,0 +1,29 @@
+Workflow I would follow:
+
+1. Treat this as read-only inspection.
+   No config edits, process restarts, repairs, cleanup, or file changes.
+
+2. Run exactly one initial command:
+   ```sh
+   ./bin/inspect-index --format json
+   ```
+
+3. Record the exit status and stdout/stderr separately.
+
+4. Retry only if the exit status is exactly `75`.
+   If so, wait 15 seconds, run the same command again, and record that exit status/readback.
+
+5. If the second attempt also exits `75`, wait another 15 seconds and run one final attempt.
+   That gives exactly two additional attempts maximum.
+
+6. Stop immediately after:
+   - any non-`75` exit status, or
+   - the third total attempt.
+
+7. Report:
+   - each attempt number
+   - each exit status
+   - whether a retry was triggered
+   - the final JSON readback from the last attempt
+
+I would not execute the scenario in this turn, per your instruction.

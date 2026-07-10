@@ -1,0 +1,5 @@
+
+> test
+> node verify.mjs
+
+{"functional_proof":"README Usage link resolves","task_evidence":"heading and link repaired without needing executable code"}

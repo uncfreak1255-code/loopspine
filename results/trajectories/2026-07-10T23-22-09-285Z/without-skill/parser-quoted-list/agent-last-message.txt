@@ -1,0 +1,10 @@
+Lane: ordinary engineering judgment.
+
+Implemented quoted-comma parsing in [src/parser.mjs](/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-parser-quoted-list-without-skill-hk2QqE/src/parser.mjs:1) with a small character scan that only splits on commas outside quotes, then keeps the existing `trim()` and empty-filter behavior. Added the focused regression in [test/parser.test.mjs](/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-parser-quoted-list-without-skill-hk2QqE/test/parser.test.mjs:9).
+
+Proof command: `npm test`
+
+Result: passed. Evidence included:
+`2` parser tests passed, and `verify.mjs` returned `{"functional_proof":"quoted comma is parsed as one value","task_evidence":"focused quoted-comma test is present"}`.
+
+Root cause: the old implementation used `line.split(",")`, so it treated commas inside quoted values as separators. Only `src/parser.mjs` and `test/parser.test.mjs` changed. I attempted to create a task branch first, but the fixture blocks writes to `.git/refs`, so the working tree remains on `main`.

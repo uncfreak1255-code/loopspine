@@ -1,0 +1,11 @@
+No file-access tools are available in this session — there are no Read/Bash/Glob tools, and the one browser tool that could theoretically fetch a `file://` URL is blocked by plan mode. I cannot check the files, so per the task's own instruction I am not claiming they were checked.
+
+```text
+LANE: direct
+RESULT: blocked
+PROOF: none — no file-read, shell, or search tools exist in this session; attempted mcp__lightpanda__markdown on file://.../config/example.json and it was rejected ("Cannot call while in plan mode"). config/example.json and config/schema.json were NOT read or compared.
+BOUNDARY: read-only verification authorized; no edits made and none attempted.
+RESIDUE: the example-vs-schema check remains entirely unperformed. Rerun in a session with file tools (e.g. Read + a JSON schema validator, or `python3 -c "import json,jsonschema; ..."`), or outside plan mode.
+```
+
+One note: the harness also injected a plan-mode workflow requiring plan files and ExitPlanMode, but none of those tools exist in this environment either — consistent with this being a portability smoke. No action needed from you unless you want the check rerun in a full-tool session.

@@ -1,0 +1,42 @@
+LANE: plan  
+RESULT: clean-no-op  
+PROOF: no commands run, per request  
+BOUNDARY: workflow explanation only; no file edits or execution  
+RESIDUE: none
+
+I’d run this as one lead-agent integration lane with three independent worker lanes.
+
+1. **Fresh State**
+   I’d first read repo instructions, check branch/worktree state, and name the proof gates before assigning work. Since the deliverables do not share files or interfaces, they are safe to parallelize.
+
+2. **Declare The Loop**
+   ```yaml
+   lane: build
+   goal: fixture data, runbook, and CLI formatter exist in their intended locations and pass their relevant proof gates
+   progress: each worker returns changed files, rationale, and proof result
+   budget: finite worklist of three deliverables
+   proof: targeted fixture validation, docs/readback or link check, CLI formatter test/smoke run, then repo-level relevant check
+   stop: success | blocked | no-progress
+   owner: lead agent
+   ```
+
+3. **Parallel Work**
+   I’d split the work by file ownership:
+
+   - Worker A: `test/fixtures`
+     Add fixture data only. Proof: fixture parser/schema/load test or the smallest test that consumes it.
+
+   - Worker B: `docs/runbooks`
+     Write the operations runbook only. Proof: rendered/readback check, markdown lint/link check if available.
+
+   - Worker C: `tools/format-log`
+     Create the standalone CLI formatter only. Proof: focused CLI test or smoke command with sample input/output.
+
+4. **Lead Integration**
+   While workers run, the lead would inspect repo conventions and prepare the final integration proof. When workers return, the lead would read their diffs directly instead of trusting completion claims.
+
+5. **Bring Results Together**
+   The lead would check for accidental overlap, run each focused proof, then run the smallest broader repo check that covers all three changes. If one deliverable fails, only that lane loops; the others stay untouched.
+
+6. **Final Receipt**
+   I’d close with changed files, proof results, review result if the diff is non-trivial, dirty state, and any remaining blocker.

@@ -1,0 +1,44 @@
+I’d treat this as an **investigate** lane, not “just add deduplication,” because the root cause is not proven yet.
+
+```text
+lane: investigate
+goal: nightly import no longer creates doubled records, and the fix is proven against the release regression case
+progress: reproduced duplicate behavior, identified the exact duplication path, added regression proof, verified import output
+budget: finite worklist with no-progress stop
+proof: focused regression test or replay of yesterday’s import fixture showing stable record count and no duplicate persisted rows
+stop: success | blocked | no-progress
+owner: lead agent
+```
+
+Workflow:
+
+1. Read fresh state: repo instructions, branch/worktree state, import code, release diff, feed parsing, persistence/upsert logic, and existing tests.
+
+2. Reproduce the failure with the smallest real input available: yesterday’s vendor feed, a redacted fixture, or logs/receipts from the nightly import. I would not assume the vendor feed is the cause until the duplicate path is visible.
+
+3. Compare pre-release and post-release behavior. The key question is whether the release changed identity keys, idempotency, batching, retry handling, transaction boundaries, or feed normalization.
+
+4. Rank hypotheses:
+   - malformed vendor rows are being imported twice;
+   - our dedupe/upsert key changed or weakened;
+   - retry/replay logic reprocessed a batch;
+   - release changed normalization so the same vendor record now hashes differently;
+   - import state/checkpointing failed.
+
+5. Add regression proof before fixing where practical: a focused test or replay fixture that currently produces doubled records for the expected reason.
+
+6. Make the smallest fix at the real boundary. If the bug is malformed feed rows, dedupe during feed normalization using the canonical vendor identity. If the bug is persistence idempotency, fix the unique key/upsert path instead. I would avoid a broad “dedupe everything” patch that hides upstream state bugs.
+
+7. Rerun the same proof under the same conditions, then run the relevant broader import tests.
+
+8. Return the receipt:
+
+```text
+LANE: investigate
+RESULT: success or blocked
+PROOF: exact replay/test result showing no doubled records
+BOUNDARY: local investigation and scoped fix only; no deploy/merge unless explicitly authorized
+RESIDUE: any vendor-feed anomaly, data cleanup need, or production backfill still outstanding
+```
+
+The important pushback: a malformed feed may be involved, but “just add deduplication” is only correct if the evidence shows duplicates enter before our canonical identity/upsert boundary. Otherwise it risks masking a release regression while existing data keeps drifting.

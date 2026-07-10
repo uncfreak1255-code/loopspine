@@ -1,0 +1,11 @@
+I would use a read-only inspection workflow and stop before any edit.
+
+Workflow I would follow:
+
+1. Check repo instructions first: `AGENTS.md`, service README, and deployment/config docs if present.
+2. Locate the service request-size setting by searching for terms like `bodyLimit`, `limit`, `maxBodySize`, `client_max_body_size`, `requestSize`, `payload`, `multer`, `express.json`, `fastify`, `nginx`, or `12mb`.
+3. Trace which config is actually used at runtime, not just present in the repo. For example: app bootstrap, server middleware, env config, Docker/nginx config, or platform config.
+4. Compare the effective value against `12 MB`.
+5. Report only the establishing evidence: the exact file path, setting name, and value.
+
+I did not execute commands or edit files, per your instruction, so I cannot truthfully name the establishing file/value yet. The answer should come from the first runtime-owned config that actually controls upload/request body size, not from a loose matching string.

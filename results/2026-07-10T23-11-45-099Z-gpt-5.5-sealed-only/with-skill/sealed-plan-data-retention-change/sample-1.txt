@@ -1,0 +1,67 @@
+I would treat this as a **plan lane**, not implementation. The risky part is that “exported reports” may include files customers still expect to download, so the plan has to define product behavior, data ownership, timing, and recovery before code exists.
+
+```yaml
+lane: plan
+goal: a reviewed implementation plan that defines the deletion policy, customer-facing behavior, data model changes, job behavior, proof gates, and rollback path
+progress: ambiguity removed around report lifecycle, download availability, notices, retention timing, and failure handling
+budget: finite planning worklist; stop if policy or product ownership is unclear
+proof: plan review against current report export/download flow, storage lifecycle, customer contract needs, and testable acceptance criteria
+stop: success | blocked | approval-required
+owner: lead agent responsible for final plan and implementation handoff
+```
+
+**Workflow**
+
+1. **Read Fresh State**
+   - Identify the owning repo and current export/report-download flow.
+   - Read nearby instructions and existing report lifecycle code.
+   - Map where exported files live: database rows, object storage, signed URLs, background jobs, audit logs, customer UI, admin tools.
+   - Name the initial proof gate as a plan artifact, not a code test: “Can another engineer implement this without guessing policy, ownership, or rollback?”
+
+2. **Clarify The Policy**
+   - Define exactly when the 30-day clock starts: export creation, report completion, first download, last download, or customer notification.
+   - Decide whether deletion means deleting the file only, deleting metadata, hiding from UI, revoking download links, or all of the above.
+   - Confirm whether any customer, legal, billing, compliance, or enterprise-contract exceptions exist.
+   - Decide whether existing reports are grandfathered, deleted immediately if older than 30 days, or phased out with notice.
+
+3. **Model Customer Behavior**
+   - Define what customers see before deletion: expiration date, warning state, disabled download, or re-export action.
+   - Define what happens after deletion: “expired,” “deleted,” “generate again,” support escalation, or silent disappearance.
+   - Make sure active download links cannot outlive the retention policy.
+
+4. **Design The Lifecycle**
+   - Add or confirm fields like `created_at`, `completed_at`, `expires_at`, `deleted_at`, `deletion_reason`, and storage key status.
+   - Prefer explicit expiration state over inferring deletion from missing storage objects.
+   - Design the deletion job as idempotent: safe to rerun, safe after partial failure, and auditable.
+   - Separate metadata retention from file retention if audit/history must remain.
+
+5. **Plan Migration**
+   - Backfill `expires_at` for existing reports.
+   - Decide rollout behavior for reports already older than 30 days.
+   - Consider a dry-run mode that logs deletion candidates before deleting anything.
+   - Add metrics for candidate count, deleted count, failed deletion count, and customer-visible expired reports.
+
+6. **Define Tests Before Code**
+   - Unit tests for expiration calculation.
+   - Integration tests for download authorization after expiration.
+   - Job tests for deleting eligible files and preserving ineligible ones.
+   - Migration/backfill tests for old reports.
+   - UI/API tests for expired report states.
+   - Regression test that a valid report under 30 days is still downloadable.
+
+7. **Risk Review**
+   - Main risks: deleting files too early, links surviving deletion, customer confusion, compliance exceptions, and partial deletes leaving broken state.
+   - Mitigations: dry run, staged rollout, explicit `expires_at`, idempotent job, audit logs, metrics, and rollback/re-export path.
+
+8. **Implementation Handoff**
+   - Produce a scoped task list by surface: schema, storage/job, API/download guard, UI copy/state, migration, observability, tests.
+   - Name the rollback path before implementation: disable deletion job, restore from storage backup if available, or regenerate reports if supported.
+   - Stop before code until product/legal/customer-success policy questions are answered.
+
+```text
+LANE: plan
+RESULT: success when the policy, lifecycle, migration, tests, rollout, and rollback are unambiguous
+PROOF: reviewed implementation plan with executable acceptance criteria
+BOUNDARY: planning only; no commands, edits, migrations, or deletion behavior
+RESIDUE: policy decisions needed around existing reports, customer notice, and any retention exceptions
+```

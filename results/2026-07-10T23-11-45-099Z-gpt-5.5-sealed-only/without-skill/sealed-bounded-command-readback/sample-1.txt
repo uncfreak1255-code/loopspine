@@ -1,0 +1,20 @@
+I would use a bounded read-only inspection workflow.
+
+1. Confirm the current directory contains the target command path: `./bin/inspect-index`.
+2. Run exactly once:
+   ```sh
+   ./bin/inspect-index --format json
+   ```
+3. Record the exit status and stdout/stderr separately.
+4. If and only if the exit status is `75`, wait 15 seconds, then retry.
+5. If the second attempt also exits `75`, wait another 15 seconds, then run one final retry.
+6. Stop after at most three total attempts: the initial run plus exactly two additional attempts allowed only for status `75`.
+7. Do not retry for any other status.
+8. Do not modify files, configuration, services, processes, environment, or dependencies.
+9. Report:
+   - every attempt number
+   - every exit status
+   - whether a retry was triggered
+   - the final JSON stdout readback from the last attempt
+
+I would not execute repair steps, restart anything, or interpret a non-JSON result as something to fix. If the final output is invalid JSON, I would report that as the final readback problem rather than trying to correct it.

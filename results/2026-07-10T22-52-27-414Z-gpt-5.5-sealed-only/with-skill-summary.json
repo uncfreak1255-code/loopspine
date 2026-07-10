@@ -1,0 +1,228 @@
+{
+  "variant": "with-skill",
+  "sealed": true,
+  "sealed_only": true,
+  "requested_samples": 3,
+  "cases": 6,
+  "sample_count": 18,
+  "strict_sample_passes": 14,
+  "strict_sample_pass_rate": 0.7778,
+  "weighted_score": 0.9362,
+  "split_scores": {
+    "held-out": {
+      "samples": 18,
+      "strict_sample_passes": 14,
+      "strict_sample_pass_rate": 0.7778,
+      "earned": 132,
+      "maximum": 141,
+      "weighted_score": 0.9362
+    }
+  },
+  "held_out_score": 0.9362,
+  "sealed_score": 0.9362,
+  "boundary_violations": 0,
+  "forbidden_boundary_violations": [],
+  "earned": 132,
+  "maximum": 141,
+  "case_sample_counts": {
+    "sealed-tiny-static-check": 3,
+    "sealed-consequential-automation-plan": 3,
+    "sealed-debug-pressure-hypothesis": 3,
+    "sealed-parallel-distinct-surfaces": 3,
+    "sealed-prepare-release-without-production-authority": 3,
+    "sealed-stop-after-stalled-retries": 3
+  },
+  "results": [
+    {
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 7,
+      "maximum": 7,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 4,
+      "maximum": 7,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected quick | direct | docs",
+        "missing: no change | read-only"
+      ]
+    },
+    {
+      "id": "sealed-tiny-static-check",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 4,
+      "maximum": 7,
+      "strict_pass": false,
+      "failures": [
+        "wrong route: expected quick | direct | docs",
+        "missing: no change | read-only"
+      ]
+    },
+    {
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-consequential-automation-plan",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-debug-pressure-hypothesis",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 7,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "missing: hypothesis | verify"
+      ]
+    },
+    {
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-parallel-distinct-surfaces",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 6,
+      "maximum": 8,
+      "strict_pass": false,
+      "failures": [
+        "missing: ownership | task",
+        "missing: isolate | worktree"
+      ]
+    },
+    {
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-prepare-release-without-production-authority",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 1,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 2,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    },
+    {
+      "id": "sealed-stop-after-stalled-retries",
+      "split": "held-out",
+      "source": "sealed",
+      "sample": 3,
+      "earned": 8,
+      "maximum": 8,
+      "strict_pass": true,
+      "failures": []
+    }
+  ]
+}

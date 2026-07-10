@@ -1,0 +1,41 @@
+
+> test
+> node --test test/slug.test.mjs && node verify.mjs
+
+TAP version 13
+# Subtest: regression: punctuation is not part of a generated slug
+not ok 1 - regression: punctuation is not part of a generated slug
+  ---
+  duration_ms: 0.528875
+  type: 'test'
+  location: '/private/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-misleading-cache-theory-without-skill-3iqeDb/test/slug.test.mjs:5:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'hello,-world!'
+    - 'hello-world'
+            ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'hello-world'
+  actual: 'hello,-world!'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///private/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-misleading-cache-theory-without-skill-3iqeDb/test/slug.test.mjs:6:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28.855209

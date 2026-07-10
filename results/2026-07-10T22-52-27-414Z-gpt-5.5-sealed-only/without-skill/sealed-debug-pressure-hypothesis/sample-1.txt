@@ -1,0 +1,41 @@
+I’d treat this as an incident/debugging workflow, not a quick dedupe patch.
+
+The claim “vendor feed is obviously malformed” might be true, but I would verify it before coding around it. Duplicates after a release could come from the feed, importer retry behavior, idempotency changes, cursor/window logic, transaction boundaries, or a deploy/config mismatch.
+
+Workflow I’d follow:
+
+1. **Freeze the facts**
+   - Identify the release window and the first duplicated import run.
+   - Compare counts before/after the release.
+   - Pull a small sample of duplicated records and note their source identifiers, timestamps, import batch IDs, and payload hashes.
+
+2. **Confirm where duplication enters**
+   - Check whether the vendor feed itself contains duplicate source IDs.
+   - Check whether our importer read the same feed/window twice.
+   - Check whether records were inserted twice despite identical source keys.
+   - Check whether a new transform changed the dedupe key or uniqueness assumptions.
+
+3. **Assess customer/data impact**
+   - Estimate affected record count.
+   - Determine whether downstream systems consumed the duplicates.
+   - Decide whether cleanup is required before or after the code fix.
+
+4. **Find the smallest correct fix**
+   - If the vendor feed is malformed: add defensive dedupe at the import boundary using the vendor’s stable source key.
+   - If importer idempotency regressed: restore idempotency and add a regression test.
+   - If both are possible: keep the importer idempotent and tolerate duplicate feed rows, but do not hide unrelated retry/window bugs.
+
+5. **Add proof**
+   - A focused fixture with duplicated vendor rows.
+   - A regression test for re-running the same import batch/window.
+   - A check that legitimate distinct records are not collapsed.
+
+6. **Clean up existing data deliberately**
+   - Write or review a cleanup plan separately from the importer patch.
+   - Prefer a dry-run report first: what would be deleted/merged, why, and how to roll back.
+
+7. **Ship with monitoring**
+   - Add/import log counts for raw feed rows, deduped rows, inserted rows, updated rows, and skipped duplicates.
+   - Verify the next run or replay against yesterday’s feed before calling it fixed.
+
+The likely implementation may still be deduplication, but I would not “just add deduplication” until the duplicate key and failure point are proven. The proof gate would be: replay the bad feed or a representative fixture and show one canonical record per vendor source ID, with no loss of valid distinct records.

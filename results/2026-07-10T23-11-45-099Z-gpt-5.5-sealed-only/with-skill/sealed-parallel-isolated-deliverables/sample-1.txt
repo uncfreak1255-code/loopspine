@@ -1,0 +1,35 @@
+LANE: `build`
+
+I would keep one lead agent responsible for integration and final proof, then split the three independent deliverables into parallel workers because they do not share files or interfaces.
+
+```yaml
+goal: fixture data, runbook, and CLI formatter are present, scoped, and verified together
+progress: each worker returns changed files, local proof, and any assumptions
+budget: three independent work items, stop on no-progress or integration conflict
+proof: final readback of changed files plus the repo's relevant test/build/check command
+stop: success | blocked | approval-required
+owner: lead agent
+```
+
+Workflow:
+
+1. Lead reads fresh repo state first: repo instructions, branch/dirty state, relevant existing patterns for `test/fixtures`, `docs/runbooks`, and `tools`.
+2. Lead assigns three bounded workers:
+   - Worker A: add fixture data only under `test/fixtures`; return files changed and fixture shape rationale.
+   - Worker B: write the operations runbook only under `docs/runbooks`; return file path and operational assumptions.
+   - Worker C: create standalone CLI formatter only under `tools/format-log`; return usage, entrypoint, and local proof.
+3. Workers operate in parallel because ownership is non-overlapping. If edits were actually being made, I would use separate worktrees or otherwise ensure they cannot collide.
+4. While workers run, the lead reviews existing repo conventions or prepares the integration checklist, without touching their files.
+5. Lead merges the outputs mentally or in the main workspace, checks for naming/style consistency, verifies no hidden interface coupling appeared, and runs the shared proof gate.
+6. If one deliverable fails proof, only that worker loops again. The other two stay fixed unless integration reveals a real cross-cutting issue.
+7. Final receipt reports changed files by deliverable, proof result, review result, and residue.
+
+Receipt shape I would return after execution:
+
+```text
+LANE: build
+RESULT: success | blocked
+PROOF: <exact repo check and result>
+BOUNDARY: local scoped files only; no push/PR/merge/deploy unless authorized
+RESIDUE: none, or the specific remaining blocker
+```

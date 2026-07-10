@@ -1,0 +1,8 @@
+LANE: direct  
+RESULT: success  
+PROOF: `npm test` passed. Verifier output: `README Usage link resolves`.
+
+Changed [README.md](/private/var/folders/bp/y_vhfd4j1bl8v854v_z2krw80000gn/T/loopspine-docs-heading-link-with-skill-2JJK02/README.md:3): renamed `## Getting Started` to `## Usage` and fixed `docs/usgae.md` to `docs/usage.md`.
+
+BOUNDARY: README documentation only; no JavaScript, package metadata, verifier, or task files touched.  
+RESIDUE: `README.md` is modified; no other dirty files.
