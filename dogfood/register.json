@@ -13,6 +13,23 @@
       "time_to_proof_seconds": 73,
       "incorrect_stop": false,
       "proof": "Fresh gpt-5.5 LoopSpine run 019f5329-18c6-7302-9551-65607145b400: GitHub main resolved to 6230d81b6cf918a76c9a3389cbe43175e316cd81; pinned and main README returned HTTP 200 and matched; demo GIF returned HTTP 200 image/gif, 83018 bytes, GIF89a magic; receipt success=true with proof and independent review passing; review verdict=pass with zero findings; pre-record dogfood report was honestly 0/10; final git status clean",
+      "proof_references": [
+        {
+          "type": "commit",
+          "url": "https://github.com/uncfreak1255-code/loopspine/commit/6230d81b6cf918a76c9a3389cbe43175e316cd81",
+          "commit": "6230d81b6cf918a76c9a3389cbe43175e316cd81"
+        },
+        {
+          "type": "demo-receipt",
+          "url": "https://github.com/uncfreak1255-code/loopspine/blob/6230d81b6cf918a76c9a3389cbe43175e316cd81/demo/latest/receipt.json",
+          "commit": "6230d81b6cf918a76c9a3389cbe43175e316cd81"
+        },
+        {
+          "type": "independent-review",
+          "url": "https://github.com/uncfreak1255-code/loopspine/blob/6230d81b6cf918a76c9a3389cbe43175e316cd81/demo/latest/06-review.json",
+          "commit": "6230d81b6cf918a76c9a3389cbe43175e316cd81"
+        }
+      ],
       "recorded_at": "2026-07-11T21:52:12.610Z"
     },
     {

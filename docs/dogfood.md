@@ -8,7 +8,9 @@ global skill, profile, hook, or agent configuration.
 1. Choose a real task with an observable proof gate.
 2. Invoke LoopSpine explicitly from this clone or a repo-local skill link.
 3. Let the agent continue until proof or a named stop condition.
-4. Save the completed run using `dogfood/completed-run-template.json`.
+4. Save the completed run using `dogfood/completed-run-template.json`. Every
+   proof reference must use an HTTPS URL pinned to the full commit that was
+   inspected.
 5. Record it:
 
 ```bash
@@ -27,8 +29,9 @@ runtime readback, PR check, or other exact receipt.
 - **Incorrect-stop rate:** completed attempts where the agent stopped despite a
   useful authorized next action remaining.
 
-The report stays `Pending` until real tasks are recorded. No synthetic demo or
-benchmark case counts toward the ten-task pilot.
+The report shows progress immediately but keeps performance rates `Pending`
+until at least three real tasks are recorded. No synthetic demo or benchmark
+case counts toward the ten-task pilot.
 
 ## Promotion Gate
 

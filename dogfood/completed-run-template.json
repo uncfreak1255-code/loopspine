@@ -7,5 +7,12 @@
   "sawyer_interventions": 0,
   "time_to_proof_seconds": 300,
   "incorrect_stop": false,
-  "proof": "Exact test, receipt, PR, or runtime readback"
+  "proof": "Plain-language summary of the exact test, receipt, PR, or runtime readback",
+  "proof_references": [
+    {
+      "type": "commit",
+      "url": "https://github.com/owner/repository/commit/0123456789abcdef0123456789abcdef01234567",
+      "commit": "0123456789abcdef0123456789abcdef01234567"
+    }
+  ]
 }
