@@ -1,5 +1,7 @@
 # LoopSpine
 
+[![CI](https://github.com/uncfreak1255-code/loopspine/actions/workflows/ci.yml/badge.svg)](https://github.com/uncfreak1255-code/loopspine/actions/workflows/ci.yml)
+
 **Your coding agent keeps going without skipping the proof.**
 
 LoopSpine is one portable Agent Skill for end-to-end software work. It routes a
