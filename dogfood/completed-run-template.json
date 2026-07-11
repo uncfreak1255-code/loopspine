@@ -1,0 +1,11 @@
+{
+  "id": "DF-01",
+  "repo": "owner/repository",
+  "task": "One real task handled explicitly with LoopSpine",
+  "loopspine_invoked": true,
+  "verified": true,
+  "sawyer_interventions": 0,
+  "time_to_proof_seconds": 300,
+  "incorrect_stop": false,
+  "proof": "Exact test, receipt, PR, or runtime readback"
+}

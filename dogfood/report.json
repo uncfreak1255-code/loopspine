@@ -1,0 +1,8 @@
+{
+  "completed_tasks": 0,
+  "target_tasks": 10,
+  "verified_completion_rate": null,
+  "sawyer_intervention_rate": null,
+  "median_time_to_proof_minutes": null,
+  "incorrect_stop_rate": null
+}

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add a reproducible bug-to-proof demo with independent review and animated GIF.
+- Add the ten-task dogfood register and four-metric report.
+- Document repo-local piloting and narrow routing over existing specialists.
+
 ## 0.2.0 - 2026-07-10
 
 - Keep loop packets internal unless their detail helps the user.

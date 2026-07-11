@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "model": "gpt-5.5",
+  "codex_version": "codex-cli 0.143.0",
+  "skill_sha256": "5f58a9f74a57569f3554e33d24508464ede7bb50589a5eb24e38073fe2d905a6",
+  "duration_seconds": 51.1,
+  "sawyer_interventions": 0,
+  "incorrect_stop": false,
+  "changed_files": [
+    "src/parser.mjs",
+    "test/parser.test.mjs"
+  ],
+  "phases": {
+    "reproduce": {
+      "passed": true,
+      "exit_code": 1
+    },
+    "regression_test": {
+      "passed": true
+    },
+    "repair": {
+      "passed": true
+    },
+    "proof": {
+      "passed": true,
+      "command": "npm test"
+    },
+    "independent_proof": {
+      "passed": true,
+      "command": "node verify.mjs"
+    },
+    "review": {
+      "passed": true,
+      "findings": []
+    }
+  },
+  "receipt": {
+    "lane": "build",
+    "result": "success",
+    "proof": "npm test and node verify.mjs passed; independent review found no issues",
+    "boundary": "isolated fixture only; no publish, merge, deploy, or global configuration",
+    "residue": "none"
+  },
+  "success": true
+}
