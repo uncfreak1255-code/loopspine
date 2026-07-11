@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "target_tasks": 10,
+  "tasks": [
+    { "id": "DF-01", "status": "pending" },
+    { "id": "DF-02", "status": "pending" },
+    { "id": "DF-03", "status": "pending" },
+    { "id": "DF-04", "status": "pending" },
+    { "id": "DF-05", "status": "pending" },
+    { "id": "DF-06", "status": "pending" },
+    { "id": "DF-07", "status": "pending" },
+    { "id": "DF-08", "status": "pending" },
+    { "id": "DF-09", "status": "pending" },
+    { "id": "DF-10", "status": "pending" }
+  ]
+}

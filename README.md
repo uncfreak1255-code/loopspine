@@ -1,5 +1,7 @@
 # LoopSpine
 
+[![CI](https://github.com/uncfreak1255-code/loopspine/actions/workflows/ci.yml/badge.svg)](https://github.com/uncfreak1255-code/loopspine/actions/workflows/ci.yml)
+
 **Your coding agent keeps going without skipping the proof.**
 
 LoopSpine is one portable Agent Skill for end-to-end software work. It routes a
@@ -8,6 +10,14 @@ loops, then stops at proof, no progress, or a real approval boundary.
 
 It is not another catalog of prompts. It is the control loop between intent and
 a trustworthy result.
+
+![LoopSpine bug-to-proof demo](demo/loopspine-demo.gif)
+
+This recorded run reproduced a parser bug, added the regression test, repaired
+the implementation, passed two proof commands, and cleared a fresh read-only
+review in about a minute with zero Sawyer interventions. Inspect the
+[receipt](demo/latest/receipt.json) and [review](demo/latest/06-review.json), or
+reproduce it with `npm run demo && npm run demo:render`.
 
 ## The Promise
 
@@ -58,18 +68,33 @@ BOUNDARY: PR prepared; merge and deploy not authorized
 RESIDUE: none
 ```
 
-## Install From A Clone
+## Pilot From A Clone
 
-LoopSpine follows the open Agent Skills layout. From this repository root:
+Keep the first installation inside one test repository:
 
 ```bash
-mkdir -p "$HOME/.agents/skills"
-ln -s "$PWD/skills/loopspine" "$HOME/.agents/skills/loopspine"
+export LOOPSPINE=/absolute/path/to/loopspine
+mkdir -p .agents/skills
+ln -s "$LOOPSPINE/skills/loopspine" .agents/skills/loopspine
 ```
 
 The repository also contains Codex and Claude Code plugin manifests for local
-plugin development. Installation should remain repo-local or personal until the
-benchmark and release checks pass in your environment.
+plugin development. Leave global skills and specialist workflows unchanged
+during the ten-task pilot. See [narrow integration](docs/integration.md).
+
+## Dogfood Ten Real Tasks
+
+Synthetic benchmarks and the demo do not count toward promotion. Record ten real
+tasks and let the report calculate the four operating metrics:
+
+```bash
+npm run dogfood:report
+npm run dogfood:record -- /path/to/completed-run.json
+```
+
+The public [dogfood report](dogfood/report.md) starts at `0/10` and stays
+`Pending` until evidence is recorded. See the [pilot contract](docs/dogfood.md)
+for metric definitions and the narrow promotion gate.
 
 ## Benchmark It
 
@@ -117,8 +142,9 @@ and the [independent release review](docs/release-review.md) for the final audit
 ## Status
 
 `0.2.0` passes the local sealed, execution, plugin, and skill validation gates.
-It also loads in Claude Code with Fable. It is not globally installed or
-published by this workspace; GitHub popularity is never guaranteed by an eval.
+It also loads in Claude Code with Fable and is public at
+[uncfreak1255-code/loopspine](https://github.com/uncfreak1255-code/loopspine).
+It is not globally installed; GitHub popularity is never guaranteed by an eval.
 
 ## License
 

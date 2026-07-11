@@ -18,6 +18,8 @@ const codex = readJson(".codex-plugin/plugin.json");
 const claude = readJson(".claude-plugin/plugin.json");
 const evals = readJson("evals/evals.json");
 const sealed = readJson("evals/sealed-v2.json");
+const demoReceipt = readJson("demo/latest/receipt.json");
+const dogfood = readJson("dogfood/register.json");
 const skillPath = path.join(root, "skills", "loopspine", "SKILL.md");
 const skill = fs.existsSync(skillPath) ? fs.readFileSync(skillPath, "utf8") : "";
 
@@ -55,8 +57,19 @@ for (const item of sealedCases) {
 if (sealed?.suite !== "loopspine-sealed-v2") errors.push("sealed eval suite id is invalid");
 if (sealed?.authored_by !== "independent-terra") errors.push("sealed eval author receipt is invalid");
 if (sealedCases.length < 6) errors.push("sealed eval pack must contain at least six held-out cases");
+if (demoReceipt?.success !== true || demoReceipt?.sawyer_interventions !== 0 || demoReceipt?.incorrect_stop !== false) {
+  errors.push("demo receipt must prove success with zero interventions and no incorrect stop");
+}
+if (!demoReceipt?.phases || !Object.values(demoReceipt.phases).every((phase) => phase.passed === true)) {
+  errors.push("demo receipt must pass every execution phase");
+}
+if (dogfood?.target_tasks !== 10 || dogfood?.tasks?.length !== 10) errors.push("dogfood register must contain ten target tasks");
+const gifPath = path.join(root, "demo", "loopspine-demo.gif");
+if (!fs.existsSync(gifPath) || !fs.readFileSync(gifPath).subarray(0, 6).toString().startsWith("GIF89")) {
+  errors.push("demo GIF is missing or invalid");
+}
 
-for (const relativePath of ["README.md", "LICENSE", "docs/design.md", "docs/benchmark-method.md", "docs/benchmark-revisions.md"]) {
+for (const relativePath of ["README.md", "LICENSE", "docs/design.md", "docs/benchmark-method.md", "docs/benchmark-revisions.md", "docs/dogfood.md", "docs/integration.md"]) {
   if (!fs.existsSync(path.join(root, relativePath))) errors.push(`missing ${relativePath}`);
 }
 

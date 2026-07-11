@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
 npm-debug.log*
+demo/frames/
 
 # Keep local iteration history on disk; publish only the named release receipts.
 results/*
