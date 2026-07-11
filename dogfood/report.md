@@ -1,6 +1,8 @@
 # Dogfood Report
 
-Progress: **0/10 real tasks**
+Progress: **1/10 real tasks**
+
+Performance rates remain **Pending** until 3 real tasks are recorded.
 
 | Metric | Result |
 |---|---:|

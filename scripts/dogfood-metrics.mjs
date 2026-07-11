@@ -1,3 +1,23 @@
+const MINIMUM_PUBLIC_SAMPLES = 3;
+
+function isPinnedProofReference(reference) {
+  if (!reference?.type || !/^[0-9a-f]{40}$/.test(reference?.commit || "")) return false;
+  try {
+    const url = new URL(reference.url);
+    if (url.protocol !== "https:") return false;
+    const escapedCommit = reference.commit.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (url.hostname === "github.com") {
+      return new RegExp(`/(?:commit|blob)/${escapedCommit}(?:/|$)`).test(url.pathname);
+    }
+    if (url.hostname === "raw.githubusercontent.com") {
+      return new RegExp(`^/[^/]+/[^/]+/${escapedCommit}/`).test(url.pathname);
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 export function calculateDogfoodMetrics(register) {
   if (register.target_tasks !== 10 || !Array.isArray(register.tasks) || register.tasks.length !== 10) {
     throw new Error("dogfood register must contain exactly ten target tasks");
@@ -16,11 +36,23 @@ export function calculateDogfoodMetrics(register) {
     if (!Number.isFinite(task.time_to_proof_seconds) || task.time_to_proof_seconds <= 0 || !task.proof) {
       throw new Error(`${task.id}: completed tasks require positive time_to_proof_seconds and proof`);
     }
+    if (!Array.isArray(task.proof_references) || !task.proof_references.length) {
+      throw new Error(`${task.id}: completed tasks require proof_references`);
+    }
+    for (const reference of task.proof_references) {
+      if (!isPinnedProofReference(reference)) {
+        throw new Error(`${task.id}: proof_references require type and an HTTPS url pinned to the full commit`);
+      }
+    }
   }
+  const base = {
+    completed_tasks: completed.length,
+    target_tasks: 10,
+    minimum_public_samples: MINIMUM_PUBLIC_SAMPLES
+  };
   if (!completed.length) {
     return {
-      completed_tasks: 0,
-      target_tasks: 10,
+      ...base,
       verified_completion_rate: null,
       sawyer_intervention_rate: null,
       median_time_to_proof_minutes: null,
@@ -31,9 +63,17 @@ export function calculateDogfoodMetrics(register) {
   const middle = Math.floor(durations.length / 2);
   const medianSeconds = durations.length % 2 ? durations[middle] : (durations[middle - 1] + durations[middle]) / 2;
   const ratio = (count) => Number((count / completed.length).toFixed(4));
+  if (completed.length < MINIMUM_PUBLIC_SAMPLES) {
+    return {
+      ...base,
+      verified_completion_rate: null,
+      sawyer_intervention_rate: null,
+      median_time_to_proof_minutes: null,
+      incorrect_stop_rate: null
+    };
+  }
   return {
-    completed_tasks: completed.length,
-    target_tasks: 10,
+    ...base,
     verified_completion_rate: ratio(completed.filter((task) => task.verified).length),
     sawyer_intervention_rate: ratio(completed.filter((task) => task.sawyer_interventions > 0).length),
     median_time_to_proof_minutes: Number((medianSeconds / 60).toFixed(2)),
@@ -46,6 +86,9 @@ export function renderDogfoodMarkdown(metrics) {
   const time = metrics.median_time_to_proof_minutes == null ? "Pending" : `${metrics.median_time_to_proof_minutes} min`;
   return `# Dogfood Report\n\n` +
     `Progress: **${metrics.completed_tasks}/${metrics.target_tasks} real tasks**\n\n` +
+    (metrics.completed_tasks < metrics.minimum_public_samples
+      ? `Performance rates remain **Pending** until ${metrics.minimum_public_samples} real tasks are recorded.\n\n`
+      : "") +
     `| Metric | Result |\n|---|---:|\n` +
     `| Verified completion rate | ${percent(metrics.verified_completion_rate)} |\n` +
     `| Sawyer intervention rate | ${percent(metrics.sawyer_intervention_rate)} |\n` +
