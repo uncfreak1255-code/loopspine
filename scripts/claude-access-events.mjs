@@ -37,6 +37,58 @@ export function parseClaudeStream(rawOutput) {
   return events;
 }
 
+export function verifyLoopSpineReceipt({ text, expectedLane, expectedProofTerms = [] }) {
+  const requiredFields = ["LANE", "RESULT", "PROOF", "BOUNDARY", "RESIDUE"];
+  const lines = String(text).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  if (/^```/.test(lines[0] || "") && lines.at(-1) === "```") {
+    lines.shift();
+    lines.pop();
+  }
+  if (lines.length !== requiredFields.length) {
+    throw new Error("LoopSpine receipt must contain exactly five field lines");
+  }
+  const fields = {};
+  for (let index = 0; index < requiredFields.length; index += 1) {
+    const field = requiredFields[index];
+    const match = lines[index].match(new RegExp(`^${field}:\\s*(\\S.*)$`));
+    if (!match) throw new Error(`LoopSpine receipt is missing ordered ${field}`);
+    fields[field] = match[1].trim();
+  }
+  if (expectedLane && fields.LANE !== expectedLane) {
+    throw new Error(`LoopSpine receipt lane must be ${expectedLane}`);
+  }
+  if (!/^(?:success|clean-no-op)$/.test(fields.RESULT)) {
+    throw new Error("LoopSpine receipt result is not successful");
+  }
+  for (const term of expectedProofTerms) {
+    if (!fields.PROOF.includes(term)) throw new Error(`LoopSpine receipt proof is missing ${term}`);
+  }
+  return fields;
+}
+
+export function verifyClaudeIsolation({ rawOutput, pluginRoot }) {
+  const canonicalRoot = canonicalPath(pluginRoot, "plugin root");
+  const events = parseClaudeStream(rawOutput).map(({ event }) => event);
+  const init = events.find((event) => event.type === "system" && event.subtype === "init");
+  if (!init) throw new Error("Claude stream is missing the init event");
+  if (!Array.isArray(init.plugins) || init.plugins.length !== 1) {
+    throw new Error("Claude init event must contain only the LoopSpine plugin");
+  }
+  const [plugin] = init.plugins;
+  if (plugin?.name !== "loopspine" || typeof plugin.path !== "string"
+    || canonicalPath(plugin.path, "loaded plugin path") !== canonicalRoot) {
+    throw new Error("Claude init event does not contain the expected isolated LoopSpine plugin");
+  }
+  const hookEvents = events.filter((event) => event.type === "system" && /^hook_/.test(event.subtype || ""));
+  if (hookEvents.length) throw new Error("Claude stream contains hook events during the isolated smoke");
+  return {
+    plugin_name: plugin.name,
+    plugin_root: canonicalRoot,
+    loaded_plugin_count: 1,
+    hook_event_count: 0
+  };
+}
+
 function verifyClaudeSession(events, canonicalRoot) {
   const sessionIds = new Set(events.map((event) => event.session_id).filter((value) => typeof value === "string" && value));
   if (sessionIds.size !== 1) throw new Error("Claude stream must contain exactly one session id");

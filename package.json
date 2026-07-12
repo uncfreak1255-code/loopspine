@@ -18,7 +18,8 @@
     "demo:render": "node scripts/render-demo.mjs",
     "dogfood:report": "node scripts/dogfood-report.mjs --write",
     "dogfood:record": "node scripts/record-dogfood.mjs",
-    "probe:installed-plugin": "node scripts/run-installed-plugin-probe.mjs"
+    "probe:installed-plugin": "node scripts/run-installed-plugin-probe.mjs",
+    "smoke:trigger-selection": "node scripts/run-trigger-selection-smoke.mjs"
   },
   "engines": {
     "node": ">=20"
