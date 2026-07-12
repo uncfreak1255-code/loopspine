@@ -39,6 +39,9 @@ answer does not prove the agent can execute the loop.
   gains justify the increase.
 - Use at least three samples per case before making a public numerical claim.
 - At least three fixture-repository trajectories pass their independent proof.
+- For a version-to-version sealed regression gate, pass the frozen prior skill
+  with `--baseline-skill-file`; the generic no-skill control is not a substitute
+  for the released baseline.
 
 ## Anti-Overfit Rule
 

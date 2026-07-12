@@ -9,7 +9,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const variants = ["without-skill", "with-skill"];
 
 function usage() {
-  console.error("Usage: node run-benchmark.mjs [--pilot] [--sealed|--sealed-only] [--sealed-file PATH] [--samples N] [--seed VALUE] [--model NAME]");
+  console.error("Usage: node run-benchmark.mjs [--pilot] [--sealed|--sealed-only] [--sealed-file PATH] [--baseline-skill-file PATH] [--samples N] [--seed VALUE] [--model NAME]");
 }
 
 function fail(message, code = 2) {
@@ -18,7 +18,7 @@ function fail(message, code = 2) {
 }
 
 function parseArgs(argv) {
-  const options = { pilot: false, sealed: false, sealedOnly: false, sealedFile: path.join("evals", "sealed-v2.json"), samples: null, seed: "loopspine-v2", model: process.env.LOOPSPINE_MODEL || "gpt-5.5" };
+  const options = { pilot: false, sealed: false, sealedOnly: false, sealedFile: path.join("evals", "sealed-v2.json"), baselineSkillFile: null, samples: null, seed: "loopspine-v2", model: process.env.LOOPSPINE_MODEL || "gpt-5.5" };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--help") {
@@ -28,7 +28,7 @@ function parseArgs(argv) {
     if (arg === "--pilot") options.pilot = true;
     else if (arg === "--sealed") options.sealed = true;
     else if (arg === "--sealed-only") options.sealedOnly = true;
-    else if (arg === "--samples" || arg === "--seed" || arg === "--model" || arg === "--sealed-file") {
+    else if (arg === "--samples" || arg === "--seed" || arg === "--model" || arg === "--sealed-file" || arg === "--baseline-skill-file") {
       const value = argv[index + 1];
       if (!value || value.startsWith("--")) fail(`Missing value for ${arg}`);
       if (arg === "--samples") {
@@ -36,6 +36,7 @@ function parseArgs(argv) {
         options.samples = Number(value);
       } else if (arg === "--seed") options.seed = value;
       else if (arg === "--sealed-file") options.sealedFile = value;
+      else if (arg === "--baseline-skill-file") options.baselineSkillFile = value;
       else options.model = value;
       index += 1;
     } else {
@@ -125,6 +126,18 @@ try {
 } catch (error) {
   fail(`Missing execution evidence: ${skillPath}: ${error.message}`);
 }
+let baselineInstructions = "You are a capable senior coding agent. Choose a sensible workflow for the software task. Preserve ordinary safety boundaries and do not execute the scenario.";
+let baselineSkillPath = null;
+if (options.baselineSkillFile) {
+  baselineSkillPath = path.isAbsolute(options.baselineSkillFile)
+    ? options.baselineSkillFile
+    : path.resolve(root, options.baselineSkillFile);
+  try {
+    baselineInstructions = fs.readFileSync(baselineSkillPath, "utf8");
+  } catch (error) {
+    fail(`Missing baseline skill evidence: ${baselineSkillPath}: ${error.message}`);
+  }
+}
 
 const startedAt = new Date().toISOString();
 const stamp = startedAt.replace(/[:.]/g, "-");
@@ -141,6 +154,7 @@ const provenance = {
   sealed: options.sealed || options.sealedOnly,
   sealed_only: options.sealedOnly,
   skill_sha256: hashFile(skillPath),
+  baseline_skill: baselineSkillPath ? { path: baselineSkillPath, sha256: hashFile(baselineSkillPath) } : null,
   eval_files: [development, ...(sealed ? [sealed] : [])].map(({ relativePath, sha256, source }) => ({ path: relativePath, source, sha256 })),
   command_args: process.argv.slice(2),
   reasoning_effort: process.env.LOOPSPINE_REASONING_EFFORT || "provider-default",
@@ -155,7 +169,6 @@ const provenance = {
 };
 fs.writeFileSync(path.join(runDir, "provenance.json"), `${JSON.stringify(provenance, null, 2)}\n`);
 
-const baseline = "You are a capable senior coding agent. Choose a sensible workflow for the software task. Preserve ordinary safety boundaries and do not execute the scenario.";
 const timings = [];
 const random = createRandom(options.seed);
 
@@ -166,7 +179,7 @@ for (const item of cases) {
       const outputDir = path.join(runDir, variant, item.id);
       const outputPath = path.join(outputDir, `sample-${sample}.txt`);
       fs.mkdirSync(outputDir, { recursive: true });
-      const instructions = variant === "with-skill" ? skill : baseline;
+      const instructions = variant === "with-skill" ? skill : baselineInstructions;
       const prompt = `${instructions}\n\n# Scenario\n${item.prompt}\n\nExplain the workflow you would follow. Do not execute commands or edit files.`;
       const started = Date.now();
       console.log(`[${variant}] ${item.id} sample ${sample}/${options.samples}`);
