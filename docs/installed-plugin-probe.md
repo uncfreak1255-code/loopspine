@@ -44,3 +44,23 @@ A passing probe proves that Claude Code's installed-plugin stream exposes an
 auditable file-access event. It does not prove that LoopSpine automatically
 chooses an adaptive reference, that tiny tasks avoid it, or that the reference
 improves task outcomes. Those remain separate candidate-v3 gates.
+
+## Explicit Trigger Selection Smoke
+
+Run the paired read-only smoke with:
+
+```bash
+npm run smoke:trigger-selection
+```
+
+Both cases load the plugin through `--plugin-dir` and verify the same
+`package.json` read. The trigger case explicitly invokes LoopSpine and must
+return a valid five-field compact receipt before any short explanatory context.
+The non-trigger case does not invoke LoopSpine and must return only the exact
+package name and version. Both cases
+expose only the `Read` tool, load no user or project settings, reject extra
+plugins or hook events, disable MCP servers, and require unchanged tracked
+state.
+
+This smoke proves the explicit pilot boundary. It does not claim automatic
+selection, task-quality improvement, global readiness, or hook readiness.

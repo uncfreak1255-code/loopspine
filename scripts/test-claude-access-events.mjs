@@ -4,7 +4,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { verifyClaudeNoReadEvent, verifyClaudeReadEvent } from "./claude-access-events.mjs";
+import {
+  verifyClaudeIsolation,
+  verifyClaudeNoReadEvent,
+  verifyClaudeReadEvent,
+  verifyLoopSpineReceipt
+} from "./claude-access-events.mjs";
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "loopspine-access-events-"));
 
@@ -92,6 +97,83 @@ try {
   assert.equal(verified.reference_sha256, sha256(referenceContent));
   assert.ok(verified.tool_use_event_index < verified.tool_result_event_index);
   assert.ok(verified.tool_result_event_index < verified.result_event_index);
+
+  const isolated = verifyClaudeIsolation({
+    rawOutput: eventStream({ pluginRoot, referencePath, referenceContent }),
+    pluginRoot
+  });
+  assert.equal(isolated.loaded_plugin_count, 1);
+  assert.equal(isolated.hook_event_count, 0);
+
+  const receipt = verifyLoopSpineReceipt({
+    text: "LANE: direct\nRESULT: success\nPROOF: package loopspine version 0.2.0\nBOUNDARY: read-only\nRESIDUE: none",
+    expectedLane: "direct",
+    expectedProofTerms: ["loopspine", "0.2.0"]
+  });
+  assert.equal(receipt.RESULT, "success");
+  assert.throws(
+    () => verifyLoopSpineReceipt({
+      text: "I cannot provide LANE:, RESULT:, PROOF:, BOUNDARY:, RESIDUE:",
+      expectedLane: "direct"
+    }),
+    /exactly five/
+  );
+  assert.throws(
+    () => verifyLoopSpineReceipt({
+      text: "LANE: direct\nRESULT: blocked\nPROOF: package loopspine version 0.2.0\nBOUNDARY: read-only\nRESIDUE: none",
+      expectedLane: "direct"
+    }),
+    /not successful/
+  );
+  assert.throws(
+    () => verifyLoopSpineReceipt({
+      text: "extra prose\nLANE: direct\nRESULT: success\nPROOF: package loopspine version 0.2.0\nBOUNDARY: read-only\nRESIDUE: none",
+      expectedLane: "direct"
+    }),
+    /missing ordered LANE/
+  );
+  const receiptWithContext = verifyLoopSpineReceipt({
+    text: "```text\nLANE: direct\nRESULT: success\nPROOF: package loopspine version 0.2.0\nBOUNDARY: read-only\nRESIDUE: none\n```\n\nThe readback is complete.",
+    expectedLane: "direct",
+    expectedProofTerms: ["loopspine", "0.2.0"]
+  });
+  assert.equal(receiptWithContext.trailing_context, "The readback is complete.");
+  assert.throws(
+    () => verifyLoopSpineReceipt({
+      text: "```text\nLANE: direct\nRESULT: success\nPROOF: package loopspine version 0.2.0\nBOUNDARY: read-only\nRESIDUE: none\n```\n\nI cannot verify this result.",
+      expectedLane: "direct"
+    }),
+    /invalid trailing context/
+  );
+
+  const extraPluginEvents = eventStream({ pluginRoot, referencePath, referenceContent })
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  extraPluginEvents[0].plugins.push({ name: "other", path: pluginRoot, source: "other@inline" });
+  assert.throws(
+    () => verifyClaudeIsolation({
+      rawOutput: extraPluginEvents.map((event) => JSON.stringify(event)).join("\n"),
+      pluginRoot
+    }),
+    /only the LoopSpine plugin/
+  );
+
+  const hookEvents = eventStream({ pluginRoot, referencePath, referenceContent })
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  hookEvents.splice(1, 0, {
+    type: "system",
+    subtype: "hook_started",
+    session_id: "probe-session",
+    hook_name: "SessionStart:test"
+  });
+  assert.throws(
+    () => verifyClaudeIsolation({
+      rawOutput: hookEvents.map((event) => JSON.stringify(event)).join("\n"),
+      pluginRoot
+    }),
+    /hook events/
+  );
 
   const reorderedEvents = eventStream({ pluginRoot, referencePath, referenceContent })
     .split("\n")
@@ -236,7 +318,7 @@ try {
     /inside the plugin root/
   );
 
-  console.log("Claude access-event tests passed: 11 cases.");
+  console.log("Claude access-event tests passed: 19 cases.");
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
