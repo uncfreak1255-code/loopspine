@@ -130,7 +130,20 @@ try {
       text: "extra prose\nLANE: direct\nRESULT: success\nPROOF: package loopspine version 0.2.0\nBOUNDARY: read-only\nRESIDUE: none",
       expectedLane: "direct"
     }),
-    /exactly five/
+    /missing ordered LANE/
+  );
+  const receiptWithContext = verifyLoopSpineReceipt({
+    text: "```text\nLANE: direct\nRESULT: success\nPROOF: package loopspine version 0.2.0\nBOUNDARY: read-only\nRESIDUE: none\n```\n\nThe readback is complete.",
+    expectedLane: "direct",
+    expectedProofTerms: ["loopspine", "0.2.0"]
+  });
+  assert.equal(receiptWithContext.trailing_context, "The readback is complete.");
+  assert.throws(
+    () => verifyLoopSpineReceipt({
+      text: "```text\nLANE: direct\nRESULT: success\nPROOF: package loopspine version 0.2.0\nBOUNDARY: read-only\nRESIDUE: none\n```\n\nI cannot verify this result.",
+      expectedLane: "direct"
+    }),
+    /invalid trailing context/
   );
 
   const extraPluginEvents = eventStream({ pluginRoot, referencePath, referenceContent })
@@ -305,7 +318,7 @@ try {
     /inside the plugin root/
   );
 
-  console.log("Claude access-event tests passed: 17 cases.");
+  console.log("Claude access-event tests passed: 19 cases.");
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }

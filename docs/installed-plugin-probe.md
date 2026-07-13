@@ -55,8 +55,9 @@ npm run smoke:trigger-selection
 
 Both cases load the plugin through `--plugin-dir` and verify the same
 `package.json` read. The trigger case explicitly invokes LoopSpine and must
-return its five-field compact receipt. The non-trigger case does not invoke
-LoopSpine and must return only the exact package name and version. Both cases
+return a valid five-field compact receipt before any short explanatory context.
+The non-trigger case does not invoke LoopSpine and must return only the exact
+package name and version. Both cases
 expose only the `Read` tool, load no user or project settings, reject extra
 plugins or hook events, disable MCP servers, and require unchanged tracked
 state.

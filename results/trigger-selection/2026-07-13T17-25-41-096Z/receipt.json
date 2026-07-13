@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "smoke": "explicit-trigger-selection",
+  "claim": "Explicit LoopSpine invocation applies its compact receipt contract while the same non-invoked readback remains plain.",
+  "limitations": [
+    "This does not prove automatic LoopSpine selection.",
+    "This does not prove that explicit invocation improves task quality.",
+    "This does not authorize global installation or hooks."
+  ],
+  "started_at": "2026-07-13T17:25:41.096Z",
+  "finished_at": "2026-07-13T17:26:14.415Z",
+  "claude_version": "2.1.207 (Claude Code)",
+  "model_alias": "fable",
+  "plugin_root": "/Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke",
+  "readback_path": "/Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke/package.json",
+  "readback_sha256": "45f58ea8b6266fa6fc1182568ddd473e77917d8e4c79337234451a41b324a2ec",
+  "cases": {
+    "trigger": {
+      "invoked_loopspine": true,
+      "prompt": "/loopspine:loopspine Use the Read tool to read the exact file /Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke/package.json. This is a direct readback. Do not edit files.",
+      "duration_ms": 20418,
+      "exit_code": 0,
+      "timed_out": false,
+      "stdout_bytes": 15211,
+      "stderr_bytes": 0,
+      "final_text": "```text\nLANE: direct\nRESULT: success\nPROOF: Read /Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke/package.json (27 lines, shown above)\nBOUNDARY: read-only readback; no edits made or authorized\nRESIDUE: none\n```\n\nThe file defines the `loopspine` package at version 0.2.0 (private, ESM, Node >=20) with no dependencies — just scripts for tests, benchmarks, demos, dogfood reporting, the installed-plugin probe, and the `smoke:trigger-selection` script relevant to this branch.",
+      "isolation_evidence": {
+        "plugin_name": "loopspine",
+        "plugin_root": "/Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke",
+        "loaded_plugin_count": 1,
+        "hook_event_count": 0
+      },
+      "evidence": {
+        "session_id": "f179412e-9438-4175-810a-aba3c1ce2a57",
+        "plugin_root": "/Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke",
+        "reference_path": "/Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke/package.json",
+        "reference_sha256": "45f58ea8b6266fa6fc1182568ddd473e77917d8e4c79337234451a41b324a2ec",
+        "init_event_index": 0,
+        "tool_use_event_index": 8,
+        "tool_result_event_index": 9,
+        "result_event_index": 14,
+        "tool_use_id": "toolu_01XCSjrVgnwJPKqM3693AMct",
+        "available_tools": [
+          "Read"
+        ],
+        "mcp_servers": [],
+        "permission_mode": "plan",
+        "claude_code_version": "2.1.207",
+        "model": "claude-fable-5"
+      },
+      "receipt_evidence": {
+        "LANE": "direct",
+        "RESULT": "success",
+        "PROOF": "Read /Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke/package.json (27 lines, shown above)",
+        "BOUNDARY": "read-only readback; no edits made or authorized",
+        "RESIDUE": "none",
+        "trailing_context": "The file defines the `loopspine` package at version 0.2.0 (private, ESM, Node >=20) with no dependencies — just scripts for tests, benchmarks, demos, dogfood reporting, the installed-plugin probe, and the `smoke:trigger-selection` script relevant to this branch."
+      }
+    },
+    "non_trigger": {
+      "invoked_loopspine": false,
+      "prompt": "Use the Read tool to read the exact file /Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke/package.json. Report exactly loopspine@0.2.0 and nothing else. Do not invoke LoopSpine or edit files.",
+      "duration_ms": 12829,
+      "exit_code": 0,
+      "timed_out": false,
+      "stdout_bytes": 9594,
+      "stderr_bytes": 0,
+      "final_text": "loopspine@0.2.0",
+      "isolation_evidence": {
+        "plugin_name": "loopspine",
+        "plugin_root": "/Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke",
+        "loaded_plugin_count": 1,
+        "hook_event_count": 0
+      },
+      "readback_evidence": {
+        "session_id": "4c3ff0c8-9e5e-4f47-b0d4-fc2d9dcf5c47",
+        "plugin_root": "/Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke",
+        "reference_path": "/Users/sawbeck/Documents/Codex/2026-07-12/loopspine-df-02-explicit-trigger-smoke/package.json",
+        "reference_sha256": "45f58ea8b6266fa6fc1182568ddd473e77917d8e4c79337234451a41b324a2ec",
+        "init_event_index": 0,
+        "tool_use_event_index": 3,
+        "tool_result_event_index": 4,
+        "result_event_index": 6,
+        "tool_use_id": "toolu_01279R67tANTdpKuao6RdsQ4",
+        "available_tools": [
+          "Read"
+        ],
+        "mcp_servers": [],
+        "permission_mode": "plan",
+        "claude_code_version": "2.1.207",
+        "model": "claude-fable-5"
+      }
+    }
+  },
+  "assertions": {
+    "trigger_exit_zero": true,
+    "trigger_not_timed_out": true,
+    "trigger_plugin_isolated": true,
+    "trigger_readback_verified": true,
+    "non_trigger_exit_zero": true,
+    "non_trigger_not_timed_out": true,
+    "non_trigger_plugin_isolated": true,
+    "non_trigger_readback_verified": true,
+    "trigger_receipt_contract_followed": true,
+    "non_trigger_exact_readback": true,
+    "readback_file_unchanged": true,
+    "tracked_worktree_unchanged": true
+  },
+  "errors": [],
+  "passed": true
+}

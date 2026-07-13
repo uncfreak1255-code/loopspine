@@ -39,13 +39,22 @@ export function parseClaudeStream(rawOutput) {
 
 export function verifyLoopSpineReceipt({ text, expectedLane, expectedProofTerms = [] }) {
   const requiredFields = ["LANE", "RESULT", "PROOF", "BOUNDARY", "RESIDUE"];
-  const lines = String(text).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-  if (/^```/.test(lines[0] || "") && lines.at(-1) === "```") {
-    lines.shift();
-    lines.pop();
+  let lines = String(text).split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  let trailingContext = "";
+  if (/^```/.test(lines[0] || "")) {
+    const closingFence = lines.indexOf("```", 1);
+    if (closingFence < 0) throw new Error("LoopSpine receipt has an unclosed code fence");
+    trailingContext = lines.slice(closingFence + 1).join(" ").trim();
+    lines = lines.slice(1, closingFence);
+  } else if (lines.length > requiredFields.length) {
+    trailingContext = lines.slice(requiredFields.length).join(" ").trim();
+    lines = lines.slice(0, requiredFields.length);
   }
   if (lines.length !== requiredFields.length) {
     throw new Error("LoopSpine receipt must contain exactly five field lines");
+  }
+  if (trailingContext.length > 500 || /\b(?:cannot|can't|unable|failed|refus(?:e|ed|al)|error)\b/i.test(trailingContext)) {
+    throw new Error("LoopSpine receipt has invalid trailing context");
   }
   const fields = {};
   for (let index = 0; index < requiredFields.length; index += 1) {
@@ -63,7 +72,7 @@ export function verifyLoopSpineReceipt({ text, expectedLane, expectedProofTerms 
   for (const term of expectedProofTerms) {
     if (!fields.PROOF.includes(term)) throw new Error(`LoopSpine receipt proof is missing ${term}`);
   }
-  return fields;
+  return { ...fields, trailing_context: trailingContext || null };
 }
 
 export function verifyClaudeIsolation({ rawOutput, pluginRoot }) {

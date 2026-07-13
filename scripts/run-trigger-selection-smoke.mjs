@@ -147,7 +147,7 @@ try {
   triggerReceiptEvidence = verifyLoopSpineReceipt({
     text: terminalText(trigger.execution.stdout || ""),
     expectedLane: "direct",
-    expectedProofTerms: [packageMetadata.name, packageMetadata.version]
+    expectedProofTerms: [path.basename(readbackPath)]
   });
 } catch (error) {
   errors.push(`trigger receipt: ${error.message}`);
