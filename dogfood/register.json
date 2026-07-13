@@ -34,7 +34,33 @@
     },
     {
       "id": "DF-02",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/loopspine",
+      "task": "Build and verify an isolated installed-plugin smoke that distinguishes explicit LoopSpine invocation from the same non-invoked readback",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 218,
+      "incorrect_stop": false,
+      "proof": "Claude Code 2.1.207 with claude-fable-5 loaded only the inline LoopSpine plugin in Read-only plan mode with no MCP servers or hook events. Both cases produced correlated package.json Read events with the expected SHA-256. The explicit case returned a valid LoopSpine direct-lane success receipt; the non-invoked case returned exactly loopspine@0.2.0. Tracked state and the read file were unchanged, all 12 smoke assertions passed, npm test passed 19 access-event cases, Claude plugin validation passed, and final autoreview was clean.",
+      "proof_references": [
+        {
+          "type": "commit",
+          "url": "https://github.com/uncfreak1255-code/loopspine/commit/9951a1b305289e2447f9f96361f8d1523b3dadf3",
+          "commit": "9951a1b305289e2447f9f96361f8d1523b3dadf3"
+        },
+        {
+          "type": "trigger-selection-receipt",
+          "url": "https://github.com/uncfreak1255-code/loopspine/blob/9951a1b305289e2447f9f96361f8d1523b3dadf3/results/trigger-selection/2026-07-13T17-25-41-096Z/receipt.json",
+          "commit": "9951a1b305289e2447f9f96361f8d1523b3dadf3"
+        },
+        {
+          "type": "smoke-runner",
+          "url": "https://github.com/uncfreak1255-code/loopspine/blob/9951a1b305289e2447f9f96361f8d1523b3dadf3/scripts/run-trigger-selection-smoke.mjs",
+          "commit": "9951a1b305289e2447f9f96361f8d1523b3dadf3"
+        }
+      ],
+      "recorded_at": "2026-07-13T17:28:25.705Z"
     },
     {
       "id": "DF-03",
