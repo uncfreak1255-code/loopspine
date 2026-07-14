@@ -64,35 +64,193 @@
     },
     {
       "id": "DF-03",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/pool-heat-dashboard",
+      "task": "Keep the live Hostaway-backed /api/messages route out of Next.js prerendering with one red-capable regression command",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 500,
+      "incorrect_stop": true,
+      "proof": "The first explicit LoopSpine attempt stopped without a red-capable command, so the parent recovered the task. Against parent 47f2dbd, node --test tests/messages-route-runtime.test.mjs then failed with exit 1 on the exact request-time assertion. At 4ae5ace, the same test passed 1/1, npm run lint passed, and npm run build passed with /api/messages reported as a dynamic route. Independent Codex autoreview reported no actionable findings.",
+      "proof_references": [
+        {
+          "type": "commit",
+          "url": "https://github.com/uncfreak1255-code/pool-heat-dashboard/commit/4ae5ace98086fd4f6f155a36a7c25d258f6baf8b",
+          "commit": "4ae5ace98086fd4f6f155a36a7c25d258f6baf8b"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:33:13.306Z"
     },
     {
       "id": "DF-04",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/gbrain",
+      "task": "Determine whether the reported linked-worktree source-routing failure was an open GBrain bug, an unpublished fix, or host configuration",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 158,
+      "incorrect_stop": false,
+      "proof": "Explicit read-only LoopSpine Cartographer run 019f613f-d4dd-7041-a1a6-99f66fe67884 separated the answerable frontier from the remaining fog. It tied the July 13 failing Seascape Hub receipt to local GBrain commit d95680d684a9c0313685fc0347b801343cbd85e5, proved that the installed resolver and focused test matched the source checkout, showed the fix was absent from every remote branch, and correctly escrowed publication and runtime mutation. The run changed no repository or configuration. Its process cost was excessive at 869899 input tokens, which became a DF-06 checkpoint finding rather than a skill change. The same five-file change was replayed byte-equivalently from clean origin/master and published as cf4a2219997916cc6eaafedbc8bd9e10890dc740.",
+      "proof_references": [
+        {
+          "type": "fix-commit",
+          "url": "https://github.com/uncfreak1255-code/gbrain/commit/cf4a2219997916cc6eaafedbc8bd9e10890dc740",
+          "commit": "cf4a2219997916cc6eaafedbc8bd9e10890dc740"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:39:23.267Z"
     },
     {
       "id": "DF-05",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/gbrain",
+      "task": "Prove the linked-worktree source-routing fix with the full focused resolver suite, installed-file comparison, remote-branch readback, and two live linked worktrees",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 1001,
+      "incorrect_stop": false,
+      "proof": "Explicit LoopSpine Operator run 019f6166-30c5-7621-a893-000d2d7944c7 passed 59 resolver tests across five files with zero failures, proved the installed resolver, sources command, and worktree test byte-identical to source, and confirmed no remote branch contained the original local fix. Its initial live reads were blocked by a temporary ECONNREFUSED on the configured local database, so it stopped correctly without mutation. When the healthy database listener returned without agent action, the parent reran the exact commands: the GBrain linked worktree resolved to gbrain through local_path and the Seascape Hub linked worktree resolved to gstack-code-hub-ae4800f6-9c4839 through local_path. The same five-file change was replayed byte-equivalently from clean origin/master and published as cf4a2219997916cc6eaafedbc8bd9e10890dc740. All repositories remained clean.",
+      "proof_references": [
+        {
+          "type": "fix-commit",
+          "url": "https://github.com/uncfreak1255-code/gbrain/commit/cf4a2219997916cc6eaafedbc8bd9e10890dc740",
+          "commit": "cf4a2219997916cc6eaafedbc8bd9e10890dc740"
+        },
+        {
+          "type": "focused-test",
+          "url": "https://github.com/uncfreak1255-code/gbrain/blob/cf4a2219997916cc6eaafedbc8bd9e10890dc740/test/source-resolver-git-worktree.test.ts",
+          "commit": "cf4a2219997916cc6eaafedbc8bd9e10890dc740"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:39:24.091Z"
     },
     {
       "id": "DF-06",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/gbrain",
+      "task": "Independently review the linked-worktree resolver fix for spec compliance, code quality, regression risk, and temporary-role ceremony",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 133,
+      "incorrect_stop": false,
+      "proof": "Explicit LoopSpine Skeptic run 019f6168-7a59-73f3-a2e6-e48af64bb6ff reviewed the original five-file fix against its parent without trusting prior prose. It found no blocking spec or code defect, confirmed flag, environment, dotfile, direct/local-worktree, brain-default, sole-non-default, and seed-default precedence, and identified only a non-blocking future latency risk from synchronous Git probes. The independent DF-05 parent proof supplied 59 passing tests outside the review sandbox. The checkpoint conclusion is to keep Cartographer and Skeptic as temporary lead-agent responsibilities by default: DF-04 used 869899 input tokens, DF-05 used 404056, and DF-06 itself used 622879, so child delegation added major ceremony. The same five-file change was replayed byte-equivalently from clean origin/master and published as cf4a2219997916cc6eaafedbc8bd9e10890dc740. No skill text changed; only the focused development eval was retained.",
+      "proof_references": [
+        {
+          "type": "reviewed-commit",
+          "url": "https://github.com/uncfreak1255-code/gbrain/commit/cf4a2219997916cc6eaafedbc8bd9e10890dc740",
+          "commit": "cf4a2219997916cc6eaafedbc8bd9e10890dc740"
+        },
+        {
+          "type": "reviewed-test",
+          "url": "https://github.com/uncfreak1255-code/gbrain/blob/cf4a2219997916cc6eaafedbc8bd9e10890dc740/test/source-resolver-git-worktree.test.ts",
+          "commit": "cf4a2219997916cc6eaafedbc8bd9e10890dc740"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:39:25.236Z"
     },
     {
       "id": "DF-07",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/loopspine",
+      "task": "Make dogfood recording reject unreachable immutable proof references before writing the canonical register or reports",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 474,
+      "incorrect_stop": true,
+      "proof": "Explicit LoopSpine run 019f615b-2330-7732-8f5f-e82d21cfa8fb reproduced the old false acceptance with a focused red test, then added fail-closed remote reachability checks and focused success/failure coverage. Parent review removed a production environment-variable test bypass before the task was counted, so the child stop is recorded honestly as incorrect. The real unpublished DF-03 commit URL was rejected with HTTP 404 without writes, npm test passed all validation, matching, dogfood, recorder, and Claude access-event tests, and Codex autoreview reported no accepted or actionable findings. The proven local change at a43ae4f29a08c2a79fbef7998a9a416c92afead1 was integrated byte-equivalently as a0778b64a3684f127a24a7312d60e0ff85f37fce on the clean DF-09 branch.",
+      "proof_references": [
+        {
+          "type": "commit",
+          "url": "https://github.com/uncfreak1255-code/loopspine/commit/a0778b64a3684f127a24a7312d60e0ff85f37fce",
+          "commit": "a0778b64a3684f127a24a7312d60e0ff85f37fce"
+        },
+        {
+          "type": "recorder-test",
+          "url": "https://github.com/uncfreak1255-code/loopspine/blob/a0778b64a3684f127a24a7312d60e0ff85f37fce/scripts/test-record-dogfood.mjs",
+          "commit": "a0778b64a3684f127a24a7312d60e0ff85f37fce"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:36:55.070Z"
     },
     {
       "id": "DF-08",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/loopspine",
+      "task": "Correct the rollout plan's stale baseline and progress, then document the three selected pilot repositories and their exact local invocation paths",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 235,
+      "incorrect_stop": true,
+      "proof": "Explicit LoopSpine run 019f616c-03cd-7162-97da-3e8d4cd2b497 updated only the rollout plan, separated the frozen v0.2.0 baseline from the dated pilot source base, corrected progress to 2/10, and documented task-local invocation for LoopSpine, pool-heat-dashboard, and GBrain without global installation. The child stopped while knowingly leaving an inconsistent DF-02-through-DF-10 worklist line, so the parent recorded an incorrect stop; Codex autoreview caught the contradiction, the parent corrected it to DF-03 through DF-10, npm test passed, and the rerun autoreview reported no accepted or actionable findings. The proven local change at d0466a99cf220efe2927ba2785f1d662fbcbc72c was integrated byte-equivalently as 14b076f8214c1a8f82aeac59aa7103e20a87ee4e on the clean DF-09 branch.",
+      "proof_references": [
+        {
+          "type": "commit",
+          "url": "https://github.com/uncfreak1255-code/loopspine/commit/14b076f8214c1a8f82aeac59aa7103e20a87ee4e",
+          "commit": "14b076f8214c1a8f82aeac59aa7103e20a87ee4e"
+        },
+        {
+          "type": "rollout-plan",
+          "url": "https://github.com/uncfreak1255-code/loopspine/blob/14b076f8214c1a8f82aeac59aa7103e20a87ee4e/docs/plans/skill-spine-rollout.md",
+          "commit": "14b076f8214c1a8f82aeac59aa7103e20a87ee4e"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:36:56.437Z"
     },
     {
       "id": "DF-09",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/loopspine",
+      "task": "Integrate the proven debugging and role evals, fail-closed proof recorder, and pilot invocation docs onto one clean branch without changing the v0.2.0 skill",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 271,
+      "incorrect_stop": false,
+      "proof": "Explicit LoopSpine run 019f6170-6e26-74f0-b8f0-f8f9c6932701 correctly stopped when its child sandbox could not write linked-worktree Git metadata; no source was changed. The parent then integrated exactly f9ce9ff, 1a6a66a, a43ae4f29a08c2a79fbef7998a9a416c92afead1, and d0466a99cf220efe2927ba2785f1d662fbcbc72c into a fresh branch from ab70a9f. npm test passed 19 development cases, 6 sealed cases, matching and dogfood metrics, the new fail-closed recorder tests, and all 19 Claude access-event tests. The LoopSpine skill blob matched origin/main exactly, git diff --check passed, and branch-level Codex autoreview reported no accepted or actionable findings. The final branch was clean at 14b076f8214c1a8f82aeac59aa7103e20a87ee4e.",
+      "proof_references": [
+        {
+          "type": "commit",
+          "url": "https://github.com/uncfreak1255-code/loopspine/commit/14b076f8214c1a8f82aeac59aa7103e20a87ee4e",
+          "commit": "14b076f8214c1a8f82aeac59aa7103e20a87ee4e"
+        },
+        {
+          "type": "test-wiring",
+          "url": "https://github.com/uncfreak1255-code/loopspine/blob/14b076f8214c1a8f82aeac59aa7103e20a87ee4e/package.json",
+          "commit": "14b076f8214c1a8f82aeac59aa7103e20a87ee4e"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:36:57.747Z"
     },
     {
       "id": "DF-10",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/loopspine",
+      "task": "Audit LoopSpine v0.2.0 with Matt Pocock's skill-writing rubric and an independent standards-versus-spec review, then record the promotion decision",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 1903,
+      "incorrect_stop": false,
+      "proof": "Explicit read-only LoopSpine review session 019f618e-57a9-73f3-8249-5c9a1b76eb20 audited invocation and execution separately and recommended ADD EVAL FIRST with no edits. The parent checked each finding against the existing non-trigger smoke, development evals, GBrain task, and rollout contract, then committed a source-pinned donor audit. npm test, 6/6 executable trajectories, Claude plugin validation, installed-plugin reference probing, trigger/non-trigger smoke, and final autoreview passed. The three-sample frozen-baseline sealed comparison remained red at 0.9412 versus 0.9673, delta -0.0261, with zero boundary violations; both variants used the same v0.2.0 skill SHA. The audit therefore keeps the skill unchanged and blocks global promotion rather than weakening or rerunning the gate for a favorable draw.",
+      "proof_references": [
+        {
+          "type": "audit-commit",
+          "url": "https://github.com/uncfreak1255-code/loopspine/commit/bc5ab57d7ef1228c17c291b4a3775907f5e254ae",
+          "commit": "bc5ab57d7ef1228c17c291b4a3775907f5e254ae"
+        },
+        {
+          "type": "donor-audit",
+          "url": "https://github.com/uncfreak1255-code/loopspine/blob/bc5ab57d7ef1228c17c291b4a3775907f5e254ae/docs/research/matt-pocock-donor-audit.md",
+          "commit": "bc5ab57d7ef1228c17c291b4a3775907f5e254ae"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:38:26.390Z"
     }
   ]
 }

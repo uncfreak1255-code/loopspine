@@ -1,12 +1,10 @@
 # Dogfood Report
 
-Progress: **2/10 real tasks**
-
-Performance rates remain **Pending** until 3 real tasks are recorded.
+Progress: **10/10 real tasks**
 
 | Metric | Result |
 |---|---:|
-| Verified completion rate | Pending |
-| Sawyer intervention rate | Pending |
-| Median time to proof | Pending |
-| Incorrect-stop rate | Pending |
+| Verified completion rate | 100.0% |
+| Sawyer intervention rate | 0.0% |
+| Median time to proof | 4.22 min |
+| Incorrect-stop rate | 30.0% |

@@ -43,6 +43,14 @@
       "must_not_match": ["replace redis immediately", "patch without reproducing"]
     },
     {
+      "id": "debug-red-capable-gate",
+      "split": "development",
+      "prompt": "A production build exits successfully, but its output suggests that a live API route ran during prerendering. The route must execute only at request time. Fix this end to end.",
+      "routes": ["investigate"],
+      "must_match": [["failing command", "command fails", "nonzero exit", "red gate"], ["exact symptom", "specific symptom"], ["before hypothesis", "before editing", "before changing"], ["same command", "rerun the command"], ["regression test", "regression proof"]],
+      "must_not_match": ["patch first and verify later", "build exits zero so there is no bug"]
+    },
+    {
       "id": "qa-live-ui",
       "split": "core",
       "prompt": "The checkout code tests pass. Verify the real mobile flow and fix anything broken.",
@@ -73,6 +81,14 @@
       "routes": ["build", "investigate", "tdd"],
       "must_match": [["same file", "conflict"], ["single", "sequential"]],
       "must_not_match": ["five parallel writers", "agent team is required"]
+    },
+    {
+      "id": "temporary-roles-without-ceremony",
+      "split": "development",
+      "prompt": "Investigate a fuzzy source-routing failure. Map precise questions that can be investigated now as FRONTIER and questions that cannot yet be stated sharply as FOG, then challenge the likely fix. Use temporary Cartographer and Skeptic responsibilities, but keep the workflow as small as possible. Do not change code yet.",
+      "routes": ["investigate", "review-only"],
+      "must_match": [["frontier"], ["fog"], ["lead"], ["responsibility"], ["only when", "only if"], ["bounded"], ["independent"]],
+      "must_not_match": ["spawn a cartographer agent", "spawn a skeptic agent", "create an agent team", "delegate the whole investigation"]
     },
     {
       "id": "bounded-loop",

@@ -1,10 +1,14 @@
 # LoopSpine Skill Spine Rollout Spec
 
-Status: Proposed for local pilot
+Status: Pilot complete; global promotion rejected
 
 Owner: Sawyer Beck
 
-Baseline: LoopSpine v0.2.0 on `main` at `1b9701c`
+Frozen baseline: LoopSpine v0.2.0 at
+`9dc46946c879d955daa5a37bd839d168936d6a98`
+
+Pilot source base (2026-07-14):
+`ab70a9fb70ef7bb397d5a6b27d3a8dcd2b74fdcb`
 
 ## Decision
 
@@ -21,13 +25,14 @@ apps, permanent specialist agents, or a new runtime.
 
 | Surface | Current status | Evidence |
 |---|---|---|
-| Durable repository | Ready | Clean `main` at `1b9701c` |
+| Frozen v0.2.0 baseline | Ready for comparison | `9dc46946c879d955daa5a37bd839d168936d6a98` |
+| Pilot source base | Current before this update | `ab70a9fb70ef7bb397d5a6b27d3a8dcd2b74fdcb` on 2026-07-14 |
 | Core skill | Ready for explicit use | `skills/loopspine/SKILL.md` |
 | Codex package | Structurally ready | `.codex-plugin/plugin.json` |
 | Claude package | Structurally ready | `.claude-plugin/plugin.json` and plugin validation |
 | Installed-plugin access proof | Ready | `npm run probe:installed-plugin` |
-| Dogfood pilot | Incomplete | `1/10`; public rates remain `Pending` |
-| Automatic global routing | Blocked | Ten-task gate has not passed |
+| Dogfood pilot | Complete | `10/10`; see `dogfood/report.md` |
+| Automatic global routing | Rejected for this round | Incorrect-stop rate was `30.0%` and the frozen-baseline sealed comparison failed |
 | Adaptive seniority trigger | Rejected | Candidate did not beat v0.2.0 |
 | Hooks | Not justified | No repeated deterministic failure class recorded |
 
@@ -147,6 +152,18 @@ Use three repositories with different work shapes. At least one must be a
 low-risk utility or lab repository. No first pilot task may require credentials,
 production data, customer communication, payment behavior, or deployment.
 
+Selected pilot repositories:
+
+| Repository | Why this shape is useful | Explicit local invocation method |
+|---|---|---|
+| LoopSpine | Owns the skill and packaging docs, so it exercises documentation/configuration readback without crossing repository boundaries. | Add a temporary repository-local link: `mkdir -p .agents/skills && ln -s /absolute/path/to/loopspine/skills/loopspine .agents/skills/loopspine`, then invoke with `$loopspine ...` from the LoopSpine worktree. Remove `.agents/skills/loopspine` after the run. |
+| pool-heat-dashboard | Covers a product/application work shape with UI or runtime proof, while staying in a selected low-risk pilot repository. | Add the same temporary repository-local `.agents/skills/loopspine` link to the durable skill, invoke with `$loopspine ...` inside the pool worktree, then remove the link after the run. |
+| GBrain | Covers read-only investigation where the user's theory may be wrong and where the target repository must not be changed without authorization. | Create a temporary control directory under `/tmp`, add `.agents/skills/loopspine` there pointing to the durable skill, invoke `$loopspine ...` from that control directory, and read the GBrain repository without writing a link or any other file into GBrain. Remove the `/tmp` control directory after the run. |
+
+These links are task-local access shims only. They are removed after each run,
+and the pilot does not write to `~/.agents`, `~/.codex`, `~/.claude`, or any
+other global skill directory.
+
 The ten tasks must collectively include:
 
 | Work shape | Minimum count |
@@ -195,6 +212,18 @@ Spawn a subagent only when its task is independently bounded and its result can
 return as a summary or scoped diff. Use a separate worktree for parallel writers.
 Do not create an agent team for sequential work or overlapping files.
 
+## Pilot Checkpoint Readback
+
+These are local evidence decisions, not canonical dogfood completions. A task
+counts only after `dogfood/register.json` contains commit-pinned HTTPS proof
+references accepted by the recorder.
+
+| Checkpoint | Local result | Decision |
+|---|---|---|
+| DF-03 | The pool-dashboard bug task used a red baseline and passed focused tests, lint, build, and independent review. The one-sample descriptive candidate scored `5/9` on the stricter red-capable gate. | Keep `debug-red-capable-gate`; keep v0.2.0 skill text unchanged. |
+| DF-06 | The GBrain source-routing task separated frontier from fog and used bounded parent-owned challenge without permanent roles. The one-sample descriptive candidate scored `10/13` on the role gate. | Keep `temporary-roles-without-ceremony`; add no role files or team. |
+| DF-10 | The two-axis skill-writing audit found invocation acceptable for selected local use and execution gaps already represented by the two development evals. Final local verification passed tests, trajectories, plugin validation, access probing, and trigger smoke, but the three-sample frozen-baseline sealed comparison failed by `-0.0261`. | Add no new eval, hook, reference split, or skill rewrite. Keep global promotion blocked. See `docs/research/matt-pocock-donor-audit.md`. |
+
 ## Metrics
 
 The canonical register is `dogfood/register.json`. The generated reports are
@@ -209,9 +238,43 @@ Measure:
 - safety-boundary violations;
 - runtime and output overhead when comparing skill candidates.
 
-Public rates remain `Pending` until three real tasks are recorded. Any public
-candidate-performance claim requires at least three samples under recorded
-conditions.
+The ten-task operating rates are now reportable from the canonical register.
+Any public candidate-performance claim still requires at least three benchmark
+samples under recorded conditions; the one-sample pilot benchmark is diagnostic
+only.
+
+## Ten-Task Decision
+
+Decision: **reject global/default promotion and keep LoopSpine available only
+through explicit local invocation.** Preserve the proof infrastructure, the two
+development evals, and the skill-only plugin packages. Keep the v0.2.0 skill
+text unchanged.
+
+| Gate | Result | Decision |
+|---|---|---|
+| Real dogfood tasks | `10/10` verified | Pass |
+| Verified completion | `100.0%` | Pass |
+| Sawyer intervention | `0.0%` | Pass |
+| Median time to proof | `4.22 min` | Informational |
+| Incorrect stops | `30.0%` (`DF-03`, `DF-07`, and `DF-08`) | **Fail** |
+| Safety-boundary violations | `0` | Pass |
+| Frozen-baseline sealed comparison | `0.9412` current versus `0.9673` v0.2.0, delta `-0.0261` across three samples | **Fail** |
+| Candidate quality evidence | One-sample no-skill diagnostic was `+18.75`; no behavior-changing candidate was accepted | Not promotion evidence |
+| Runtime and output overhead | Sealed: `-3.22%` runtime and `+7.81%` output | Pass |
+| Executable trajectories | `6/6` | Pass |
+| Tests, plugin validation, access probe, trigger smoke, review | Pass | Pass |
+
+The three incorrect stops are not equivalent. `DF-07` was corrected by the
+lead agent's review before counting, which is the intended recovery path.
+`DF-03` stopped without a command that could reproduce and then prove the exact
+bug, and `DF-08` stopped with a known contradiction still in the plan. Those
+two cases show unresolved supervision cost in debugging and completion
+judgment. Adding a hook would not solve either class deterministically.
+
+The next behavior candidate should target those two misses with the smallest
+possible skill-text change, then pass the retained development evals and a
+fresh three-sample frozen-baseline comparison. Until that happens, explicit
+local use remains the rollback-free operating mode.
 
 ## Promotion Gate
 
@@ -307,22 +370,22 @@ For a rejected candidate:
 
 ### Phase 1: Local Pilot
 
-- [ ] Select three pilot repositories.
-- [ ] Document the repo-local invocation method for each.
-- [ ] Complete and record DF-02 through DF-10.
-- [ ] Review metrics after DF-03, DF-06, and DF-10.
-- [ ] Record false triggers, unnecessary ceremony, and incorrect stops.
-- [ ] Keep each proof reference pinned to an immutable commit.
+- [x] Select three pilot repositories.
+- [x] Document the repo-local invocation method for each.
+- [x] Complete and record DF-03 through DF-10.
+- [x] Review metrics after DF-03, DF-06, and DF-10.
+- [x] Record false triggers, unnecessary ceremony, and incorrect stops.
+- [x] Keep each proof reference pinned to an immutable commit.
 
 ### Phase 2: Promotion Review
 
-- [ ] Run `npm test`.
-- [ ] Run `npm run benchmark:pilot` as a diagnostic only.
-- [ ] Run the frozen-baseline sealed comparison with three samples.
-- [ ] Run `npm run benchmark:trajectories`.
-- [ ] Validate both plugin manifests and run the installed-plugin probe.
-- [ ] Run simplify and autoreview.
-- [ ] Write the ten-task decision: promote, revise, or reject.
+- [x] Run `npm test`.
+- [x] Run `npm run benchmark:pilot` as a diagnostic only.
+- [x] Run the frozen-baseline sealed comparison with three samples.
+- [x] Run `npm run benchmark:trajectories`.
+- [x] Validate both plugin manifests and run the installed-plugin probe.
+- [x] Run simplify and autoreview.
+- [x] Write the ten-task decision: reject global promotion for this round.
 
 ### Phase 3: Optional Global Adoption
 
