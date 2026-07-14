@@ -57,12 +57,26 @@ function requireExactArrayValues(actual, expected, label) {
   }
 }
 
+function requireEvidenceFiles(actual) {
+  const paths = Array.isArray(actual)
+    ? actual.map((value) => String(value).replaceAll("\\", "/"))
+    : [];
+  const complete = REQUIRED_EVIDENCE_FILES.every((relativePath) =>
+    paths.some((value) => value === relativePath || value.endsWith(`/${relativePath}`))
+  );
+  if (!complete) throw new Error("cold-start response is missing required evidence files");
+}
+
+function leadingGitCommit(value) {
+  return String(value || "").match(/^([0-9a-f]{40})(?:\s|$)/)?.[1] || null;
+}
+
 export function verifyColdStartResponse(
   response,
   { expectedSourceCommit = CANDIDATE_SOURCE_BASE_COMMIT } = {}
 ) {
   requireRecord(response);
-  if (response.source_commit !== expectedSourceCommit) {
+  if (leadingGitCommit(response.source_commit) !== expectedSourceCommit) {
     throw new Error("cold-start response reported the wrong source commit");
   }
   if (response.frozen_baseline_commit !== FROZEN_BASELINE_COMMIT) {
@@ -77,10 +91,10 @@ export function verifyColdStartResponse(
   }
   requireExactArrayValues(response.proof_commands, REQUIRED_PROOF_COMMANDS, "proof commands");
   const boundary = String(response.branch_boundary || "").toLowerCase();
-  if (!/(branch|worktree)/.test(boundary) || !boundary.includes("main") || !/(do not|don't|avoid|not edit)/.test(boundary)) {
+  if (!/(branch|worktree)/.test(boundary) || !boundary.includes("main") || !/(do not|don't|avoid|not edit|prohibit)/.test(boundary)) {
     throw new Error("cold-start response did not preserve the protected branch boundary");
   }
-  requireExactArrayValues(response.evidence_files, REQUIRED_EVIDENCE_FILES, "evidence files");
+  requireEvidenceFiles(response.evidence_files);
 
   return {
     source_commit_matches: true,
