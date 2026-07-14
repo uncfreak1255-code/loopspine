@@ -4,7 +4,11 @@ Status: Proposed for local pilot
 
 Owner: Sawyer Beck
 
-Baseline: LoopSpine v0.2.0 on `main` at `1b9701c`
+Frozen baseline: LoopSpine v0.2.0 at
+`9dc46946c879d955daa5a37bd839d168936d6a98`
+
+Pilot source base (2026-07-14):
+`ab70a9fb70ef7bb397d5a6b27d3a8dcd2b74fdcb`
 
 ## Decision
 
@@ -21,12 +25,13 @@ apps, permanent specialist agents, or a new runtime.
 
 | Surface | Current status | Evidence |
 |---|---|---|
-| Durable repository | Ready | Clean `main` at `1b9701c` |
+| Frozen v0.2.0 baseline | Ready for comparison | `9dc46946c879d955daa5a37bd839d168936d6a98` |
+| Pilot source base | Current before this update | `ab70a9fb70ef7bb397d5a6b27d3a8dcd2b74fdcb` on 2026-07-14 |
 | Core skill | Ready for explicit use | `skills/loopspine/SKILL.md` |
 | Codex package | Structurally ready | `.codex-plugin/plugin.json` |
 | Claude package | Structurally ready | `.claude-plugin/plugin.json` and plugin validation |
 | Installed-plugin access proof | Ready | `npm run probe:installed-plugin` |
-| Dogfood pilot | Incomplete | `1/10`; public rates remain `Pending` |
+| Dogfood pilot | Incomplete | `2/10`; public rates remain `Pending` |
 | Automatic global routing | Blocked | Ten-task gate has not passed |
 | Adaptive seniority trigger | Rejected | Candidate did not beat v0.2.0 |
 | Hooks | Not justified | No repeated deterministic failure class recorded |
@@ -146,6 +151,18 @@ configuration.
 Use three repositories with different work shapes. At least one must be a
 low-risk utility or lab repository. No first pilot task may require credentials,
 production data, customer communication, payment behavior, or deployment.
+
+Selected pilot repositories:
+
+| Repository | Why this shape is useful | Explicit local invocation method |
+|---|---|---|
+| LoopSpine | Owns the skill and packaging docs, so it exercises documentation/configuration readback without crossing repository boundaries. | Add a temporary repository-local link: `mkdir -p .agents/skills && ln -s /absolute/path/to/loopspine/skills/loopspine .agents/skills/loopspine`, then invoke with `$loopspine ...` from the LoopSpine worktree. Remove `.agents/skills/loopspine` after the run. |
+| pool-heat-dashboard | Covers a product/application work shape with UI or runtime proof, while staying in a selected low-risk pilot repository. | Add the same temporary repository-local `.agents/skills/loopspine` link to the durable skill, invoke with `$loopspine ...` inside the pool worktree, then remove the link after the run. |
+| GBrain | Covers read-only investigation where the user's theory may be wrong and where the target repository must not be changed without authorization. | Create a temporary control directory under `/tmp`, add `.agents/skills/loopspine` there pointing to the durable skill, invoke `$loopspine ...` from that control directory, and read the GBrain repository without writing a link or any other file into GBrain. Remove the `/tmp` control directory after the run. |
+
+These links are task-local access shims only. They are removed after each run,
+and the pilot does not write to `~/.agents`, `~/.codex`, `~/.claude`, or any
+other global skill directory.
 
 The ten tasks must collectively include:
 
@@ -307,9 +324,9 @@ For a rejected candidate:
 
 ### Phase 1: Local Pilot
 
-- [ ] Select three pilot repositories.
-- [ ] Document the repo-local invocation method for each.
-- [ ] Complete and record DF-02 through DF-10.
+- [x] Select three pilot repositories.
+- [x] Document the repo-local invocation method for each.
+- [ ] Complete and record DF-03 through DF-10.
 - [ ] Review metrics after DF-03, DF-06, and DF-10.
 - [ ] Record false triggers, unnecessary ceremony, and incorrect stops.
 - [ ] Keep each proof reference pinned to an immutable commit.
