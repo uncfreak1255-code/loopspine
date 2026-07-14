@@ -17,6 +17,11 @@ global skill, profile, hook, or agent configuration.
 npm run dogfood:record -- /path/to/completed-run.json
 ```
 
+Public proof references are checked with an HTTPS `HEAD` request. A full-SHA
+GitHub commit URL in a private repository may fall back to the authenticated
+`gh api` session; if neither check succeeds, recording stops before any report
+or register file is written.
+
 Do not mark a task verified from the agent's prose alone. Use a test, screenshot,
 runtime readback, PR check, or other exact receipt.
 

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { recordDogfood } from "./record-dogfood.mjs";
+import { recordDogfood, verifyGitHubReferenceWithGh } from "./record-dogfood.mjs";
 
 const unreachableUrl = "https://github.com/uncfreak1255-code/pool-heat-dashboard/commit/4ae5ace98086fd4f6f155a36a7c25d258f6baf8b";
 
@@ -77,4 +77,57 @@ try {
   fs.rmSync(passed.tempRoot, { recursive: true, force: true });
 }
 
-console.log("Dogfood record tests passed: remote proof checks fail closed before writes and allow reachable receipts.");
+let ghInvocation;
+assert.equal(verifyGitHubReferenceWithGh({
+  type: "commit",
+  url: unreachableUrl,
+  commit: "4ae5ace98086fd4f6f155a36a7c25d258f6baf8b"
+}, (command, args, options) => {
+  ghInvocation = { command, args, options };
+  return { status: 0, stdout: "", stderr: "" };
+}), true);
+assert.equal(ghInvocation.command, "gh");
+assert.deepEqual(ghInvocation.args, [
+  "api",
+  "--method",
+  "GET",
+  "--silent",
+  "repos/uncfreak1255-code/pool-heat-dashboard/commits/4ae5ace98086fd4f6f155a36a7c25d258f6baf8b"
+]);
+assert.equal(ghInvocation.options.timeout, 10_000);
+
+const privateReference = makeWorkspace();
+try {
+  let verifiedReference;
+  const result = await recordDogfood(privateReference.runPath, {
+    rootDir: privateReference.tempRoot,
+    fetchImpl: async () => ({ ok: false, status: 404 }),
+    githubVerifier: async (reference) => {
+      verifiedReference = reference;
+      return true;
+    }
+  });
+  assert.equal(result.recorded, "DF-03");
+  assert.equal(verifiedReference.url, unreachableUrl);
+  assert.equal(JSON.parse(fs.readFileSync(privateReference.registerPath, "utf8")).tasks[2].status, "completed");
+} finally {
+  fs.rmSync(privateReference.tempRoot, { recursive: true, force: true });
+}
+
+const privateFailure = makeWorkspace();
+try {
+  const beforeRegister = fs.readFileSync(privateFailure.registerPath, "utf8");
+  await assert.rejects(
+    recordDogfood(privateFailure.runPath, {
+      rootDir: privateFailure.tempRoot,
+      fetchImpl: async () => ({ ok: false, status: 404 }),
+      githubVerifier: async () => false
+    }),
+    /unreachable proof reference \(HTTP 404; authenticated GitHub verification failed\)/i
+  );
+  assert.equal(fs.readFileSync(privateFailure.registerPath, "utf8"), beforeRegister);
+} finally {
+  fs.rmSync(privateFailure.tempRoot, { recursive: true, force: true });
+}
+
+console.log("Dogfood record tests passed: public and authenticated private proof checks fail closed before writes.");
