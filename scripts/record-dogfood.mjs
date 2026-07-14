@@ -15,7 +15,7 @@ export function verifyGitHubReferenceWithGh(reference, spawnImpl = spawnSync) {
     return false;
   }
   const parts = url.pathname.split("/").filter(Boolean);
-  if (url.protocol !== "https:" || url.hostname !== "github.com" || reference.type !== "commit" || parts.length !== 4 || parts[2] !== "commit") {
+  if (url.protocol !== "https:" || url.hostname !== "github.com" || parts.length !== 4 || parts[2] !== "commit") {
     return false;
   }
   const [owner, repo, , commit] = parts;

@@ -96,6 +96,12 @@ assert.deepEqual(ghInvocation.args, [
 ]);
 assert.equal(ghInvocation.options.timeout, 10_000);
 
+assert.equal(verifyGitHubReferenceWithGh({
+  type: "fix-commit",
+  url: unreachableUrl,
+  commit: "4ae5ace98086fd4f6f155a36a7c25d258f6baf8b"
+}, () => ({ status: 0, stdout: "", stderr: "" })), true, "descriptive proof types must not block a valid commit URL");
+
 const privateReference = makeWorkspace();
 try {
   let verifiedReference;
