@@ -62,9 +62,34 @@ assert.equal(
   }).next_task_matches,
   true
 );
+assert.equal(
+  verifyColdStartResponse({
+    ...valid,
+    source_commit: `${CANDIDATE_SOURCE_BASE_COMMIT} (Merge pull request #8)`
+  }).source_commit_matches,
+  true
+);
+assert.equal(
+  verifyColdStartResponse({
+    ...valid,
+    evidence_files: valid.evidence_files.map((relativePath) => `/tmp/loopspine/${relativePath}`)
+  }).source_evidence_complete,
+  true
+);
+assert.equal(
+  verifyColdStartResponse({
+    ...valid,
+    branch_boundary: "Meaningful edits remain prohibited on main; use this worktree."
+  }).protected_branch_boundary,
+  true
+);
 
 assert.throws(
   () => verifyColdStartResponse({ ...valid, source_commit: FROZEN_BASELINE_COMMIT }),
+  /source commit/
+);
+assert.throws(
+  () => verifyColdStartResponse({ ...valid, source_commit: `HEAD ${CANDIDATE_SOURCE_BASE_COMMIT}` }),
   /source commit/
 );
 assert.throws(

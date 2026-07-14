@@ -88,7 +88,7 @@ const errors = [];
 let response = null;
 let contractAssertions = null;
 let traceAssertions = null;
-if (execution.status !== 0) {
+if (execution.status !== 0 || execution.error) {
   const detail = execution.error?.code === "ETIMEDOUT"
     ? `timed out after ${timeout}ms`
     : (execution.stderr || execution.stdout || `exit ${execution.status}`).trim();
@@ -108,7 +108,7 @@ try {
 
 const statusAfter = run("git", ["status", "--porcelain"], 15000);
 const assertions = {
-  codex_exit_zero: execution.status === 0,
+  codex_exit_zero: execution.status === 0 && !execution.error,
   codex_not_timed_out: execution.error?.code !== "ETIMEDOUT",
   repository_unchanged: statusBefore.status === 0
     && statusAfter.status === 0
