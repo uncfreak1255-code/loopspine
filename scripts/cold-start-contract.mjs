@@ -23,7 +23,7 @@ export const coldStartResponseSchema = {
     "promotion_status",
     "next_task",
     "proof_commands",
-    "branch_boundary",
+    "main_edits_allowed",
     "evidence_files"
   ],
   properties: {
@@ -36,7 +36,7 @@ export const coldStartResponseSchema = {
       items: { type: "string" },
       minItems: REQUIRED_PROOF_COMMANDS.length
     },
-    branch_boundary: { type: "string" },
+    main_edits_allowed: { type: "boolean" },
     evidence_files: {
       type: "array",
       items: { type: "string" },
@@ -90,8 +90,7 @@ export function verifyColdStartResponse(
     throw new Error("cold-start response reported the wrong next task");
   }
   requireExactArrayValues(response.proof_commands, REQUIRED_PROOF_COMMANDS, "proof commands");
-  const boundary = String(response.branch_boundary || "").toLowerCase();
-  if (!/(branch|worktree)/.test(boundary) || !boundary.includes("main") || !/(do not|don't|avoid|not edit|prohibit)/.test(boundary)) {
+  if (response.main_edits_allowed !== false) {
     throw new Error("cold-start response did not preserve the protected branch boundary");
   }
   requireEvidenceFiles(response.evidence_files);

@@ -36,7 +36,7 @@ const valid = {
     "npm run benchmark:sealed",
     "npm run benchmark:trajectories"
   ],
-  branch_boundary: "Create a branch or worktree; do not edit main.",
+  main_edits_allowed: false,
   evidence_files: [
     "AGENTS.md",
     "docs/plans/adaptive-harness-candidate.md",
@@ -76,14 +76,6 @@ assert.equal(
   }).source_evidence_complete,
   true
 );
-assert.equal(
-  verifyColdStartResponse({
-    ...valid,
-    branch_boundary: "Meaningful edits remain prohibited on main; use this worktree."
-  }).protected_branch_boundary,
-  true
-);
-
 assert.throws(
   () => verifyColdStartResponse({ ...valid, source_commit: FROZEN_BASELINE_COMMIT }),
   /source commit/
@@ -105,7 +97,7 @@ assert.throws(
   /proof commands/
 );
 assert.throws(
-  () => verifyColdStartResponse({ ...valid, branch_boundary: "Edit main directly." }),
+  () => verifyColdStartResponse({ ...valid, main_edits_allowed: true }),
   /branch boundary/
 );
 
