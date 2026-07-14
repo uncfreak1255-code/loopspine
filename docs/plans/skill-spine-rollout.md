@@ -1,6 +1,6 @@
 # LoopSpine Skill Spine Rollout Spec
 
-Status: Proposed for local pilot
+Status: Pilot complete; global promotion rejected
 
 Owner: Sawyer Beck
 
@@ -31,8 +31,8 @@ apps, permanent specialist agents, or a new runtime.
 | Codex package | Structurally ready | `.codex-plugin/plugin.json` |
 | Claude package | Structurally ready | `.claude-plugin/plugin.json` and plugin validation |
 | Installed-plugin access proof | Ready | `npm run probe:installed-plugin` |
-| Dogfood pilot | Incomplete | `2/10`; public rates remain `Pending` |
-| Automatic global routing | Blocked | Ten-task gate has not passed |
+| Dogfood pilot | Complete | `10/10`; see `dogfood/report.md` |
+| Automatic global routing | Rejected for this round | Incorrect-stop rate was `30.0%` and the frozen-baseline sealed comparison failed |
 | Adaptive seniority trigger | Rejected | Candidate did not beat v0.2.0 |
 | Hooks | Not justified | No repeated deterministic failure class recorded |
 
@@ -238,9 +238,43 @@ Measure:
 - safety-boundary violations;
 - runtime and output overhead when comparing skill candidates.
 
-Public rates remain `Pending` until three real tasks are recorded. Any public
-candidate-performance claim requires at least three samples under recorded
-conditions.
+The ten-task operating rates are now reportable from the canonical register.
+Any public candidate-performance claim still requires at least three benchmark
+samples under recorded conditions; the one-sample pilot benchmark is diagnostic
+only.
+
+## Ten-Task Decision
+
+Decision: **reject global/default promotion and keep LoopSpine available only
+through explicit local invocation.** Preserve the proof infrastructure, the two
+development evals, and the skill-only plugin packages. Keep the v0.2.0 skill
+text unchanged.
+
+| Gate | Result | Decision |
+|---|---|---|
+| Real dogfood tasks | `10/10` verified | Pass |
+| Verified completion | `100.0%` | Pass |
+| Sawyer intervention | `0.0%` | Pass |
+| Median time to proof | `4.22 min` | Informational |
+| Incorrect stops | `30.0%` (`DF-03`, `DF-07`, and `DF-08`) | **Fail** |
+| Safety-boundary violations | `0` | Pass |
+| Frozen-baseline sealed comparison | `0.9412` current versus `0.9673` v0.2.0, delta `-0.0261` across three samples | **Fail** |
+| Candidate quality evidence | One-sample no-skill diagnostic was `+18.75`; no behavior-changing candidate was accepted | Not promotion evidence |
+| Runtime and output overhead | Sealed: `-3.22%` runtime and `+7.81%` output | Pass |
+| Executable trajectories | `6/6` | Pass |
+| Tests, plugin validation, access probe, trigger smoke, review | Pass | Pass |
+
+The three incorrect stops are not equivalent. `DF-07` was corrected by the
+lead agent's review before counting, which is the intended recovery path.
+`DF-03` stopped without a command that could reproduce and then prove the exact
+bug, and `DF-08` stopped with a known contradiction still in the plan. Those
+two cases show unresolved supervision cost in debugging and completion
+judgment. Adding a hook would not solve either class deterministically.
+
+The next behavior candidate should target those two misses with the smallest
+possible skill-text change, then pass the retained development evals and a
+fresh three-sample frozen-baseline comparison. Until that happens, explicit
+local use remains the rollback-free operating mode.
 
 ## Promotion Gate
 
@@ -338,20 +372,20 @@ For a rejected candidate:
 
 - [x] Select three pilot repositories.
 - [x] Document the repo-local invocation method for each.
-- [ ] Complete and record DF-03 through DF-10.
-- [ ] Review metrics after DF-03, DF-06, and DF-10.
-- [ ] Record false triggers, unnecessary ceremony, and incorrect stops.
-- [ ] Keep each proof reference pinned to an immutable commit.
+- [x] Complete and record DF-03 through DF-10.
+- [x] Review metrics after DF-03, DF-06, and DF-10.
+- [x] Record false triggers, unnecessary ceremony, and incorrect stops.
+- [x] Keep each proof reference pinned to an immutable commit.
 
 ### Phase 2: Promotion Review
 
-- [ ] Run `npm test`.
-- [ ] Run `npm run benchmark:pilot` as a diagnostic only.
-- [ ] Run the frozen-baseline sealed comparison with three samples.
-- [ ] Run `npm run benchmark:trajectories`.
-- [ ] Validate both plugin manifests and run the installed-plugin probe.
-- [ ] Run simplify and autoreview.
-- [ ] Write the ten-task decision: promote, revise, or reject.
+- [x] Run `npm test`.
+- [x] Run `npm run benchmark:pilot` as a diagnostic only.
+- [x] Run the frozen-baseline sealed comparison with three samples.
+- [x] Run `npm run benchmark:trajectories`.
+- [x] Validate both plugin manifests and run the installed-plugin probe.
+- [x] Run simplify and autoreview.
+- [x] Write the ten-task decision: reject global promotion for this round.
 
 ### Phase 3: Optional Global Adoption
 

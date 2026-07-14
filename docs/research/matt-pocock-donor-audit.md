@@ -2,10 +2,11 @@
 
 Date: 2026-07-14
 
-Decision: keep the LoopSpine v0.2.0 skill text unchanged during the remaining
+Decision: keep the LoopSpine v0.2.0 skill text unchanged after the completed
 pilot. Retain the red-capable debugging and bounded temporary-responsibility
 evals. Do not add hooks, permanent agents, or disclosed reference files from
-this audit alone.
+this audit alone. Keep use explicit and local rather than making LoopSpine the
+global/default spine.
 
 ## Scope
 
@@ -115,7 +116,16 @@ own recorded evidence.
 
 ## Stop Decision
 
-This audit does not promote LoopSpine globally. DF-03 through DF-10 still need
-commit-pinned HTTPS proof references in the canonical dogfood register. Until
-those references exist and all ten tasks pass the promotion gate, LoopSpine is
-ready only for explicit local use.
+This audit does not promote LoopSpine globally. All ten dogfood tasks now have
+commit-pinned HTTPS proof references in the canonical register, with `100.0%`
+verified completion, `0.0%` Sawyer intervention, a `4.22 min` median time to
+proof, and a `30.0%` incorrect-stop rate. The pilot therefore fails the
+no-unresolved-incorrect-stop gate in addition to the recorded frozen-baseline
+sealed comparison.
+
+The useful donor outcome is narrow: retain the two evals, immutable-proof
+recorder, plugin/access probes, and explicit local invocation path. Do not add
+hooks or permanent role agents. A later candidate should improve red-capable
+debugging and completion consistency first, then clear the retained evals and
+a fresh three-sample frozen-baseline comparison before global adoption is
+reconsidered.

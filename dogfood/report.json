@@ -1,9 +1,9 @@
 {
-  "completed_tasks": 3,
+  "completed_tasks": 10,
   "target_tasks": 10,
   "minimum_public_samples": 3,
   "verified_completion_rate": 1,
   "sawyer_intervention_rate": 0,
-  "median_time_to_proof_minutes": 3.63,
-  "incorrect_stop_rate": 0
+  "median_time_to_proof_minutes": 4.22,
+  "incorrect_stop_rate": 0.3
 }
