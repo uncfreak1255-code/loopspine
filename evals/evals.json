@@ -43,6 +43,14 @@
       "must_not_match": ["replace redis immediately", "patch without reproducing"]
     },
     {
+      "id": "debug-red-capable-gate",
+      "split": "development",
+      "prompt": "A production build exits successfully, but its output suggests that a live API route ran during prerendering. The route must execute only at request time. Fix this end to end.",
+      "routes": ["investigate"],
+      "must_match": [["failing command", "command fails", "nonzero exit", "red gate"], ["exact symptom", "specific symptom"], ["before hypothesis", "before editing", "before changing"], ["same command", "rerun the command"], ["regression test", "regression proof"]],
+      "must_not_match": ["patch first and verify later", "build exits zero so there is no bug"]
+    },
+    {
       "id": "qa-live-ui",
       "split": "core",
       "prompt": "The checkout code tests pass. Verify the real mobile flow and fix anything broken.",
