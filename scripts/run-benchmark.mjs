@@ -109,7 +109,7 @@ function codexVersion() {
 const options = parseArgs(process.argv.slice(2));
 const development = readEvalFile(path.join("evals", "evals.json"), "development");
 const sealed = (options.sealed || options.sealedOnly) ? readEvalFile(options.sealedFile, "sealed") : null;
-const pilotIds = new Set(["plan-fuzzy-cross-repo", "tdd-feature", "debug-red-capable-gate", "bounded-loop", "heldout-docs-no-tdd"]);
+const pilotIds = new Set(["plan-fuzzy-cross-repo", "tdd-feature", "debug-red-capable-gate", "temporary-roles-without-ceremony", "bounded-loop", "heldout-docs-no-tdd"]);
 const developmentCases = options.pilot ? development.cases.filter((item) => pilotIds.has(item.id)) : development.cases;
 const cases = [
   ...(options.sealedOnly ? [] : developmentCases),

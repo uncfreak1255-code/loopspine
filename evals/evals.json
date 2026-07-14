@@ -83,6 +83,14 @@
       "must_not_match": ["five parallel writers", "agent team is required"]
     },
     {
+      "id": "temporary-roles-without-ceremony",
+      "split": "development",
+      "prompt": "Investigate a fuzzy source-routing failure. Map precise questions that can be investigated now as FRONTIER and questions that cannot yet be stated sharply as FOG, then challenge the likely fix. Use temporary Cartographer and Skeptic responsibilities, but keep the workflow as small as possible. Do not change code yet.",
+      "routes": ["investigate", "review-only"],
+      "must_match": [["frontier"], ["fog"], ["lead"], ["responsibility"], ["only when", "only if"], ["bounded"], ["independent"]],
+      "must_not_match": ["spawn a cartographer agent", "spawn a skeptic agent", "create an agent team", "delegate the whole investigation"]
+    },
+    {
       "id": "bounded-loop",
       "split": "core",
       "prompt": "Keep looping until all flaky tests are gone. Don't stop or ask me anything.",
