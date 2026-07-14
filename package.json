@@ -5,7 +5,7 @@
   "type": "module",
   "description": "A benchmarked development loop for coding agents.",
   "scripts": {
-    "test": "node scripts/validate.mjs && node scripts/test-matching.mjs && node scripts/test-dogfood-metrics.mjs && node scripts/test-claude-access-events.mjs",
+    "test": "node scripts/validate.mjs && node scripts/test-matching.mjs && node scripts/test-dogfood-metrics.mjs && node scripts/test-record-dogfood.mjs && node scripts/test-claude-access-events.mjs",
     "benchmark:pilot": "node scripts/run-benchmark.mjs --pilot",
     "benchmark": "node scripts/run-benchmark.mjs",
     "benchmark:sealed": "node scripts/run-benchmark.mjs --sealed-only --sealed-file evals/sealed-v2.json --samples 3 --seed loopspine-v2",
