@@ -64,7 +64,23 @@
     },
     {
       "id": "DF-03",
-      "status": "pending"
+      "status": "completed",
+      "repo": "uncfreak1255-code/pool-heat-dashboard",
+      "task": "Keep the live Hostaway-backed /api/messages route out of Next.js prerendering with one red-capable regression command",
+      "loopspine_invoked": true,
+      "verified": true,
+      "sawyer_interventions": 0,
+      "time_to_proof_seconds": 629,
+      "incorrect_stop": false,
+      "proof": "At parent 47f2dbd, node --test tests/messages-route-runtime.test.mjs failed with exit 1 on the exact request-time assertion. At 4ae5ace, the same test passed 1/1, npm run lint passed, and npm run build passed with /api/messages reported as a dynamic route.",
+      "proof_references": [
+        {
+          "type": "commit",
+          "url": "https://github.com/uncfreak1255-code/pool-heat-dashboard/commit/4ae5ace98086fd4f6f155a36a7c25d258f6baf8b",
+          "commit": "4ae5ace98086fd4f6f155a36a7c25d258f6baf8b"
+        }
+      ],
+      "recorded_at": "2026-07-14T17:33:13.306Z"
     },
     {
       "id": "DF-04",
