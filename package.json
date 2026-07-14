@@ -5,7 +5,7 @@
   "type": "module",
   "description": "A benchmarked development loop for coding agents.",
   "scripts": {
-    "test": "node scripts/validate.mjs && node scripts/test-matching.mjs && node scripts/test-dogfood-metrics.mjs && node scripts/test-record-dogfood.mjs && node scripts/test-claude-access-events.mjs",
+    "test": "node scripts/validate.mjs && node scripts/test-matching.mjs && node scripts/test-dogfood-metrics.mjs && node scripts/test-record-dogfood.mjs && node scripts/test-claude-access-events.mjs && node scripts/test-cold-start-contract.mjs",
     "benchmark:pilot": "node scripts/run-benchmark.mjs --pilot",
     "benchmark": "node scripts/run-benchmark.mjs",
     "benchmark:sealed": "node scripts/run-benchmark.mjs --sealed-only --sealed-file evals/sealed-v2.json --samples 3 --seed loopspine-v2",
@@ -19,7 +19,8 @@
     "dogfood:report": "node scripts/dogfood-report.mjs --write",
     "dogfood:record": "node scripts/record-dogfood.mjs",
     "probe:installed-plugin": "node scripts/run-installed-plugin-probe.mjs",
-    "smoke:trigger-selection": "node scripts/run-trigger-selection-smoke.mjs"
+    "smoke:trigger-selection": "node scripts/run-trigger-selection-smoke.mjs",
+    "smoke:cold-start": "node scripts/run-cold-start-smoke.mjs"
   },
   "engines": {
     "node": ">=20"
