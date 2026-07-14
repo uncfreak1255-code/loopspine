@@ -212,6 +212,18 @@ Spawn a subagent only when its task is independently bounded and its result can
 return as a summary or scoped diff. Use a separate worktree for parallel writers.
 Do not create an agent team for sequential work or overlapping files.
 
+## Pilot Checkpoint Readback
+
+These are local evidence decisions, not canonical dogfood completions. A task
+counts only after `dogfood/register.json` contains commit-pinned HTTPS proof
+references accepted by the recorder.
+
+| Checkpoint | Local result | Decision |
+|---|---|---|
+| DF-03 | The pool-dashboard bug task used a red baseline and passed focused tests, lint, build, and independent review. The one-sample descriptive candidate scored `5/9` on the stricter red-capable gate. | Keep `debug-red-capable-gate`; keep v0.2.0 skill text unchanged. |
+| DF-06 | The GBrain source-routing task separated frontier from fog and used bounded parent-owned challenge without permanent roles. The one-sample descriptive candidate scored `10/13` on the role gate. | Keep `temporary-roles-without-ceremony`; add no role files or team. |
+| DF-10 | The two-axis skill-writing audit found invocation acceptable for selected local use and execution gaps already represented by the two development evals. Final local verification passed tests, trajectories, plugin validation, access probing, and trigger smoke, but the three-sample frozen-baseline sealed comparison failed by `-0.0261`. | Add no new eval, hook, reference split, or skill rewrite. Keep global promotion blocked. See `docs/research/matt-pocock-donor-audit.md`. |
+
 ## Metrics
 
 The canonical register is `dogfood/register.json`. The generated reports are
