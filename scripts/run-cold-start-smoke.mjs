@@ -64,7 +64,7 @@ const prompt = [
   "This is a cold-start readback: use only current Git state and files inside this repository.",
   "Do not rely on prior sessions, chat history, saved checkpoints, or external memory.",
   "Begin by reading AGENTS.md, then follow its restart instructions.",
-  "Identify the exact current HEAD commit, frozen comparison baseline, promotion decision, first unfinished task, complete candidate proof commands, protected-branch boundary, and repository files that prove the answer.",
+  "Identify the exact current HEAD commit, frozen comparison baseline, promotion decision, first unfinished task, complete candidate proof commands, whether meaningful edits on main are allowed, and repository files that prove the answer.",
   "Do not edit files. Return only the structured response requested by the output schema."
 ].join(" ");
 
