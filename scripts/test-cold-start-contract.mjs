@@ -18,10 +18,10 @@ const packageMetadata = JSON.parse(fs.readFileSync(path.join(root, "package.json
 
 assert.match(agents, /docs\/plans\/adaptive-harness-candidate\.md/);
 assert.match(agents, /npm run smoke:cold-start/);
-assert.match(plan, /^Status: Active$/m);
+assert.match(plan, /^Status: Evidence complete; behavior candidate rejected$/m);
 assert.ok(plan.includes(FROZEN_BASELINE_COMMIT));
 assert.ok(plan.includes(CANDIDATE_SOURCE_BASE_COMMIT));
-assert.match(plan, /Add an eval-only adaptive-harness receipt candidate/);
+assert.match(plan, /eval-only adaptive-harness receipt candidate is implemented/);
 for (const command of REQUIRED_PROOF_COMMANDS) assert.ok(plan.includes(command));
 assert.equal(packageMetadata.scripts["smoke:cold-start"], "node scripts/run-cold-start-smoke.mjs");
 
@@ -29,7 +29,7 @@ const valid = {
   source_commit: CANDIDATE_SOURCE_BASE_COMMIT,
   frozen_baseline_commit: FROZEN_BASELINE_COMMIT,
   promotion_status: "rejected",
-  next_task: "adaptive-harness-receipt-eval",
+  next_task: "none-until-new-real-task-evidence",
   proof_commands: [
     "npm test",
     "npm run benchmark:adaptive-harness",
@@ -58,7 +58,7 @@ assert.equal(
   verifyColdStartResponse({
     ...valid,
     promotion_status: "Global/default promotion rejected; explicit local use remains.",
-    next_task: "Add the eval-only adaptive-harness receipt candidate."
+    next_task: "None is authorized until new real-task evidence names a narrower failure."
   }).next_task_matches,
   true
 );

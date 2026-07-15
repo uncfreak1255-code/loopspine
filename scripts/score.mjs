@@ -2,6 +2,7 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseAdaptiveHarnessReceipt, verifyAdaptiveHarnessExpectation } from "./adaptive-harness-receipt.mjs";
 import { hasAffirmativeForbiddenPhrase, matchesRoute } from "./matching.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -59,6 +60,13 @@ function sha256(filePath) {
   return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
 }
 
+function evidencePath(relativePath, label) {
+  if (!relativePath || path.isAbsolute(relativePath)) fail(`Malformed ${label}: path must be repository-relative`);
+  const resolved = path.resolve(root, relativePath);
+  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) fail(`Malformed ${label}: path escapes repository`);
+  return resolved;
+}
+
 function loadCases(relativePath, source) {
   const data = readJson(path.join(root, relativePath), "evaluation file");
   if (!Array.isArray(data.cases)) fail(`Malformed evaluation file: ${relativePath} has no cases array`);
@@ -74,7 +82,8 @@ function scoreOutput(item, output) {
   const failures = [];
   let earned = 0;
   const regexes = item.must_not_regex || [];
-  const maximum = 2 + item.must_match.length + item.must_not_match.length + regexes.length;
+  const receiptPoints = item.receipt_contract === "adaptive-harness-v1" ? 5 : 0;
+  const maximum = 2 + item.must_match.length + item.must_not_match.length + regexes.length + receiptPoints;
   const normalized = output.toLowerCase();
   if (matchesRoute(output, item.routes)) earned += 2;
   else failures.push(`wrong route: expected ${item.routes.join(" | ")}`);
@@ -97,7 +106,20 @@ function scoreOutput(item, output) {
     if (!regex.test(output)) earned += 1;
     else failures.push(`forbidden regex: ${pattern}`);
   }
-  return { earned, maximum, strict_pass: failures.length === 0, failures };
+  let receiptContractPassed = null;
+  if (item.receipt_contract === "adaptive-harness-v1") {
+    try {
+      const receipt = parseAdaptiveHarnessReceipt(output);
+      const receiptFailures = verifyAdaptiveHarnessExpectation(receipt, item.receipt_expectations);
+      earned += Math.max(0, receiptPoints - receiptFailures.length);
+      failures.push(...receiptFailures.map((failure) => `receipt: ${failure}`));
+      receiptContractPassed = receiptFailures.length === 0;
+    } catch (error) {
+      failures.push(`receipt: ${error.message}`);
+      receiptContractPassed = false;
+    }
+  }
+  return { earned, maximum, strict_pass: failures.length === 0, failures, receipt_contract_passed: receiptContractPassed };
 }
 
 function sampleFiles(caseDir, expectedSamples, requireExactCount) {
@@ -142,18 +164,32 @@ if (provenance) {
   if (sha256(skillPath) !== provenance.skill_sha256) fail("Malformed evidence: skill hash does not match provenance.json");
   if (!Array.isArray(provenance.eval_files)) fail("Malformed provenance: eval file hashes are missing");
   for (const item of provenance.eval_files) {
-    const evalPath = path.join(root, item.path || "");
+    const evalPath = evidencePath(item.path, "evaluation provenance");
     if (!item.path || !item.sha256 || !fs.existsSync(evalPath) || sha256(evalPath) !== item.sha256) {
       fail(`Malformed evidence: eval hash does not match provenance.json for ${item.path || "<missing>"}`);
     }
   }
+  if (provenance.candidate_overlay) {
+    const overlayPath = evidencePath(provenance.candidate_overlay.path, "candidate overlay provenance");
+    if (!provenance.candidate_overlay.sha256 || !fs.existsSync(overlayPath) || sha256(overlayPath) !== provenance.candidate_overlay.sha256) {
+      fail("Malformed evidence: candidate overlay hash does not match provenance.json");
+    }
+  }
+  if (provenance.baseline_skill) {
+    const baselinePath = evidencePath(provenance.baseline_skill.path, "baseline skill provenance");
+    if (!provenance.baseline_skill.sha256 || !fs.existsSync(baselinePath) || sha256(baselinePath) !== provenance.baseline_skill.sha256) {
+      fail("Malformed evidence: baseline skill hash does not match provenance.json");
+    }
+  }
 }
 
+const developmentRelativePath = provenance?.eval_files?.find((item) => item.source === "development")?.path
+  || path.join("evals", "evals.json");
 const sealedRelativePath = provenance?.eval_files?.find((item) => item.source === "sealed")?.path
   || path.join("evals", "sealed-v1.json");
 
 const cases = [
-  ...(mode === "sealed-only" ? [] : loadCases(path.join("evals", "evals.json"), "development")),
+  ...(mode === "sealed-only" ? [] : loadCases(developmentRelativePath, "development")),
   ...(mode === "development" ? [] : loadCases(sealedRelativePath, "sealed"))
 ];
 const selectedIds = options.caseArg ? new Set(options.caseArg.split(",").filter(Boolean)) : null;

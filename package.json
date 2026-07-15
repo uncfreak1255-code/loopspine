@@ -5,10 +5,11 @@
   "type": "module",
   "description": "A benchmarked development loop for coding agents.",
   "scripts": {
-    "test": "node scripts/validate.mjs && node scripts/test-matching.mjs && node scripts/test-dogfood-metrics.mjs && node scripts/test-record-dogfood.mjs && node scripts/test-claude-access-events.mjs && node scripts/test-cold-start-contract.mjs",
+    "test": "node scripts/validate.mjs && node scripts/test-matching.mjs && node scripts/test-dogfood-metrics.mjs && node scripts/test-record-dogfood.mjs && node scripts/test-claude-access-events.mjs && node scripts/test-cold-start-contract.mjs && node scripts/test-adaptive-harness-contract.mjs",
     "benchmark:pilot": "node scripts/run-benchmark.mjs --pilot",
     "benchmark": "node scripts/run-benchmark.mjs",
-    "benchmark:sealed": "node scripts/run-benchmark.mjs --sealed-only --sealed-file evals/sealed-v2.json --samples 3 --seed loopspine-v2",
+    "benchmark:sealed": "node scripts/run-benchmark.mjs --sealed-only --sealed-file evals/sealed-v2.json --candidate-score-floor 0.9673 --samples 3 --seed loopspine-v2",
+    "benchmark:adaptive-harness": "node scripts/run-benchmark.mjs --development-file evals/adaptive-harness.json --baseline-skill-file skills/loopspine/SKILL.md --candidate-overlay-file evals/adaptive-harness-candidate.md --require-strict-cases adaptive-df-03,adaptive-df-08 --samples 3 --seed loopspine-adaptive-harness-v1",
     "benchmark:trajectories": "node scripts/run-trajectories.mjs",
     "benchmark:blind:prepare": "node scripts/prepare-blind-review.mjs",
     "benchmark:blind:score": "node scripts/score-blind-review.mjs",

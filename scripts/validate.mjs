@@ -18,6 +18,7 @@ const codex = readJson(".codex-plugin/plugin.json");
 const claude = readJson(".claude-plugin/plugin.json");
 const evals = readJson("evals/evals.json");
 const sealed = readJson("evals/sealed-v2.json");
+const adaptive = readJson("evals/adaptive-harness.json");
 const demoReceipt = readJson("demo/latest/receipt.json");
 const dogfood = readJson("dogfood/register.json");
 const skillPath = path.join(root, "skills", "loopspine", "SKILL.md");
@@ -34,6 +35,7 @@ if (!skill.includes("RESULT: success | clean-no-op | no-progress")) errors.push(
 
 const cases = evals?.cases || [];
 const sealedCases = sealed?.cases || [];
+const adaptiveCases = adaptive?.cases || [];
 const ids = new Set();
 for (const item of cases) {
   if (!item.id || ids.has(item.id)) errors.push(`invalid or duplicate eval id: ${item.id || "<missing>"}`);
@@ -57,6 +59,23 @@ for (const item of sealedCases) {
 if (sealed?.suite !== "loopspine-sealed-v2") errors.push("sealed eval suite id is invalid");
 if (sealed?.authored_by !== "independent-terra") errors.push("sealed eval author receipt is invalid");
 if (sealedCases.length < 6) errors.push("sealed eval pack must contain at least six held-out cases");
+if (adaptive?.suite !== "loopspine-adaptive-harness-v1") errors.push("adaptive harness suite id is invalid");
+const adaptiveIds = ["adaptive-df-03", "adaptive-df-08", "adaptive-fuzzy"];
+if (JSON.stringify(adaptiveCases.map((item) => item.id)) !== JSON.stringify(adaptiveIds)) {
+  errors.push("adaptive harness must contain exactly the DF-03, DF-08, and fuzzy cases in order");
+}
+for (const item of adaptiveCases) {
+  if (ids.has(item.id)) errors.push(`invalid or duplicate adaptive eval id: ${item.id || "<missing>"}`);
+  ids.add(item.id);
+  if (item.split !== "development" || item.receipt_contract !== "adaptive-harness-v1") errors.push(`${item.id}: invalid adaptive harness contract`);
+  if (!item.prompt || !item.routes?.length || !item.must_match?.length || !item.must_not_match?.length || !item.receipt_expectations) {
+    errors.push(`${item.id}: incomplete adaptive harness eval contract`);
+  }
+  const expected = item.receipt_expectations || {};
+  for (const field of ["red_gate", "contradictions", "recovery", "reuse"]) {
+    if (expected[field] === undefined) errors.push(`${item.id}: missing adaptive receipt expectation ${field}`);
+  }
+}
 if (demoReceipt?.success !== true || demoReceipt?.sawyer_interventions !== 0 || demoReceipt?.incorrect_stop !== false) {
   errors.push("demo receipt must prove success with zero interventions and no incorrect stop");
 }
@@ -79,4 +98,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`LoopSpine valid: 2 plugin manifests, 1 skill, ${cases.length} development cases, ${sealedCases.length} sealed held-out cases.`);
+console.log(`LoopSpine valid: 2 plugin manifests, 1 skill, ${cases.length} development cases, ${sealedCases.length} sealed held-out cases, ${adaptiveCases.length} adaptive harness cases.`);

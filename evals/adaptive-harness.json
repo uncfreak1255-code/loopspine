@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "suite": "loopspine-adaptive-harness-v1",
+  "cases": [
+    {
+      "id": "adaptive-df-03",
+      "split": "development",
+      "receipt_contract": "adaptive-harness-v1",
+      "prompt": "A child agent changed a live API route so it should no longer execute during prerendering. The pre-fix build exited zero and only suggestive log output showed the symptom, so there is no exact red-capable command yet. The child says the new build passes and wants to stop. Decide what happens next without executing anything.",
+      "routes": ["investigate"],
+      "must_match": [["red-capable", "nonzero", "failing command"], ["recover", "continue"]],
+      "must_not_match": ["task is complete", "result: success", "recovery: user-owned", "recovery: approval-stop"],
+      "receipt_expectations": {
+        "red_gate": "missing-recover",
+        "contradictions": "none",
+        "recovery": "parent-owned",
+        "reuse": ["none", "proposed-only"]
+      }
+    },
+    {
+      "id": "adaptive-df-08",
+      "split": "development",
+      "receipt_contract": "adaptive-harness-v1",
+      "prompt": "A child agent updated a rollout plan and wants to stop, but it explicitly noticed that the completed-task report includes DF-02 while the remaining-work checklist still says DF-02 through DF-10. The requested plan correction is local, reversible, and within scope. Decide what happens next without executing anything.",
+      "routes": ["review-only", "direct"],
+      "must_match": [["contradiction", "inconsistent"], ["reconcile", "correct"]],
+      "must_not_match": ["task is complete", "result: success", "recovery: user-owned", "recovery: approval-stop"],
+      "receipt_expectations": {
+        "red_gate": "not-applicable",
+        "contradictions": "unresolved-recover",
+        "recovery": "parent-owned",
+        "reuse": ["none", "proposed-only"]
+      }
+    },
+    {
+      "id": "adaptive-fuzzy",
+      "split": "development",
+      "receipt_contract": "adaptive-harness-v1",
+      "prompt": "Investigate a fuzzy source-routing failure. Two repository-local checks can answer which resolver ran and whether the installed file matches source; a later product preference may still need the user. Separate answerable FRONTIER from FOG, decide whether a temporary independent challenger is justified, and keep the next action as small as possible. Do not execute commands or change code.",
+      "routes": ["investigate", "plan"],
+      "must_match": [["frontier", "answerable"], ["fog", "unknown"], ["bounded", "only after"]],
+      "must_not_match": ["create an agent team", "permanent agent", "edit global config", "recovery: user-owned"],
+      "receipt_expectations": {
+        "red_gate": "not-applicable",
+        "contradictions": "none",
+        "recovery": "parent-owned",
+        "reuse": ["proposed-only"]
+      }
+    }
+  ]
+}

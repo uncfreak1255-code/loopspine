@@ -1,13 +1,13 @@
 # Adaptive Harness Candidate Plan
 
-Status: Active
+Status: Evidence complete; behavior candidate rejected
 
 Owner: Sawyer Beck
 
 Frozen comparison baseline: LoopSpine v0.2.0 at
 `9dc46946c879d955daa5a37bd839d168936d6a98`
 
-Current source base: `60fa913bb313312c64ce4c3d57015f96a4999c91`
+Evidence implementation base: `852907026a3e4a311a9381e036a9504d7f48b4f6`
 
 ## Goal
 
@@ -28,10 +28,10 @@ The highest-value misses were:
   bug and prove the repair.
 - `DF-08`: the agent stopped while a known contradiction remained unresolved.
 
-## First Unfinished Task
+## Completed Candidate Task
 
-Add an eval-only adaptive-harness receipt candidate. Do not edit
-`skills/loopspine/SKILL.md` yet.
+The eval-only adaptive-harness receipt candidate is implemented. The accepted
+`skills/loopspine/SKILL.md` remains byte-identical to frozen v0.2.0.
 
 The receipt candidate should record only information needed to test the two
 known failure classes:
@@ -42,9 +42,48 @@ known failure classes:
 - whether recovery was parent-owned, user-owned, or a valid approval stop;
 - whether any reusable rule, eval, or documentation change is merely proposed.
 
-Add the focused runner as `npm run benchmark:adaptive-harness`. Replay the
-`DF-03` and `DF-08` failure shapes plus one genuinely fuzzy task. Use three
-samples for any performance claim.
+The focused runner is `npm run benchmark:adaptive-harness`. It replays the
+`DF-03` and `DF-08` failure shapes plus one genuinely fuzzy task with three
+samples per variant.
+
+## Evidence Decision
+
+Decision: retain the eval-only receipt, parser, fixtures, provenance checks,
+and focused runner. Do not change the skill text and do not rerun the sealed
+suite looking for a favorable draw.
+
+The accepted focused run was
+`results/2026-07-15T00-11-39-008Z-gpt-5.5/`:
+
+- weighted delta `+0.4250`;
+- candidate score `0.9750`;
+- candidate strict-sample pass rate `0.8889`;
+- all `DF-03` and `DF-08` candidate samples strict-pass;
+- safety-boundary violations `0`;
+- runtime overhead `-9.15%`;
+- output overhead `-11.17%`.
+
+The retained sealed run was
+`results/2026-07-15T00-15-54-207Z-gpt-5.5-sealed-only/`. Its relative
+comparison passed with weighted delta `+0.1503` and zero boundary violations,
+but the absolute candidate score was `0.9281`, below the frozen v0.2.0 floor
+of `0.9673`. The command correctly exited nonzero. This rejects a skill-text
+change even though the focused candidate improved the known failure shapes.
+
+Executable trajectories passed `6/6` at
+`results/trajectories/2026-07-15T00-24-29-414Z/`.
+
+Rejected hypotheses:
+
+- a focused adaptive-harness win is sufficient promotion evidence;
+- a green relative sealed comparison is sufficient when the absolute frozen
+  floor fails;
+- rerunning an unchanged candidate to seek a luckier sample is valid progress.
+
+First remaining task: none is authorized from this evidence. Keep explicit
+local invocation and the v0.2.0 skill unchanged. Start another behavior
+candidate only after new real-task evidence identifies a narrower failure
+class and a fresh plan names its proof gate.
 
 ## Candidate Proof Gate
 
@@ -93,14 +132,17 @@ Required result:
 
 ### Adaptive Harness Evidence
 
-- [ ] Add the eval-only adaptive-harness receipt candidate.
-- [ ] Add `npm run benchmark:adaptive-harness` without changing the skill.
-- [ ] Replay the `DF-03`, `DF-08`, and fuzzy-task shapes.
-- [ ] Compare three-sample results with frozen v0.2.0.
-- [ ] Decide whether one smallest skill-text change is justified.
+- [x] Add the eval-only adaptive-harness receipt candidate.
+- [x] Add `npm run benchmark:adaptive-harness` without changing the skill.
+- [x] Replay the `DF-03`, `DF-08`, and fuzzy-task shapes.
+- [x] Compare three-sample results with frozen v0.2.0.
+- [x] Decide that no skill-text change is justified by this evidence.
 
 ## Completion Receipt
 
-When work pauses or completes, update this worklist and preserve exact commands,
-commit-pinned proof, rejected hypotheses, and the first remaining task. A
-session checkpoint may add temporary detail, but it must not replace this plan.
+The exact proof commands were `npm test`, `npm run benchmark:adaptive-harness`,
+`npm run benchmark:sealed`, and `npm run benchmark:trajectories`. The sealed
+command is an intentional failed gate and is the decision receipt, not a test
+failure to smooth over. Normal closeout owns the implementation commit and
+merge receipt; a session checkpoint may add temporary detail, but it must not
+replace this plan.
