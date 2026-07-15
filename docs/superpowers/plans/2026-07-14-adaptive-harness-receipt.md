@@ -40,7 +40,6 @@ import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -48,12 +47,12 @@ const fixture = JSON.parse(fs.readFileSync(path.join(root, "evals", "adaptive-ha
 const overlay = fs.readFileSync(path.join(root, "evals", "adaptive-harness-candidate.md"), "utf8");
 const packageMetadata = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const currentSkill = fs.readFileSync(path.join(root, "skills", "loopspine", "SKILL.md"));
-const frozenSkill = execFileSync("git", ["show", "9dc46946c879d955daa5a37bd839d168936d6a98:skills/loopspine/SKILL.md"], { cwd: root });
+const frozenSkillSha256 = "5f58a9f74a57569f3554e33d24508464ede7bb50589a5eb24e38073fe2d905a6";
 
 assert.equal(fixture.suite, "loopspine-adaptive-harness-v1");
 assert.deepEqual(fixture.cases.map(({ id }) => id), ["adaptive-df-03", "adaptive-df-08", "adaptive-fuzzy"]);
 for (const field of ["RED_GATE", "CONTRADICTIONS", "CHALLENGER", "RECOVERY", "REUSE"]) assert.ok(overlay.includes(`${field}:`));
-assert.equal(crypto.createHash("sha256").update(currentSkill).digest("hex"), crypto.createHash("sha256").update(frozenSkill).digest("hex"));
+assert.equal(crypto.createHash("sha256").update(currentSkill).digest("hex"), frozenSkillSha256);
 assert.match(packageMetadata.scripts["benchmark:adaptive-harness"], /--development-file evals\/adaptive-harness\.json/);
 assert.match(packageMetadata.scripts["benchmark:adaptive-harness"], /--candidate-overlay-file evals\/adaptive-harness-candidate\.md/);
 assert.match(packageMetadata.scripts["benchmark:adaptive-harness"], /--baseline-skill-file skills\/loopspine\/SKILL\.md/);
