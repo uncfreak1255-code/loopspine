@@ -11,8 +11,8 @@ When the user asks to continue, resume, or identify the next LoopSpine task:
    `dogfood/register.json` for proof.
 5. Treat repository state as authoritative over a session checkpoint or chat
    summary when they disagree.
-6. Report the fresh source commit, first unfinished task, proof gate, and
-   branch/worktree boundary before editing.
+6. Report the fresh source commit, first remaining task or explicit evidence
+   hold, proof gate, and branch/worktree boundary before editing.
 
 Use a branch or worktree for meaningful edits. Do not change the v0.2.0 skill,
 install globally, or add hooks or permanent agents unless the active plan and

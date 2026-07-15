@@ -5,52 +5,18 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
+import { benchmarkUsage, parseBenchmarkArgs } from "./benchmark-options.mjs";
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const variants = ["without-skill", "with-skill"];
-
-function usage() {
-  console.error("Usage: node run-benchmark.mjs [--pilot] [--sealed|--sealed-only] [--sealed-file PATH] [--baseline-skill-file PATH] [--samples N] [--seed VALUE] [--model NAME]");
-}
 
 function fail(message, code = 2) {
   console.error(message);
   process.exit(code);
 }
 
-function parseArgs(argv) {
-  const options = { pilot: false, sealed: false, sealedOnly: false, sealedFile: path.join("evals", "sealed-v2.json"), baselineSkillFile: null, samples: null, seed: "loopspine-v2", model: process.env.LOOPSPINE_MODEL || "gpt-5.5" };
-  for (let index = 0; index < argv.length; index += 1) {
-    const arg = argv[index];
-    if (arg === "--help") {
-      usage();
-      process.exit(0);
-    }
-    if (arg === "--pilot") options.pilot = true;
-    else if (arg === "--sealed") options.sealed = true;
-    else if (arg === "--sealed-only") options.sealedOnly = true;
-    else if (arg === "--samples" || arg === "--seed" || arg === "--model" || arg === "--sealed-file" || arg === "--baseline-skill-file") {
-      const value = argv[index + 1];
-      if (!value || value.startsWith("--")) fail(`Missing value for ${arg}`);
-      if (arg === "--samples") {
-        if (!/^\d+$/.test(value) || Number(value) < 1) fail("--samples must be a positive integer");
-        options.samples = Number(value);
-      } else if (arg === "--seed") options.seed = value;
-      else if (arg === "--sealed-file") options.sealedFile = value;
-      else if (arg === "--baseline-skill-file") options.baselineSkillFile = value;
-      else options.model = value;
-      index += 1;
-    } else {
-      fail(`Unknown argument: ${arg}`);
-    }
-  }
-  if (options.sealed && options.sealedOnly) fail("--sealed and --sealed-only cannot be used together");
-  if (options.pilot && options.sealedOnly) fail("--pilot and --sealed-only cannot be used together");
-  options.samples ??= options.pilot ? 1 : 3;
-  return options;
-}
-
 function readEvalFile(relativePath, source) {
-  const filePath = path.join(root, relativePath);
+  const filePath = repoEvidencePath(relativePath, "evaluation evidence");
   let raw;
   try {
     raw = fs.readFileSync(filePath);
@@ -97,6 +63,13 @@ function hashFile(filePath) {
   return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
 }
 
+function repoEvidencePath(relativePath, label) {
+  if (!relativePath || path.isAbsolute(relativePath)) fail(`${label} must be a repository-relative path`);
+  const resolved = path.resolve(root, relativePath);
+  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) fail(`${label} must stay inside the repository`);
+  return resolved;
+}
+
 function codexVersion() {
   const result = spawnSync("codex", ["--version"], { encoding: "utf8", timeout: 15000 });
   const version = `${result.stdout || ""}${result.stderr || ""}`.trim();
@@ -106,8 +79,17 @@ function codexVersion() {
   return version;
 }
 
-const options = parseArgs(process.argv.slice(2));
-const development = readEvalFile(path.join("evals", "evals.json"), "development");
+if (process.argv.slice(2).includes("--help")) {
+  console.log(benchmarkUsage());
+  process.exit(0);
+}
+let options;
+try {
+  options = parseBenchmarkArgs(process.argv.slice(2));
+} catch (error) {
+  fail(error.message);
+}
+const development = readEvalFile(options.developmentFile, "development");
 const sealed = (options.sealed || options.sealedOnly) ? readEvalFile(options.sealedFile, "sealed") : null;
 const pilotIds = new Set(["plan-fuzzy-cross-repo", "tdd-feature", "debug-red-capable-gate", "temporary-roles-without-ceremony", "bounded-loop", "heldout-docs-no-tdd"]);
 const developmentCases = options.pilot ? development.cases.filter((item) => pilotIds.has(item.id)) : development.cases;
@@ -118,6 +100,9 @@ const cases = [
 const duplicateIds = cases.map((item) => item.id).filter((id, index, all) => all.indexOf(id) !== index);
 if (duplicateIds.length) fail(`Malformed evaluation evidence: duplicate case ids: ${duplicateIds.join(", ")}`);
 if (!cases.length) fail("Malformed evaluation evidence: no selected cases");
+for (const caseId of options.requireStrictCases) {
+  if (!cases.some((item) => item.id === caseId)) fail(`Required strict case is not selected: ${caseId}`);
+}
 
 const skillPath = path.join(root, "skills", "loopspine", "SKILL.md");
 let skill;
@@ -129,15 +114,29 @@ try {
 let baselineInstructions = "You are a capable senior coding agent. Choose a sensible workflow for the software task. Preserve ordinary safety boundaries and do not execute the scenario.";
 let baselineSkillPath = null;
 if (options.baselineSkillFile) {
-  baselineSkillPath = path.isAbsolute(options.baselineSkillFile)
-    ? options.baselineSkillFile
-    : path.resolve(root, options.baselineSkillFile);
+  baselineSkillPath = repoEvidencePath(options.baselineSkillFile, "baseline skill evidence");
   try {
     baselineInstructions = fs.readFileSync(baselineSkillPath, "utf8");
   } catch (error) {
     fail(`Missing baseline skill evidence: ${baselineSkillPath}: ${error.message}`);
   }
 }
+let candidateOverlay = null;
+if (options.candidateOverlayFile) {
+  const candidateOverlayPath = repoEvidencePath(options.candidateOverlayFile, "candidate overlay evidence");
+  try {
+    candidateOverlay = {
+      path: options.candidateOverlayFile,
+      sha256: hashFile(candidateOverlayPath),
+      contents: fs.readFileSync(candidateOverlayPath, "utf8")
+    };
+  } catch (error) {
+    fail(`Missing candidate overlay evidence: ${candidateOverlayPath}: ${error.message}`);
+  }
+}
+const candidateInstructions = candidateOverlay
+  ? `${skill.trim()}\n\n${candidateOverlay.contents.trim()}\n`
+  : skill;
 
 const startedAt = new Date().toISOString();
 const stamp = startedAt.replace(/[:.]/g, "-");
@@ -154,7 +153,10 @@ const provenance = {
   sealed: options.sealed || options.sealedOnly,
   sealed_only: options.sealedOnly,
   skill_sha256: hashFile(skillPath),
-  baseline_skill: baselineSkillPath ? { path: baselineSkillPath, sha256: hashFile(baselineSkillPath) } : null,
+  baseline_skill: baselineSkillPath ? { path: options.baselineSkillFile, sha256: hashFile(baselineSkillPath) } : null,
+  candidate_overlay: candidateOverlay ? { path: candidateOverlay.path, sha256: candidateOverlay.sha256 } : null,
+  require_strict_cases: options.requireStrictCases,
+  candidate_score_floor: options.candidateScoreFloor,
   eval_files: [development, ...(sealed ? [sealed] : [])].map(({ relativePath, sha256, source }) => ({ path: relativePath, source, sha256 })),
   command_args: process.argv.slice(2),
   reasoning_effort: process.env.LOOPSPINE_REASONING_EFFORT || "provider-default",
@@ -179,7 +181,7 @@ for (const item of cases) {
       const outputDir = path.join(runDir, variant, item.id);
       const outputPath = path.join(outputDir, `sample-${sample}.txt`);
       fs.mkdirSync(outputDir, { recursive: true });
-      const instructions = variant === "with-skill" ? skill : baselineInstructions;
+      const instructions = variant === "with-skill" ? candidateInstructions : baselineInstructions;
       const prompt = `${instructions}\n\n# Scenario\n${item.prompt}\n\nExplain the workflow you would follow. Do not execute commands or edit files.`;
       const started = Date.now();
       console.log(`[${variant}] ${item.id} sample ${sample}/${options.samples}`);
@@ -215,6 +217,15 @@ const compared = spawnSync(process.execPath, [
 ], { encoding: "utf8" });
 if (compared.status === 2) fail(`Malformed comparison evidence: ${compared.stderr || "compare exit 2"}`);
 fs.writeFileSync(path.join(runDir, "comparison.json"), `${compared.stdout.trim()}\n`);
+const candidateSummary = JSON.parse(fs.readFileSync(path.join(runDir, "with-skill-summary.json"), "utf8"));
+const strictFailures = candidateSummary.results.filter((item) => options.requireStrictCases.includes(item.id) && !item.strict_pass);
+const scoreFloorFailed = options.candidateScoreFloor !== null && candidateSummary.weighted_score < options.candidateScoreFloor;
 console.log(`Run: ${runDir}`);
 console.log(compared.stdout.trim());
-process.exit(compared.status === 0 ? 0 : 1);
+if (strictFailures.length) {
+  console.error(`Required strict candidate samples failed: ${strictFailures.map((item) => `${item.id}/sample-${item.sample}`).join(", ")}`);
+}
+if (scoreFloorFailed) {
+  console.error(`Candidate score floor failed: ${candidateSummary.weighted_score} < ${options.candidateScoreFloor}`);
+}
+process.exit(compared.status === 0 && !strictFailures.length && !scoreFloorFailed ? 0 : 1);

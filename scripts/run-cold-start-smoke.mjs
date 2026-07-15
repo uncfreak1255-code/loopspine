@@ -64,7 +64,7 @@ const prompt = [
   "This is a cold-start readback: use only current Git state and files inside this repository.",
   "Do not rely on prior sessions, chat history, saved checkpoints, or external memory.",
   "Begin by reading AGENTS.md, then follow its restart instructions.",
-  "Identify the exact current HEAD commit, frozen comparison baseline, promotion decision, first unfinished task, complete candidate proof commands, whether meaningful edits on main are allowed, and repository files that prove the answer.",
+  "Identify the exact current HEAD commit, frozen comparison baseline, promotion decision, first remaining task including whether none is authorized, complete candidate proof commands, whether meaningful edits on main are allowed, and repository files that prove the answer.",
   "Do not edit files. Return only the structured response requested by the output schema."
 ].join(" ");
 
@@ -144,6 +144,6 @@ if (!passed) fail(errors.join("; ") || "one or more assertions failed", receiptP
 
 console.log("Cold-start smoke: PASS");
 console.log(`Source: ${sourceCommit}`);
-console.log("Recovered: rejected promotion, adaptive-harness receipt eval, full proof gate, and protected-main boundary.");
+console.log("Recovered: rejected behavior candidate, no authorized next task without new evidence, full proof gate, and protected-main boundary.");
 console.log("Isolation: ephemeral read-only Codex session; repository unchanged.");
 console.log(`Receipt: ${receiptPath}`);

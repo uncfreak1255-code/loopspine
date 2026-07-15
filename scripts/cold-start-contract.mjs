@@ -1,6 +1,6 @@
-export const CANDIDATE_SOURCE_BASE_COMMIT = "60fa913bb313312c64ce4c3d57015f96a4999c91";
+export const CANDIDATE_SOURCE_BASE_COMMIT = "852907026a3e4a311a9381e036a9504d7f48b4f6";
 export const FROZEN_BASELINE_COMMIT = "9dc46946c879d955daa5a37bd839d168936d6a98";
-export const NEXT_TASK = "adaptive-harness-receipt-eval";
+export const NEXT_TASK = "none-until-new-real-task-evidence";
 export const REQUIRED_PROOF_COMMANDS = [
   "npm test",
   "npm run benchmark:adaptive-harness",
@@ -86,7 +86,7 @@ export function verifyColdStartResponse(
     throw new Error("cold-start response reported the wrong promotion status");
   }
   const nextTask = String(response.next_task || "").toLowerCase();
-  if (!nextTask.includes("adaptive-harness") || !nextTask.includes("receipt") || !nextTask.includes("eval")) {
+  if (!nextTask.includes("none") || !nextTask.includes("new") || !nextTask.includes("evidence")) {
     throw new Error("cold-start response reported the wrong next task");
   }
   requireExactArrayValues(response.proof_commands, REQUIRED_PROOF_COMMANDS, "proof commands");
